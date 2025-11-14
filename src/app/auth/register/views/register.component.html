@@ -1,0 +1,250 @@
+<p-toast class="custom-toast"></p-toast>
+<div class="modal-backgound"></div>
+<div class="container-modal">
+  <div>
+    <div>
+      <h4><a routerLink="/login">Red Ads</a></h4>
+    </div>
+    <p-card class="card-container">
+      <form [formGroup]="registerForm" (ngSubmit)="submit()" class="p-fluid">
+        <div formGroupName="step1" *ngIf="step === 1">
+          <h4 *ngIf="account_type == 'merchant'">
+            Criar sua conta de Comerciante
+          </h4>
+          <h4 *ngIf="account_type == 'influencer'" class="ml-10">
+            Criar sua conta de Influenciador
+          </h4>
+          <div>
+            <div
+              *ngIf="
+                registerForm.get('step1.account_type')?.value === 'merchant'
+              "
+            >
+              <label for="document">CNPJ</label>
+              <p-inputMask
+                mask="99.999.999/9999-99"
+                id="document"
+                formControlName="document"
+                placeholder="xx.xxx.xxx/xxxx-xx"
+                [unmask]="true"
+                (onComplete)="onCheckDocument()"
+              ></p-inputMask>
+              <div *ngIf="checkDocument === false" class="warning_message">
+                <i class="pi pi-ban ban"></i>
+                CNPJ inválido ou não está disponivel para uso.
+              </div>
+              <div *ngIf="checkDocument === true" class="warning_message">
+                <i class="pi pi-check check"></i>
+                CNPJ está disponivel para uso.
+              </div>
+            </div>
+            <div
+              *ngIf="
+                registerForm.get('step1.account_type')?.value ===
+                  'influencer' ||
+                registerForm.get('step1.account_type')?.value === 'Manager'
+              "
+              class="modal-fields"
+            >
+              <label for="document">Documento</label>
+              <input
+                pInputText
+                id="document"
+                formControlName="document"
+                placeholder="CNPJ ou CPF"
+                maxlength="18"
+                (input)="onCheckDocument()"
+                pTooltip="CNPJ ou CPF"
+              />
+              <div *ngIf="checkDocument === false" class="warning_message">
+                <i class="pi pi-ban ban"></i>
+                CPF/CNPJ inválido ou não está disponivel para uso.
+              </div>
+              <div *ngIf="checkDocument === true" class="warning_message">
+                <i class="pi pi-check check"></i>
+                CPF/CNPJ está disponivel para uso.
+              </div>
+            </div>
+            <div
+              *ngIf="
+                registerForm.get('step1.account_type')?.value === 'consumer'
+              "
+            >
+              <label for="document">CPF</label>
+              <p-inputMask
+                mask="999.999.999-99"
+                id="document"
+                formControlName="document"
+                placeholder="xxx.xxx.xxx-xx"
+                [unmask]="true"
+                (onComplete)="onCheckDocument()"
+              ></p-inputMask>
+              <div *ngIf="checkDocument === false" class="warning_message">
+                <i class="pi pi-ban ban"></i>
+                CNPJ inválido ou não está disponivel para uso.
+              </div>
+              <div *ngIf="checkDocument === true" class="warning_message">
+                <i class="pi pi-check check"></i>
+                CNPJ está disponivel para uso.
+              </div>
+            </div>
+          </div>
+          <div>
+            <label for="name">Nome Completo</label>
+            <input
+              pInputText
+              id="name"
+              formControlName="name"
+              placeholder="Nome Sobrenome"
+            />
+            <div
+              *ngIf="
+                registerForm.get('step1.name')?.invalid &&
+                registerForm.get('step1.name')?.touched
+              "
+              class="warning_message"
+            >
+              Nome Inválido
+            </div>
+          </div>
+          <div>
+            <label for="cellphone">Celular</label>
+            <p-inputMask
+              mask="(99) 99999-9999"
+              id="cellphone"
+              formControlName="cellphone"
+              placeholder="(xx) xxxxx-xxxx"
+            ></p-inputMask>
+          </div>
+          <div>
+            <div>
+              <label for="password">Senha</label>
+            </div>
+            <p-password
+              formControlName="password"
+              id="password"
+              type="password"
+              [feedback]="false"
+            ></p-password>
+            <div
+              *ngIf="registerForm.get('step1.password')?.errors?.['isLength']"
+              class="warning_message"
+            >
+              <i class="pi pi-exclamation-triangle warn"></i>
+              Conter pelo menos 10 caracteres.
+            </div>
+            <div
+              *ngIf="registerForm.get('step1.password')?.errors?.['passwordUpperCase']"
+              class="warning_message"
+            >
+              <i class="pi pi-exclamation-triangle warn"></i>
+              Conter pelo menos 1 letra maiúscula
+            </div>
+            <div
+              *ngIf="registerForm.get('step1.password')?.errors?.['passwordLowerCase']"
+              class="warning_message"
+            >
+              <i class="pi pi-exclamation-triangle warn"></i>
+              Conter pelo menos 1 letra minúscula
+            </div>
+            <div
+              *ngIf="registerForm.get('step1.password')?.errors?.['passwordNumeric']"
+              class="warning_message"
+            >
+              <i class="pi pi-exclamation-triangle warn"></i>
+              Conter pelo menos 1 número
+            </div>
+            <div
+              *ngIf="registerForm.get('step1.password')?.errors?.['passwordSpecial']"
+              class="warning_message"
+            >
+              <i class="pi pi-exclamation-triangle warn"></i>
+              Conter pelo menos 1 caractere especial
+            </div>
+          </div>
+          <div>
+            <p-button
+              label="Continuar"
+              id="ContinueButton"
+              type="submit"
+              class="wp-100"
+              [disabled]="registerForm.get('step1')?.invalid"
+            ></p-button>
+          </div>
+        </div>
+
+        <div formGroupName="step2" *ngIf="step === 2">
+          <h4>Validação de número de celular</h4>
+          <div>
+            <label>
+              Para sua segurança, enviamos um código de verificação via SMS para
+              o número
+              {{ registerForm.get("step1")?.value.cellphone }}. Por favor,
+              insira o código de 6 dígitos abaixo.
+            </label>
+            <label for="code">Código</label>
+            <br />
+            <p-inputMask
+              mask="*** - ***"
+              placeholder="??? - ???"
+              class="code-verification"
+              id="code-verification"
+              formControlName="code"
+            ></p-inputMask>
+          </div>
+          <div>
+            <div>
+              <p-button
+                class="wp-100"
+                label="Enviar Código"
+                type="submit"
+              ></p-button>
+              <small>
+                O código não chegou? &nbsp;
+                <a
+                  *ngIf="isLinkDisabled"
+                  style="cursor: not-allowed; color: grey !important"
+                >
+                  Reenviar SMS (
+                  {{ countdown }})
+                </a>
+                <a
+                  *ngIf="!isLinkDisabled"
+                  (click)="resendSMS()"
+                  style="cursor: pointer; color: red !important"
+                >
+                  Reenviar SMS
+                </a>
+              </small>
+            </div>
+          </div>
+        </div>
+      </form>
+      <div class="mt-15" *ngIf="step == 1">
+        <small
+          >Já tem conta? &nbsp;
+          <a routerLink="/login">Entrar</a>
+        </small>
+      </div>
+    </p-card>
+
+    <div class="mt-15" *ngIf="step == 2">
+      <small id="button_back">
+        <a (click)="back()">Voltar</a>
+      </small>
+    </div>
+    <div class="mt-30">
+      <small>
+        <a class="footer" routerLink="/forgot-password">© RedAds</a>
+      </small>
+      <small> &nbsp;&nbsp;&nbsp; </small>
+      <small>
+        <a class="footer" routerLink="/forgot-password">Contato</a>
+      </small>
+      <small> &nbsp;&nbsp;&nbsp; </small>
+      <small>
+        <a class="footer" routerLink="/forgot-password">Termos e Privacidade</a>
+      </small>
+    </div>
+  </div>
+</div>

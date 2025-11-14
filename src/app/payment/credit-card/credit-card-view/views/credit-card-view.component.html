@@ -1,0 +1,228 @@
+<p-toast class="custom-toast"></p-toast>
+<div *ngIf="!isLoading" class="container">
+  <h3 class="">Cartões de Crédito</h3>
+  <div class="topic-container">
+    <div class="topic-title">
+      <h5>Cartão de Crédito</h5>
+    </div>
+    <div class="btns-container-small">
+      <button
+        pButton
+        label="Criar"
+        class="w-80 btn-primary"
+        type="button"
+        (click)="create_new_card()"
+        pTooltip="Criar Nova Cartão de Crédito"
+        [disabled]="entityForm.invalid"
+      ></button>
+    </div>
+  </div>
+  <hr />
+
+  <!-- Inputs -->
+  <!-- Inputs -->
+  <form [formGroup]="entityForm">
+    <div class="input-container">
+      <!-- Main Inputs -->
+      <div class="fields-container">
+        <div class="field-container">
+          <label class="label-field" for="number">Número do Cartão *</label>
+          <input
+            pInputText
+            id="number"
+            formControlName="number"
+            placeholder="Número do cartão..."
+            maxlength="19"
+            pKeyFilter="int"
+            class="input-field"
+            pTooltip="Número do cartão de crédito, pode variar entre 13 e 19 dígitos dependendo da bandeira"
+          />
+        </div>
+        <div class="field-container">
+          <label class="label-field" for="cvv">CVV / CVC *</label>
+          <input
+            pInputText
+            id="cvv"
+            formControlName="cvv"
+            placeholder="CVV..."
+            maxlength="4"
+            pKeyFilter="int"
+            class="input-field"
+            pTooltip="CVV ou CVC do cartão de crédito, são 3 ou 4 dígitos"
+          />
+        </div>
+        <div class="field-container">
+          <label class="label-field" for="month">Mês (Vencimento) *</label>
+          <input
+            pInputText
+            id="month"
+            formControlName="month"
+            placeholder="Mês..."
+            maxlength="2"
+            pKeyFilter="int"
+            class="input-field"
+            pTooltip="Mês de vencimento do cartão de crédito, são 2 dígitos"
+          />
+          <small
+            class="error-msg"
+            *ngIf="entityForm.errors?.['invalidExpiration']"
+            style="
+              color: red;
+              font-size: 0.7em !important;
+              vertical-align: middle !important;
+            "
+          >
+            O cartão deve ter pelo menos 1 mês de validade
+          </small>
+        </div>
+        <div class="field-container">
+          <label class="label-field" for="year">Ano (Vencimento) *</label>
+          <input
+            pInputText
+            id="year"
+            formControlName="year"
+            placeholder="Ano..."
+            maxlength="4"
+            pKeyFilter="int"
+            class="input-field"
+            pTooltip="Ano de vencimento do cartão de crédito, são 4 dígitos"
+          />
+        </div>
+        <div class="field-container">
+          <label class="label-field" for="name"
+            >Nome Impresso no Cartão *</label
+          >
+          <input
+            pInputText
+            id="name"
+            formControlName="name"
+            placeholder="Nome Sobrenome"
+            maxlength="255"
+            class="input-field"
+            pTooltip="Nome deve ser idêntico ao impresso no cartão de crédito"
+          />
+        </div>
+        <div class="field-container">
+          <label class="label-field" for="holderEmail">Email</label>
+          <input
+            pInputText
+            id="holderEmail"
+            formControlName="holderEmail"
+            placeholder="email@email.com"
+            type="email"
+            class="input-field"
+            pTooltip="Email do titular do cartão de crédito"
+          />
+        </div>
+
+        <div class="field-container">
+          <label class="label-field" for="holderPhone">Telefone</label>
+          <input
+            pInputText
+            formControlName="holderPhone"
+            type="number"
+            placeholder="1132323232"
+            class="input-field"
+            pattern="[0-9]*"
+            pTooltip="Telefone do titular do cartão de crédito"
+          />
+        </div>
+
+        <div class="field-container">
+          <label class="label-field" for="billingZipCode">CEP</label>
+          <p-inputMask
+            mask="99.999-999"
+            id="zipcode"
+            formControlName="billingZipCode"
+            placeholder="xx.xxx-xx"
+            class="input-mask-field"
+            pTooltip="CEP do endereço de faturamento do cartão de crédito"
+          ></p-inputMask>
+
+          <button
+            pButton
+            type="button"
+            label=""
+            icon="pi pi-search"
+            class="button-field-search"
+            (click)="searchZipcode()"
+            [disabled]="entityForm.get('address.zipcode')?.invalid"
+            pTooltip="Buscar endereço"
+          ></button>
+        </div>
+        <div class="field-container">
+          <label class="label-field" for="billingStateCode">Estado</label>
+          <p-dropdown
+            formControlName="billingStateCode"
+            [options]="states"
+            optionLabel="name"
+            optionValue="id"
+            placeholder="Selecione"
+            class="dropdown-field"
+            (onChange)="onStateChange($event)"
+            [showClear]="true"
+            pTooltip="Estado do endereço de faturamento do cartão de crédito"
+          ></p-dropdown>
+        </div>
+        <div class="field-container">
+          <label class="label-field" for="billingCity">Cidade</label>
+          <p-dropdown
+            formControlName="billingCity"
+            [options]="cities"
+            optionLabel="name"
+            optionValue="id"
+            placeholder="Selecione"
+            class="dropdown-field"
+            [showClear]="true"
+            pTooltip="Cidade do endereço de faturamento do cartão de crédito"
+          ></p-dropdown>
+        </div>
+        <div class="field-container">
+          <label class="label-field" for="billingStreetLine1"
+            >Linha de Endereço 1</label
+          >
+          <input
+            pInputText
+            formControlName="billingStreetLine1"
+            type="text"
+            class="input-field"
+            pTooltip="Linha de endereço 1 do endereço de faturamento do cartão de crédito"
+          />
+        </div>
+        <div class="field-container">
+          <label class="label-field" for="billingStreetLine2"
+            >Linha de Endereço 2</label
+          >
+          <input
+            pInputText
+            formControlName="billingStreetLine2"
+            type="text"
+            class="input-field"
+            pTooltip="Linha de endereço 2 do endereço de faturamento do cartão de crédito"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <button
+        pButton
+        label=""
+        icon="pi pi-arrow-left"
+        class="w-110 btn-secondary"
+        type="button"
+        (click)="back()"
+        pTooltip="Voltar"
+      ></button>
+    </div>
+  </form>
+</div>
+<p-progressSpinner
+  *ngIf="isLoading"
+  styleClass="w-4rem h-4rem"
+  strokeWidth="8"
+  fill="var(--surface-ground)"
+  animationDuration="0.8s"
+  class="centralize"
+/>
+<br />
+<br />

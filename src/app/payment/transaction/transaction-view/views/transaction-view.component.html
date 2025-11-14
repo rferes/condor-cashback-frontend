@@ -1,0 +1,209 @@
+<p-toast class="custom-toast"></p-toast>
+<p-confirmDialog class="custom-dialog"></p-confirmDialog>
+<div class="container">
+  <h3 class="">Transações</h3>
+  <div class="topic-container">
+    <div class="topic-title">
+      <h5 pTooltip="ID: {{ entity.id }} ">Transação</h5>
+    </div>
+    <div class="btns-container-small"></div>
+  </div>
+  <hr />
+
+  <!-- Inputs -->
+  <div class="view-container col-12">
+    <div #STEPRESULTS>
+      <h5 class="mt-12">Dados da transação</h5>
+      <div class="ml-10 col-12 row">
+        <div class="col-3">
+          <label class="label-field bold">Status</label>
+          <br />
+          <div class="centralize-campaign-tag w-60">
+            <div
+              class="centralize-campaign-tag w-60"
+              [ngSwitch]="entity.status"
+            >
+              <p-tag
+                *ngSwitchCase="'new'"
+                class="new"
+                value="Novo"
+                pTooltip="Transação em aberto"
+              ></p-tag>
+              <p-tag
+                *ngSwitchCase="'created'"
+                class="sketch-campaign"
+                value="Criado"
+                pTooltip="Transação criada"
+              ></p-tag>
+              <p-tag
+                *ngSwitchCase="'approved'"
+                class="approved-campaign"
+                value="Aprovado"
+                pTooltip="Transação aprovada"
+              ></p-tag>
+              <p-tag
+                *ngSwitchCase="'confirmed'"
+                class="sucess"
+                value="Confirmado"
+                pTooltip="Transação confirmada"
+              ></p-tag>
+              <p-tag
+                *ngSwitchCase="'processing'"
+                class="approved-campaign"
+                value="Processando"
+                pTooltip="Transação em processamento"
+              ></p-tag>
+              <p-tag
+                *ngSwitchCase="'success'"
+                class="sucess"
+                value="Sucesso"
+                pTooltip="Transação realizada com sucesso"
+              ></p-tag>
+              <p-tag
+                *ngSwitchCase="'failed'"
+                class="failed-campaign"
+                value="Falhou"
+                pTooltip="Transação falhou"
+              ></p-tag>
+              <p-tag
+                *ngSwitchCase="'refused'"
+                class="refused-campaign"
+                value="Recusado"
+                pTooltip="Transação recusada"
+              ></p-tag>
+              <p-tag
+                *ngSwitchCase="'canceled'"
+                class="canceled-campaign"
+                value="Cancelado"
+                pTooltip="Transação cancelada"
+              ></p-tag>
+              <p-tag
+                *ngSwitchCase="'refunded'"
+                class="refunded-campaign"
+                value="Estornado"
+                pTooltip="Transação estornada"
+              ></p-tag>
+            </div>
+          </div>
+        </div>
+        <!-- counter_times: number;
+        counter_products: number;
+        counter_consumers: number;
+
+        total_amount: number;
+        cashback_consumer_amount: number;
+        cashback_influencer_amount: number; -->
+        <div class="col-3">
+          <label class="label-field bold">Valor</label>
+          <br />
+          <span> {{ entity.amount | currency : "BRL" }} </span>
+        </div>
+
+        <div class="col-3">
+          <label class="label-field bold">Data da Validação</label>
+          <br />
+          <span>
+            {{ entity.created_date | date : "dd/MM/yyyy HH:mm:ss" }}
+          </span>
+        </div>
+
+        <div class="col-3">
+          <label class="label-field bold">Data da Transação</label>
+          <br />
+          <span>{{
+            entity.transaction_time | date : "dd/MM/yyyy HH:mm:ss"
+          }}</span>
+        </div>
+        <div class="col-12">
+          <br />
+        </div>
+        <div class="col-3">
+          <label class="label-field bold">Responsável</label>
+          <br />
+          <span>
+            {{
+              entity.document.length === 11
+                ? entity.document.slice(0, 3) +
+                  "." +
+                  entity.document.slice(3, 6) +
+                  "." +
+                  entity.document.slice(6, 9) +
+                  "-" +
+                  entity.document.slice(9)
+                : entity.document.length === 14
+                ? entity.document.slice(0, 2) +
+                  "." +
+                  entity.document.slice(2, 5) +
+                  "." +
+                  entity.document.slice(5, 8) +
+                  "/" +
+                  entity.document.slice(8, 12) +
+                  "-" +
+                  entity.document.slice(12)
+                : entity.document
+            }}</span
+          >
+        </div>
+        <div class="col-3">
+          <label class="label-field bold">Tipo</label>
+          <br />
+          <span> {{ typeMap[entity.action_type] }} </span>
+        </div>
+        <div class="col-3">
+          <label class="label-field bold">Modo</label>
+          <br />
+          <span> {{ modeMap[entity.mode] }} </span>
+        </div>
+        <div class="col-3">
+          <label class="label-field bold">Créditos</label>
+          <br />
+          <span> {{ entity.red_credits | currency : "BRL" }} </span>
+        </div>
+        <div class="col-12">
+          <br />
+        </div>
+        <div *ngIf="entity.pix_code" class="col-3">
+          <label class="label-field bold">Transação Financeira</label>
+          <br />
+          <span> Pix </span>
+        </div>
+        <div *ngIf="entity.pix_code" class="col-3">
+          <label class="label-field bold">Chave Pix</label>
+          <br />
+          <span> {{ entity.pix.pix_key }} </span>
+        </div>
+        <div *ngIf="entity.lasts_4_digits_cc" class="col-3">
+          <label class="label-field bold">Transação Financeira</label>
+          <br />
+          <span> Cartão de Crédito </span>
+        </div>
+        <div *ngIf="entity.lasts_4_digits_cc" class="col-3">
+          <label class="label-field bold">Cartão de Crédito</label>
+          <br />
+          <span> xxxx-xxxx-xxxx-{{ entity.lasts_4_digits_cc }} </span>
+        </div>
+        <div *ngIf="entity.description" class="col-6">
+          <label class="label-field bold">Descrição</label>
+          <br />
+          <span>
+            {{ entity.description ? entity.description : "-----------" }}
+          </span>
+        </div>
+      </div>
+
+      <div class="footer">
+        <button
+          pButton
+          label=""
+          icon="pi pi-arrow-left"
+          class="w-110 btn-secondary"
+          type="button"
+          (click)="back()"
+          pTooltip="Voltar"
+        ></button>
+      </div>
+      <br />
+      <br />
+    </div>
+  </div>
+</div>

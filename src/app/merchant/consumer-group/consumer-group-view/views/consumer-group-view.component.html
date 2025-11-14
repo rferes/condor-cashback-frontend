@@ -1,0 +1,235 @@
+<p-toast class="custom-toast"></p-toast>
+<div class="container">
+  <h3 class="">Grupos de Consumidores</h3>
+  <div class="topic-container">
+    <div class="topic-title">
+      <h5 pTooltip="ID: {{ entity.id }} ">Grupo de Consumidores</h5>
+    </div>
+    <div class="btns-container-medium">
+      <!-- Read Mode -->
+      <button
+        *ngIf="!editMode && !newObject"
+        pButton
+        label="Editar"
+        icon="pi pi-pencil"
+        iconPos="right"
+        class="btn-secondary"
+        style="width: 80px !important"
+        type="button"
+        (click)="edit()"
+      ></button>
+      <!-- Edit Mode -->
+      <button
+        *ngIf="editMode && !newObject"
+        pButton
+        label="Cancelar"
+        class="btn-secondary"
+        style="width: 80px !important"
+        type="button"
+        (click)="cancel()"
+      ></button>
+      <button
+        *ngIf="editMode && !newObject"
+        pButton
+        label="Salvar"
+        class="btn-primary"
+        style="width: 80px !important"
+        type="button"
+        [disabled]="entityForm.invalid"
+        (click)="save()"
+        pTooltip="Salvar Grupo de Consumidores"
+      ></button>
+      <button
+        *ngIf="newObject"
+        pButton
+        label="Criar"
+        class="btn-primary"
+        style="width: 80px !important"
+        type="button"
+        (click)="save()"
+        pTooltip="Criar Grupo de Consumidores"
+        [disabled]="entityForm.invalid || !fileUploaded"
+      ></button>
+    </div>
+  </div>
+  <hr />
+
+  <!-- Inputs -->
+
+  <form [formGroup]="entityForm">
+    <div class="input-container">
+      <!-- Main Inputs -->
+      <div class="fields-container">
+        <div class="field-container">
+          <label class="label-field" for="name"
+            >Nome do Grupo de Consumidores</label
+          >
+          <span *ngIf="!editMode" class="span-field">
+            {{
+              entityForm.get("name")?.value.length > 80
+                ? (entityForm.get("name")?.value | slice : 0 : 80) + "..."
+                : entityForm.get("name")?.value
+            }}
+          </span>
+          <input
+            pInputText
+            *ngIf="editMode"
+            formControlName="name"
+            type="text"
+            class="input-field"
+            id="name"
+            pTooltip="Nome do grupo de consumidores que será exibido para o consumidores, influenciadores e comerciantes"
+          />
+        </div>
+
+        <div class="field-container">
+          <label class="label-field" for="description"
+            >Descrição do Grupo</label
+          >
+          <span *ngIf="!editMode" class="span-field">
+            {{
+              entityForm.get("description")?.value.length > 80
+                ? (entityForm.get("description")?.value | slice : 0 : 80) +
+                  "..."
+                : entityForm.get("description")?.value
+            }}
+          </span>
+          <textarea
+            pInputTextarea
+            *ngIf="editMode"
+            formControlName="description"
+            class="input-field"
+            id="description"
+            rows="3"
+            style="
+              width: 360px;
+              height: 100px;
+              border: 1px solid #cfcfcf;
+              border-radius: 8px;
+              font-size: 14px;
+              padding: 6px;
+            "
+          ></textarea>
+        </div>
+        <div *ngIf="!newObject" class="field-container">
+          <label class="label-field" for="quantity"
+            >Quantidade de Consumidores</label
+          >
+          <span class="span-field">
+            {{ entity.quantity }}
+          </span>
+        </div>
+        <div class="field-container" *ngIf="!newObject">
+          <label class="label-field" for="created_date">Data de Criação</label>
+          <span class="span-field">
+            {{ entity.created_date | date : "dd/MM/yyyy HH:mm" }}
+          </span>
+        </div>
+        <div class="field-container" *ngIf="!newObject">
+          <label class="label-field" for="updated_date"
+            >Data de Atualização</label
+          >
+          <span class="span-field">
+            {{ entity.updated_date | date : "dd/MM/yyyy HH:mm" }}
+          </span>
+        </div>
+        <p
+          *ngIf="editMode"
+          style="margin-top: 0px; margin-bottom: 8px; font-size: 15px"
+        >
+          CPFs dos Consumidores via .CSV
+        </p>
+        <div
+          class="field-container"
+          style="margin-top: 0px; margin-bottom: 10px"
+          *ngIf="editMode"
+        >
+          <div class="upload-btn">
+            <p style="margin-top: 0px; margin-bottom: 8px; font-size: 15px">
+              Upload
+            </p>
+            <span
+              pTooltip="Faça o upload de um arquivo .CSV seguindo o modelo disponível no botão ao lado."
+              tooltipPosition="top"
+              tooltipStyleClass="my-tooltip"
+              class="btn-upload"
+            >
+              <p-fileUpload
+                #fileUpload
+                mode="basic"
+                chooseLabel=".CSV"
+                name=""
+                accept="text/csv"
+                (onSelect)="onSelectFile($event)"
+                [disabled]="fileUploaded"
+              ></p-fileUpload>
+            </span>
+          </div>
+          <div *ngIf="!fileUploaded">
+            <p
+              style="
+                margin-top: 0px;
+                margin-bottom: 8px;
+                margin-left: 20px;
+                font-size: 15px;
+              "
+            >
+              Modelo
+            </p>
+            <a [href]="fileURL" download>
+              <p-button
+                icon="pi pi-file"
+                styleClass="btn-download"
+                pTooltip="Baixe este modelo de arquivo CSV para ver o formato correto de importação dos CPFs"
+              ></p-button>
+            </a>
+          </div>
+          <div>
+            <div *ngIf="fileUploaded">
+              <p
+                style="
+                  margin-top: 0px;
+                  margin-bottom: 8px;
+                  margin-left: 20px;
+                  font-size: 15px;
+                "
+              >
+                Cancelar
+              </p>
+              <p-button
+                type="button"
+                class="p-button-clear p-button-icon-only p-button-danger"
+                (click)="resetFileUpload()"
+                icon="pi pi-times"
+                styleClass="btn-download"
+                pTooltip="Excluir Arquivo"
+              >
+              </p-button>
+            </div>
+          </div>
+          <div>
+            <p style="margin-top: 0px; margin-bottom: 8px; font-size: 15px">
+              &nbsp;
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- <div class="vertical-line"></div>
+
+      <div class="side-container"></div> -->
+    </div>
+
+    <div class="footer">
+      <button
+        pButton
+        label=""
+        icon="pi pi-arrow-left"
+        class="w-110 btn-secondary"
+        type="button"
+        (click)="back()"
+        pTooltip="Voltar"
+      ></button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,96 @@
+<p-toast class="custom-toast"></p-toast>
+<p-confirmDialog class="custom-dialog"></p-confirmDialog>
+
+<div class="container">
+  <h3 class="">Red Comissões</h3>
+  <div class="topic-container">
+    <div class="topic-title">
+      <h5>Lista de Comissões Provisionadas</h5>
+    </div>
+  </div>
+  <hr />
+  <!-- Inputs -->
+  <div class="input-container">
+    <!-- Main Inputs -->
+    <div class="fields-container">
+      <div class="table-list">
+        <p-progressSpinner
+          *ngIf="isLoading"
+          styleClass="w-4rem h-4rem"
+          strokeWidth="8"
+          fill="var(--surface-ground)"
+          animationDuration="0.8s"
+          class="centralize"
+        />
+        <p-table
+          *ngIf="entitys.length > 0"
+          [value]="itemsFiltrados"
+          [globalFilterFields]="[
+            'id',
+            'initial_amount',
+            'amount',
+            'status',
+            'user_mode',
+            'expiration_date',
+            'credit_grant_date'
+          ]"
+          [sortField]="'credit_grant_date'"
+          [sortOrder]="-1"
+          [paginator]="true"
+          [rows]="25"
+          [responsive]="true"
+          [autoLayout]="true"
+          styleClass="p-datatable-gridlines"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th pSortableColumn="created_date">
+                Data Aquisição
+                <p-sortIcon field="created_date"></p-sortIcon>
+              </th>
+              <th pSortableColumn="receipt.campaign.name">
+                Campanha <p-sortIcon field="receipt.campaign.name"></p-sortIcon>
+              </th>
+              <th pSortableColumn="amount">
+                Valor <p-sortIcon field="amount"></p-sortIcon>
+              </th>
+              <th pSortableColumn="credit_grant_date">
+                Data Concessão
+                <p-sortIcon field="credit_grant_date"></p-sortIcon>
+              </th>
+              <th pSortableColumn="expiration_date">
+                Data Expiração
+                <p-sortIcon field="expiration_date"></p-sortIcon>
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-entitys let-i="rowIndex">
+            <tr>
+              <td>
+                {{ entitys.created_date | date : "dd/MM/yyyy" }}
+              </td>
+              <td>
+                {{ entitys.receipt.campaign.name }}
+              </td>
+              <td>
+                {{ entitys.amount | currency : "BRL" }}
+              </td>
+              <td>
+                {{ entitys.credit_grant_date | date : "dd/MM/yyyy" }}
+              </td>
+              <td>
+                {{ entitys.expiration_date | date : "dd/MM/yyyy" }}
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+      <!-- Se tabela estiver vazia -->
+      <div *ngIf="entitys.length === 0">
+        <div>
+          <span>Atenção, você não possui nenhuma Comissão Provisionada!</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

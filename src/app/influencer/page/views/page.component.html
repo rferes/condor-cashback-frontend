@@ -1,0 +1,385 @@
+<p-toast class="mobile-toast"></p-toast>
+<div class="page-container">
+  <header class="header">
+    <div
+      style="display: flex; justify-content: space-between; align-items: center"
+    >
+      <button
+        class="copy-button"
+        (click)="copyToClipboard(influencer_link)"
+        style="color: #ffffff; border: transparent; background: transparent"
+      >
+        <i class="pi pi-link" style="font-weight: bold; font-size: 1.2rem"></i>
+      </button>
+      <h1 style="margin: 0px; flex: 1; text-align: center">RedAds</h1>
+      <button
+        class="search-button"
+        routerLink="/search"
+        style="color: #ffffff; border: transparent; background: transparent"
+      >
+        <i
+          class="pi pi-search"
+          style="font-weight: bold; font-size: 1.2rem"
+        ></i>
+      </button>
+    </div>
+  </header>
+
+  <main class="main-content" *ngIf="!results_page && !url_not_found">
+    <section class="influencer-profile">
+      <img
+        [src]="influencer.image"
+        alt="Imagem do Influencer"
+        class="profile-image"
+        style="margin: auto; display: block"
+      />
+      <h2 class="influencer-name">{{ influencer.name }}</h2>
+      <p class="influencer-location">
+        {{ influencer.city.name }} - {{ influencer.city.state?.initials }}
+      </p>
+    </section>
+    <form [formGroup]="entityForm" class="input-form">
+      <div class="form-group">
+        <label for="access_key" class="form-label">Chave de Acesso</label>
+        <div class="input-group">
+          <p-inputMask
+            formControlName="access_key"
+            mask="9999 9999 9999 9999 9999 9999 9999 9999 9999 9999 9999"
+            placeholder="xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx"
+            class="form-input"
+          ></p-inputMask>
+          <button type="button" class="camera-button" (click)="toggleTorch()">
+            <i class="pi pi-camera"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="consumer_document" class="form-label">CPF</label>
+        <div class="input-group">
+          <p-inputMask
+            formControlName="consumer_document"
+            mask="999.999.999-99"
+            placeholder="xxx.xxx.xxx-xx"
+            class="cpf-input"
+          >
+          </p-inputMask>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="consumer_pix_type" class="form-label">Chave Pix</label>
+        <div class="input-group">
+          <p-dropdown
+            formControlName="consumer_pix_type"
+            [options]="consumer_pix_type"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Selecione"
+            class="chave-pix-dropdown"
+            (onChange)="updateKeyPixType()"
+            [style]="{ padding: '0px' }"
+          ></p-dropdown>
+        </div>
+      </div>
+      <div
+        class="form-group"
+        *ngIf="entityForm.value.consumer_pix_type === 'EMAIL'"
+      >
+        <label class="form-label" for="consumer_pix_type">Email</label>
+
+        <div class="input-group">
+          <div class="email-input">
+            <input
+              pInputText
+              id="consumer_pix_code_email"
+              formControlName="consumer_pix_code"
+              type="email"
+              placeholder="Seu email aqui..."
+              maxlength="255"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="form-group"
+        *ngIf="entityForm.value.consumer_pix_type === 'CELLPHONE'"
+      >
+        <label class="form-label" for="consumer_pix_type">Celular</label>
+        <div class="input-group">
+          <p-inputMask
+            mask="(99) 99999-9999"
+            id="consumer_pix_code_phone"
+            formControlName="consumer_pix_code"
+            placeholder="(xx) xxxxx-xxxx"
+            class="phone-input"
+          ></p-inputMask>
+        </div>
+      </div>
+      <button
+        pButton
+        type="button"
+        label="Enviar Nota"
+        (click)="sendReceipt()"
+        [disabled]="!entityForm.valid"
+        class="submit-button"
+      ></button>
+    </form>
+  </main>
+  <main class="main-content" *ngIf="results_page && !url_not_found">
+    <h2 style="color: #ffffff">Nota Fiscal Cadastrada</h2>
+    <div class="input-form">
+      <div class="form-group">
+        <label class="form-label" for="access_key">Chave de Acesso</label>
+        <span for="access_key" style="font-size: 16px; color: #ffffff"
+          >{{ receipt_access_key }}
+        </span>
+      </div>
+      <div class="form-group">
+        <div class="col-12 row">
+          <div class="col-7">
+            <label class="form-label" for="consumer_document">CPF</label>
+            <span
+              for="consumer_document"
+              style="font-size: 16px; color: #ffffff"
+            >
+              {{ entityForm.value.consumer_document }}
+            </span>
+          </div>
+
+          <div class="col-5">
+            <label class="form-label" for="consumer_pix_type">Chave Pix</label>
+            <span
+              for="consumer_pix_type"
+              style="font-size: 16px; color: #ffffff"
+            >
+              {{ getPixCodeTypeLabel(entityForm.value.consumer_pix_type) }}
+            </span>
+          </div>
+        </div>
+      </div>
+      <div
+        class="form-group"
+        *ngIf="entityForm.value.consumer_pix_type === 'EMAIL'"
+      >
+        <label class="form-label" for="consumer_pix_code" style="color: #ffffff"
+          >Email</label
+        >
+        <span style="font-size: 16px; color: #ffffff" for="consumer_pix_code"
+          >{{ entityForm.value.consumer_pix_code }}
+        </span>
+      </div>
+      <div
+        class="form-group"
+        *ngIf="entityForm.value.consumer_pix_type === 'CELLPHONE'"
+      >
+        <label class="form-label" for="consumer_pix_code" style="color: #e0e0e0"
+          ><b>Celular</b></label
+        >
+        <span style="font-size: 16px; color: #ffffff" for="consumer_pix_code"
+          >{{ entityForm.value.consumer_pix_code }}
+        </span>
+      </div>
+      <div class="form-group">
+        <label class="form-label" style="color: #e0e0e0">Influenciador</label>
+        <span style="font-size: 16px; color: #ffffff" for="influencer_name">
+          {{ influencer.name }}</span
+        >
+      </div>
+      <div class="form-group">
+        <label class="form-label" style="color: #e0e0e0">Lojista</label>
+        <span style="font-size: 16px; color: #ffffff" for="seller">{{
+          receipt_out.seller_name
+        }}</span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" style="color: #e0e0e0">Loja</label>
+        <span style="font-size: 16px; color: #ffffff" for="store_name"
+          >{{ receipt_out.store_name }}
+        </span>
+      </div>
+      <div class="form-group">
+        <label class="form-label" style="color: #e0e0e0"
+          >Campanhas Compatíveis</label
+        >
+        <span
+          style="font-size: 16px; color: #ffffff"
+          *ngFor="let campaign of receipt_out.list_campaigns_names"
+          >•{{ campaign[0] }}</span
+        >
+      </div>
+      <div
+        class="form-group"
+        *ngIf="receipt_out.list_of_linked_credits.length > 0"
+      >
+        <label class="form-label" style="color: #e0e0e0"
+          >Créditos Disponíveis no App</label
+        >
+        <div
+          *ngFor="let merchant of receipt_out.list_of_linked_credits"
+          style="font-size: 16px; color: #ffffff; display: flex; align-items: center; gap: 12px; margin-bottom: 4px"
+        >
+          <span style="font-size: 16px; color: #ffffff;">•{{ merchant[1] }}</span>
+          <a [href]="merchant[2]" target="_blank" style="display: flex; align-items: center; color: #fff; text-decoration: none; gap: 4px;">
+            <i class="pi pi-google" style="color:#fff; font-size: 18px;"></i>
+            <span style="color: #fff; font-size: 15px;">Google Play</span>
+          </a>
+          <span style="color:#888; font-size: 14px;">|</span>
+          <a [href]="merchant[3]" target="_blank" style="display: flex; align-items: center; color: #fff; text-decoration: none; gap: 4px;">
+            <i class="pi pi-apple" style="color:#fff; font-size: 18px;"></i>
+            <span style="color: #fff; font-size: 15px;">App Store</span>
+          </a>
+        </div>
+      </div>
+
+      <button
+        pButton
+        label="Enviar Nova Nota"
+        type="button"
+        pTooltip="Voltar para pagina do influencer"
+        (click)="
+          results_page = false; this.entityForm.patchValue({ access_key: '' })
+        "
+        class="submit-button"
+      ></button>
+      <!-- <br />
+      <div style="display: flex; justify-content: center">
+        <ul
+          style="text-align: left; color: rgb(233, 233, 233); font-size: 12px"
+        >
+          <li>Nota enviada com sucesso</li>
+          <li>Validação da Nota em até 24h</li>
+          <li>CashBack em até 7 dias</li>
+        </ul>
+      </div> -->
+    </div>
+    <br />
+  </main>
+  <main class="main-content" *ngIf="url_not_found">
+    <section class="influencer-profile">
+      <div class="member-banner">
+        <p>Link Inválido</p>
+      </div>
+      <div style="text-align: center; margin: 20px 0">
+        <i
+          class="pi pi-exclamation-triangle"
+          style="font-size: 4rem; color: #ffffff"
+        ></i>
+        <p style="margin-top: 20px; text-align: center">
+          O link do influencer não foi encontrado. Por favor, verifique se o
+          endereço está correto.
+        </p>
+      </div>
+    </section>
+  </main>
+  <div
+    class="terms-link-container"
+    style="text-align: center; margin-top: 20px; padding-bottom: 20px"
+  >
+    <a
+      href="https://s3.us-east-1.amazonaws.com/redads-sandbox.static/media/terms/consumer-terms.pdf"
+      style="color: #ffffff; text-decoration: underline; font-size: 14px"
+    >
+      Termos de Adesão do Consumidor
+    </a>
+  </div>
+
+  <div
+    class="scanner-container"
+    *ngIf="torchEnabled"
+    tabindex="0"
+    (focusout)="torchEnabled = false"
+  >
+    <button class="close-scanner-button" (click)="torchEnabled = false">
+      <i class="pi pi-times"></i>
+    </button>
+    <zxing-scanner
+      (scanSuccess)="handleQrCodeResult($event)"
+      [formats]="formats"
+      [torch]="torchEnabled"
+      [tryHarder]="true"
+      (focusout)="torchEnabled = false"
+    >
+    </zxing-scanner>
+  </div>
+</div>
+
+<p-dialog
+  header="Termos e Condições"
+  [(visible)]="termsDialogCheckBoxVisible"
+  [modal]="true"
+  [style]="{ width: '450px', maxWidth: '95%' }"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <form [formGroup]="entityForm">
+    <div class="terms-container">
+      <p-scrollPanel
+        [style]="{
+          width: '100%',
+          height: '350px',
+          border: '1px solid #ddd',
+          overflowY: 'scroll'
+        }"
+        styleClass="custom"
+      >
+        <div class="terms-content" style="padding: 5px !important">
+          <div [innerHTML]="termsContent"></div>
+        </div>
+      </p-scrollPanel>
+
+      <div style="margin-top: 15px">
+        <a
+          href="https://s3.us-east-1.amazonaws.com/redads-sandbox.static/media/terms/consumer-terms.pdf"
+          target="_blank"
+          class="download-terms-link"
+          style="color: red; text-decoration: none; font-size: 13px"
+        >
+          <i class="pi pi-file-pdf"></i>
+          Abrir versão PDF dos termos e condições
+        </a>
+      </div>
+      <div
+        class="checkbox-container"
+        style="margin-top: 15px; display: flex; align-items: center"
+      >
+        <p-checkbox
+          formControlName="accept_terms"
+          [binary]="true"
+          inputId="acceptTermsDialog"
+        ></p-checkbox>
+        <label
+          for="acceptTermsDialog"
+          class="checkbox-label"
+          style="margin-left: 8px"
+        >
+          Li e aceito os
+          <a
+            href="https://s3.us-east-1.amazonaws.com/redads-sandbox.static/media/terms/consumer-terms.pdf"
+            target="_blank"
+            style="text-decoration: underline; font-size: 14px"
+          >
+            termos de adesão
+          </a>
+        </label>
+      </div>
+    </div>
+  </form>
+
+  <ng-template pTemplate="footer">
+    <p-button
+      label="Enviar Nota"
+      (click)="acceptTermsCheckBox()"
+      [disabled]="!entityForm.get('accept_terms')?.value"
+      styleClass="p-button-danger"
+      [style]="{
+        'border-radius': '8px',
+        width: '80%',
+        display: 'block',
+        margin: '0 auto'
+      }"
+    >
+    </p-button>
+  </ng-template>
+</p-dialog>

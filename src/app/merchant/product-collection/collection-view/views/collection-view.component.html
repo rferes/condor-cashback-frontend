@@ -1,0 +1,154 @@
+<p-toast class="custom-toast"></p-toast>
+<div class="container">
+  <h3 class="">Coleções de Produtos</h3>
+  <div class="topic-container">
+    <div class="topic-title">
+      <h5 pTooltip="ID: {{ entity.id }} ">Coleção de Produtos</h5>
+    </div>
+    <div class="btns-container-medium">
+      <!-- Read Mode -->
+      <button
+        *ngIf="!editMode && !viewOnly"
+        pButton
+        label="Editar"
+        icon="pi pi-pencil"
+        iconPos="right"
+        class="btn-secondary"
+        style="width: 80px !important"
+        type="button"
+        (click)="edit()"
+      ></button>
+      <!-- Edit Mode -->
+      <button
+        *ngIf="editMode && !newObject"
+        pButton
+        label="Cancelar"
+        class="btn-secondary"
+        style="width: 80px !important"
+        type="button"
+        (click)="cancel()"
+      ></button>
+      <button
+        *ngIf="editMode && !newObject"
+        pButton
+        label="Salvar"
+        class="btn-primary"
+        style="width: 80px !important"
+        type="button"
+        [disabled]="entityForm.pristine || entityForm.invalid"
+        (click)="save()"
+        pTooltip="Salvar Coleção"
+      ></button>
+      <button
+        *ngIf="newObject"
+        pButton
+        label="Criar"
+        class="btn-primary"
+        style="width: 80px !important"
+        type="button"
+        (click)="save()"
+        pTooltip="Criar Nova Coleção"
+        [disabled]="entityForm.invalid"
+      ></button>
+    </div>
+  </div>
+  <hr />
+
+  <!-- Inputs -->
+  <!-- Inputs -->
+  <form [formGroup]="entityForm">
+    <div class="input-container">
+      <!-- Main Inputs -->
+      <div *ngIf="products.length > 0" class="fields-container">
+        <div class="field-container">
+          <label class="label-field" for="name">Nome</label>
+          <span *ngIf="!editMode" class="span-field">
+            {{
+              entityForm.get("name")?.value.length > 80
+                ? (entityForm.get("name")?.value | slice : 0 : 80) + "..."
+                : entityForm.get("name")?.value
+            }}
+          </span>
+          <input
+            pInputText
+            *ngIf="editMode"
+            formControlName="name"
+            type="text"
+            class="input-field"
+            id="name"
+          />
+        </div>
+        <div class="field-container">
+          <label class="label-field" for="products">Lista Produtos</label>
+          <p-scroller
+            *ngIf="!editMode"
+            [items]="entityForm.get('products')?.value"
+            [itemSize]="scroolerItemsQuantity"
+            class="scroller-field"
+          >
+            <ng-template pTemplate="item" let-item let-options="options">
+              <div>
+                {{
+                  item.name.length > 30
+                    ? (item.name | slice : 0 : 30) + "..."
+                    : item.name
+                }}
+
+                <span
+                  [ngStyle]="{
+                    color: item.is_active ? 'green' : 'rgb(170, 170, 190)'
+                  }"
+                >
+                  {{ item.is_active ? "(Ativa)" : "(Inativa)" }}
+                </span>
+              </div>
+            </ng-template>
+          </p-scroller>
+          <p-listbox
+            *ngIf="editMode"
+            [options]="listScroolerItems"
+            formControlName="products"
+            optionLabel="combinedLabel"
+            [multiple]="true"
+            [metaKeySelection]="false"
+            class="listbox-field"
+          ></p-listbox>
+        </div>
+      </div>
+      <div *ngIf="products.length === 0" class="fields-container">
+        <div>
+          <div>
+            <button
+              pButton
+              label="Novo Produto"
+              icon="pi pi-plus"
+              class="btn-primary"
+              type="button"
+              [routerLink]="['/merchant/product-view', 'new']"
+            ></button>
+          </div>
+          <span
+            >Atenção, você ainda não possui nenhum produto registrado, para
+            criar uma coleção de produtos você precisa primeiro registrar um
+            produto.</span
+          >
+        </div>
+      </div>
+      <!-- Divisor
+      <div class="vertical-line"></div>
+      Side Inputs
+      <div class="side-container"></div> -->
+    </div>
+    <div class="footer">
+      <button
+        pButton
+        label=""
+        icon="pi pi-arrow-left"
+        class="w-110 btn-secondary"
+        type="button"
+        (click)="back()"
+        pTooltip="Voltar"
+      ></button>
+    </div>
+  </form>
+</div>

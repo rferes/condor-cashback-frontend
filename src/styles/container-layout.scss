@@ -1,0 +1,271 @@
+@import "variables";
+
+// Body
+body {
+  background-color: $white !important;
+}
+
+.container-layout {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100% !important;
+  padding: 0px;
+  margin-left: 10px !important;
+
+  .side-component {
+    text-align: center;
+    background-color: rgb(251, 251, 251) !important;
+    width: 250px;
+    height: 100vh;
+    .profile-name {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 50px;
+
+      .p-tag {
+        width: 150px;
+        height: 25px;
+        padding: 0px;
+        margin: 0px;
+        color: $white;
+        background-color: $primary;
+        border-radius: 25px;
+      }
+    }
+
+    .menu {
+      .selected {
+        .p-panelmenu-header-content {
+          .p-menuitem-text {
+            color: $primary !important;
+          }
+        }
+      }
+
+      .p-panelmenu {
+        margin-top: 40px !important;
+        margin-left: 40px !important;
+
+        .p-panelmenu-header-content {
+          background-color: transparent;
+          border-color: transparent;
+        }
+        .p-panelmenu-header-content :hover {
+          background-color: rgb(243, 243, 243);
+        }
+        .p-panelmenu-content {
+          margin: 2px 0px 0px 0px;
+          padding: 0px;
+        }
+
+        .p-panelmenu-content {
+          background-color: transparent;
+          border-color: rgb(255, 255, 255);
+        }
+
+        .p-panelmenu-root-list {
+          background-color: transparent;
+          padding: 0px;
+        }
+
+        .p-menuitem {
+          background-color: transparent;
+        }
+
+        .p-panelmenu-header-action {
+          background-color: transparent;
+          text-decoration: none;
+          padding: 5px;
+        }
+
+        .p-submenu-icon {
+          display: none;
+        }
+
+        .p-menuitem-icon {
+          display: none;
+        }
+
+        .p-menuitem-text {
+          font-size: 14px;
+          color: rgb(101, 101, 101);
+          text-decoration: none;
+        }
+
+        .p-menuitem-link {
+          color: rgb(101, 101, 101);
+          text-decoration: none;
+          padding: 3px 0px 3px 15px;
+        }
+        .p-menuitem-link.selected {
+          background-color: $light-gray !important;
+        }
+      }
+    }
+  }
+
+  .main-component {
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+
+    .topbar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      margin: 0px;
+      padding: 0px;
+      border-color: rgb(255, 255, 255);
+      height: 60px;
+
+      .p-button {
+        background-color: transparent !important;
+        border-radius: 8px !important;
+        border: none;
+        box-sizing: border-box;
+        color: white;
+        font-family: "Ubuntu", sans-serif;
+        transition: background-color 0.3s;
+        margin: 0px;
+        padding: 0px;
+        .p-button-icon {
+          color: rgb(119, 119, 119);
+          margin-top: 0px;
+          padding: 4px;
+          font-size: 20px;
+        }
+        .p-ripple {
+          background-color: transparent;
+          border-color: transparent;
+          margin: 0px;
+          padding: 0px;
+        }
+      }
+      .dropdown-ProfileSelect {
+        .p-dropdown {
+          border: none;
+          text-justify: center;
+
+          .p-dropdown-label {
+            color: $hard-gray;
+            font-weight: bold;
+            font-size: 14px;
+            padding: 6px 10px;
+
+            text-justify: center;
+          }
+
+          .p-dropdown-panel {
+            background-color: rgb(255, 255, 255);
+            padding: 8px 12px;
+          }
+
+          .p-dropdown-items {
+            background-color: rgb(255, 255, 255);
+            padding: 0px !important;
+            margin: 0px !important;
+            height: 100% !important;
+          }
+
+          .p-dropdown-items-wrapper {
+            background-color: rgb(255, 255, 255) !important;
+            height: 100% !important;
+            padding: 0px !important;
+            margin: 0px !important;
+          }
+
+          .p-dropdown-item {
+            background-color: rgb(255, 255, 255);
+            color: $hard-gray;
+            margin: 0px !important;
+            padding: 0px !important;
+          }
+
+          .p-dropdown-item:hover {
+            background-color: $white-ice;
+            color: $hard-gray;
+            margin: 0px !important;
+            padding: 0px !important;
+            border-radius: 8px;
+          }
+
+          .p-dropdown-item.p-highlight {
+            background-color: $light-gray !important;
+            color: $hard-gray !important;
+            border-radius: 8px;
+          }
+        }
+
+        .p-dropdown.p-disabled {
+          background-color: white !important;
+
+          .p-dropdown-label {
+            color: $hard-gray;
+            background-color: white !important;
+          }
+        }
+      }
+    }
+
+    .content {
+      width: 100%;
+      margin: 0px 0px 0px 30px;
+      padding: 0px;
+    }
+  }
+}
+//*****Other*********
+// => container-layout.main-component.topbar overlaypanel
+
+.p-overlaypanel {
+  margin-top: 16px !important;
+  margin-bottom: 0px !important;
+  padding: 10px !important;
+  padding-bottom: 0px !important;
+  width: 250px !important;
+
+  .p-overlaypanel-content {
+    margin: 0px;
+    padding: 0px;
+    width: 100% !important;
+  }
+  .p-overlaypanel-content li a {
+    margin: 0px;
+    padding: 0px;
+    color: rgb(99, 99, 99);
+    width: 100% !important;
+  }
+
+  .p-overlaypanel-content li:hover {
+    background-color: rgb(222, 222, 222);
+    text-decoration: none;
+  }
+  ul {
+    list-style-type: none;
+    li {
+      width: 100% !important;
+      color: $medium-gray !important;
+      a {
+        color: $primary !important;
+        font-weight: bold;
+        text-decoration: none;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .div-document-small {
+    margin-top: -10px;
+  }
+
+  small.document-small {
+    font-size: 12px;
+    color: $medium-gray !important;
+    margin: 0px;
+    padding: 0px;
+  }
+}

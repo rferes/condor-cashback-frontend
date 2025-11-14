@@ -1,0 +1,259 @@
+<!-- export type DashboardMerchant = {
+  receipts_qnt: number;
+  receipts_value: number;
+  receipts_avg_value: number;
+  products_qnt: number;
+  products_value: number;
+  products_avg_value: number;
+  consumers_qnt: number;
+  consumers_value: number;
+  consumers_avg_value: number;
+  influencers_qnt: number;
+  influencers_value: number;
+  influencers_avg_value: number;
+  stores_qnt: number;
+  stores_value: number;
+  stores_avg_value: number;
+  campaigns_qnt: number;
+  campaigns_value: number;
+  campaigns_avg_value: number;
+}; -->
+
+<p-toast class="custom-toast"></p-toast>
+<div class="container">
+  <h3 class="">DashBoard</h3>
+  <div class="topic-container">
+    <div class="topic-title">
+      <h5 style="margin: 0">Resumo das Notas Fiscais</h5>
+      <!-- <button
+        class="button-download"
+        pButton
+        type="button"
+        icon="pi pi-file-excel"
+        (click)="downloadCSV()"
+        pTooltip="Baixar Dados Gerais (.CSV)"
+        style="margin-left: 1rem; width: 2.5rem; height: 2.5rem; padding: 0"
+      ></button> -->
+    </div>
+    <div class="btns-container-small"></div>
+  </div>
+  <hr />
+
+  <!-- Inputs -->
+  <div class="view-container col-12 row">
+    <div class="col-6">
+      <h6><b>Tickets</b></h6>
+    </div>
+    <div class="col-6">
+      <h6><b>Produtos</b></h6>
+    </div>
+    <div class="col-2 dashboard-view" style="background-color: #f5f5f5">
+      <label
+        for="receipts_qnt"
+        style="display: block; text-align: center; margin-bottom: 0.5rem"
+        >Quantidade</label
+      >
+      <span>{{ dashboardData.receipts_qnt }}</span>
+    </div>
+    <div class="col-2 dashboard-view" style="background-color: #b7b7b7">
+      <label
+        for="receipts_value"
+        style="display: block; text-align: center; margin-bottom: 0.5rem"
+        >Valor Total</label
+      >
+      <span>R$ {{ dashboardData.receipts_value }}</span>
+    </div>
+    <div class="col-2 dashboard-view" style="background-color: #8e8e8e">
+      <label
+        for="receipts_avg_value"
+        style="display: block; text-align: center; margin-bottom: 0.5rem"
+        >Valor Médio</label
+      >
+      <span>R$ {{ dashboardData.receipts_avg_value }}</span>
+    </div>
+
+    <div class="col-2 dashboard-view" style="background-color: #f5f5f5">
+      <label
+        for="products_qnt"
+        style="display: block; text-align: center; margin-bottom: 0.5rem"
+        >Quantidade</label
+      >
+      <span>{{ dashboardData.products_qnt }}</span>
+    </div>
+    <div class="col-2 dashboard-view" style="background-color: #b7b7b7">
+      <label
+        for="products_value"
+        style="display: block; text-align: center; margin-bottom: 0.5rem"
+        >Valor Total</label
+      >
+      <span>R$ {{ dashboardData.products_value }}</span>
+    </div>
+    <div class="col-2 dashboard-view" style="background-color: #8e8e8e">
+      <label
+        for="products_avg_value"
+        style="display: block; text-align: center; margin-bottom: 0.5rem"
+        >Valor Médio</label
+      >
+      <span>R$ {{ dashboardData.products_avg_value }}</span>
+    </div>
+    <div class="col-6" style="margin-top: 1rem">
+      <h6><b>Consumidores</b></h6>
+    </div>
+    <div class="col-6" style="margin-top: 1rem">
+      <h6><b>Comerciantes (Patrocinadores)</b></h6>
+    </div>
+    <div class="col-2 dashboard-view" style="background-color: #f5f5f5">
+      <label
+        for="consumers_qnt"
+        style="display: block; text-align: center; margin-bottom: 0.5rem"
+        >Quantidade</label
+      >
+      <span>{{ dashboardData.consumers_qnt }}</span>
+    </div>
+    <div class="col-2 dashboard-view" style="background-color: #b7b7b7">
+      <label
+        for="consumers_value"
+        style="display: block; text-align: center; margin-bottom: 0.5rem"
+        >Valor Total</label
+      >
+      <span>R$ {{ dashboardData.consumers_value }}</span>
+    </div>
+    <div class="col-2 dashboard-view" style="background-color: #8e8e8e">
+      <label
+        for="consumers_avg_value"
+        style="display: block; text-align: center; margin-bottom: 0.5rem"
+        >Valor Médio</label
+      >
+      <span>R$ {{ dashboardData.consumers_avg_value }}</span>
+    </div>
+
+    <div class="col-2 dashboard-view" style="background-color: #f5f5f5">
+      <label
+        for="influencers_qnt"
+        style="display: block; text-align: center; margin-bottom: 0.5rem"
+        >Quantidade</label
+      >
+      <span>{{ dashboardData.sponsors_qnt }}</span>
+    </div>
+    <div class="col-2 dashboard-view" style="background-color: #b7b7b7">
+      <label
+        for="influencers_value"
+        style="display: block; text-align: center; margin-bottom: 0.5rem"
+        >Valor Total</label
+      >
+      <span>R$ {{ dashboardData.sponsors_value }}</span>
+    </div>
+    <div class="col-2 dashboard-view" style="background-color: #8e8e8e">
+      <label
+        for="influencers_avg_value"
+        style="display: block; text-align: center; margin-bottom: 0.5rem"
+        >Valor Médio</label
+      >
+      <span>R$ {{ dashboardData.sponsors_avg_value }}</span>
+    </div>
+
+    <div class="col-6" style="margin-top: 1rem">
+      <h6><b>Lojas</b></h6>
+    </div>
+    <div class="col-6" style="margin-top: 1rem">
+      <h6><b>Campanhas</b></h6>
+    </div>
+
+    <div class="col-2 dashboard-view" style="background-color: #f5f5f5">
+      <label
+        for="stores_qnt"
+        style="display: block; text-align: center; margin-bottom: 0.5rem"
+        >Quantidade</label
+      >
+      <span>{{ dashboardData.stores_qnt }}</span>
+    </div>
+    <div class="col-2 dashboard-view" style="background-color: #b7b7b7">
+      <label
+        for="stores_value"
+        style="display: block; text-align: center; margin-bottom: 0.5rem"
+        >Valor Total</label
+      >
+      <span>R$ {{ dashboardData.stores_value }}</span>
+    </div>
+    <div class="col-2 dashboard-view" style="background-color: #8e8e8e">
+      <label
+        for="stores_avg_value"
+        style="display: block; text-align: center; margin-bottom: 0.5rem"
+        >Valor Médio</label
+      >
+      <span>R$ {{ dashboardData.stores_avg_value }}</span>
+    </div>
+
+    <div class="col-2 dashboard-view" style="background-color: #f5f5f5">
+      <label
+        for="campaigns_qnt"
+        style="display: block; text-align: center; margin-bottom: 0.5rem"
+        >Quantidade</label
+      >
+      <span>{{ dashboardData.campaigns_qnt }}</span>
+    </div>
+    <div class="col-2 dashboard-view" style="background-color: #b7b7b7">
+      <label
+        for="campaigns_value"
+        style="display: block; text-align: center; margin-bottom: 0.5rem"
+        >Valor Total</label
+      >
+      <span>R$ {{ dashboardData.campaigns_value }}</span>
+    </div>
+    <div class="col-2 dashboard-view" style="background-color: #8e8e8e">
+      <label
+        for="campaigns_avg_value"
+        style="display: block; text-align: center; margin-bottom: 0.5rem"
+        >Valor Médio</label
+      >
+      <span>R$ {{ dashboardData.campaigns_avg_value }}</span>
+    </div>
+  </div>
+
+  <br />
+  <br />
+  <div style="width: 98%">
+    <div class="topic-container">
+      <div class="topic-title">
+        <h5>Download Dados Mensais</h5>
+      </div>
+    </div>
+    <hr />
+
+    <form [formGroup]="csvMensalForm">
+      <div class="input-container">
+        <div class="fields-container">
+          <div class="field-container">
+            <label class="label-field" for="pix_key">Mês</label>
+            <p-dropdown
+              formControlName="month_code"
+              [options]="months"
+              optionLabel="month_name"
+              optionValue="month_code"
+              placeholder="Selecione"
+              class="dropdown-field"
+            ></p-dropdown>
+            <div
+              class="btns-container-small"
+              style="
+                display: flex;
+                align-items: center;
+                margin-left: 4rem;
+                margin-top: -5px;
+              "
+            >
+              <button
+                pButton
+                label="Baixar Resumo"
+                class="w-180 btn-primary"
+                type="button"
+                (click)="downloadCSVmensal()"
+                pTooltip="Baixar Dados Mensais"
+              ></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,324 @@
+<p-toast class="custom-toast"></p-toast>
+<p-confirmDialog class="custom-dialog"></p-confirmDialog>
+<div class="container">
+  <h3 class="">Notas Fiscais</h3>
+  <div class="topic-container">
+    <div class="topic-title">
+      <h5>Lista de Notas Fiscais</h5>
+    </div>
+  </div>
+  <hr />
+
+  <!-- Inputs -->
+  <div class="input-container">
+    <!-- Main Inputs -->
+    <div class="fields-container">
+      <div class="table-list">
+        <p-progressSpinner
+          *ngIf="isLoading"
+          styleClass="w-4rem h-4rem"
+          strokeWidth="8"
+          fill="var(--surface-ground)"
+          animationDuration="0.8s"
+          class="centralize"
+        />
+        <p-table
+          *ngIf="entitys.length > 0"
+          [value]="itemsFiltrados"
+          [globalFilterFields]="[
+            'created_date',
+            'access_key',
+            'consumer_document',
+            'consumer_pix_code',
+            'campaign',
+            'status'
+          ]"
+          [sortField]="'created_date'"
+          [sortOrder]="-1"
+          [paginator]="true"
+          [rows]="25"
+        >
+          <ng-template pTemplate="caption">
+            <div class="input-icon">
+              <i class="pi pi-search ml-10"></i>
+              <input
+                pInputText
+                id="globalFilter"
+                name="globalFilter"
+                type="text"
+                [(ngModel)]="globalFilter"
+                (input)="applyFilter()"
+                placeholder="pesquisar nota fiscal"
+                pTooltip="Pesquisar notas fiscais"
+              />
+            </div>
+            <button
+              pButton
+              type="button"
+              pTooltip="Limpar o filtro"
+              tooltipPosition="top"
+              tooltipStyleClass="my-tooltip"
+              label=""
+              icon="pi pi-filter-slash"
+              (click)="clearGlobalFilter()"
+            ></button>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th class="w-150" pSortableColumn="created_date">
+                Adicionada <p-sortIcon field="created_date"></p-sortIcon>
+              </th>
+              <th pSortableColumn="access_key">
+                Chave <p-sortIcon field="access_key"></p-sortIcon>
+              </th>
+              <th pSortableColumn="campaign.campaign_mode">
+                Modo <p-sortIcon field="campaign.campaign_mode"></p-sortIcon>
+              </th>
+              <th class="w-120" pSortableColumn="consumer_document">
+                Cosumidor <p-sortIcon field="consumer_document"></p-sortIcon>
+              </th>
+              <th class="w-180" pSortableColumn="campaign.name">
+                Campanha <p-sortIcon field="campaign.name"></p-sortIcon>
+              </th>
+              <th class="w-110" pSortableColumn="receipt_value">
+                Total <p-sortIcon field="receipt_value"></p-sortIcon>
+              </th>
+              <th pSortableColumn="status">
+                Status <p-sortIcon field="status"></p-sortIcon>
+              </th>
+              <div class="centralize w-80"><th>Ação</th></div>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-entitys let-i="rowIndex">
+            <tr>
+              <td>
+                {{ entitys.created_date | date : "dd/MM/yyyy HH:mm:ss" }}
+              </td>
+              <td style="font-size: 11px">
+                {{ entitys.access_key | slice : 0 : 4 }}
+                {{ entitys.access_key | slice : 4 : 8 }}
+                {{ entitys.access_key | slice : 8 : 12 }}
+                {{ entitys.access_key | slice : 12 : 16 }}
+                {{ entitys.access_key | slice : 16 : 20 }}
+                {{ entitys.access_key | slice : 20 : 24 }}
+                {{ entitys.access_key | slice : 24 : 28 }}
+                {{ entitys.access_key | slice : 28 : 32 }}
+                {{ entitys.access_key | slice : 32 : 36 }}
+                {{ entitys.access_key | slice : 36 : 40 }}
+                {{ entitys.access_key | slice : 40 : 44 }}
+              </td>
+              <td>
+                {{
+                  entitys.campaign.campaign_mode === "PRODUCT"
+                    ? "Produto"
+                    : "Ticket"
+                }}
+              </td>
+              <td>
+                {{
+                  (entitys.consumer_document | slice : 0 : 3) +
+                    "." +
+                    (entitys.consumer_document | slice : 3 : 6) +
+                    "." +
+                    (entitys.consumer_document | slice : 6 : 9) +
+                    "-" +
+                    (entitys.consumer_document | slice : 9 : 11)
+                }}
+              </td>
+              <td>
+                <i
+                  *ngIf="entitys.dissemination_mode === 'MEMBER'"
+                  class="pi pi-users"
+                  pTooltip="Divulgação por Membros"
+                  style="margin-right: 1px"
+                ></i>
+                <i
+                  *ngIf="entitys.dissemination_mode === 'INFLUENCER'"
+                  class="pi pi-user"
+                  pTooltip="Divulgação por Influenciadores"
+                  style="margin-right: 1px"
+                ></i>
+                {{
+                  entitys.campaign.name.length > 20
+                    ? (entitys.campaign.name | slice : 0 : 20) + "..."
+                    : entitys.campaign.name
+                }}
+              </td>
+              <td>
+                <i
+                  *ngIf="!entitys.linked_credit"
+                  class="pi pi-dollar"
+                  pTooltip="Crédito Livre"
+                  style="margin-right: 5px"
+                ></i>
+                <i
+                  *ngIf="entitys.linked_credit"
+                  class="pi pi-wallet"
+                  pTooltip="Crédito Vinculado ({{
+                    entitys.linked_credit.name
+                  }})"
+                  style="margin-right: 5px"
+                ></i>
+                R$ {{ entitys.receipt_value | number : "1.2-2" }}
+              </td>
+              <td>
+                <div class="centralize-campaign-tag w-60">
+                  <div [ngSwitch]="entitys.status">
+                    <p-tag
+                      *ngSwitchCase="'APPROVED'"
+                      class="approved-campaign"
+                      value="Aprovado"
+                      pTooltip="Nota Fiscal aprovada"
+                      tooltipPosition="left"
+                    ></p-tag>
+                    <p-tag
+                      *ngSwitchCase="'PENDINGPAYMENT'"
+                      class="pending-receipt"
+                      value="Pend. Pgto"
+                      pTooltip="Nota Fiscal aguardando pagamento"
+                      tooltipPosition="left"
+                    ></p-tag>
+                    <p-tag
+                      *ngSwitchCase="'PAYMENT_FAILED'"
+                      class="reproved-campaign"
+                      value="Error Pgto"
+                      pTooltip="Nota Fiscal com falha no pagamento"
+                      tooltipPosition="left"
+                    ></p-tag>
+                    <p-tag
+                      *ngSwitchCase="'PAID'"
+                      class="active-campaign"
+                      value="Pago"
+                      pTooltip="Nota Fiscal paga"
+                      tooltipPosition="left"
+                    ></p-tag>
+                    <p-tag
+                      *ngSwitchCase="'NEW'"
+                      class="sketch-campaign"
+                      value="Novo"
+                      pTooltip="Nota Fiscal recém cadastrada"
+                      tooltipPosition="left"
+                    ></p-tag>
+                    <div *ngSwitchCase="'CHECKING'">
+                      <p-tag
+                        class="proposal-campaign"
+                        value="Checando"
+                        pTooltip="Nota Fiscal em processo de validação"
+                        tooltipPosition="left"
+                      ></p-tag>
+                    </div>
+                    <p-tag
+                      *ngSwitchCase="'PIX_NOT_FOUND'"
+                      class="approved-campaign"
+                      value="Pix Error"
+                      pTooltip="Nota Fiscal aprovada, mas não foi possível encontrar o pix"
+                      tooltipPosition="left"
+                    ></p-tag>
+                    <p-tag
+                      *ngSwitchCase="'NOT_FOUND'"
+                      class="reproved-campaign"
+                      value="Não Encontrada"
+                      pTooltip="Nota Fiscal não encontrada no sistema da SEFAZ"
+                      tooltipPosition="left"
+                    ></p-tag>
+                    <p-tag
+                      *ngSwitchCase="'REJECTED_DONT_HAVE_CAMPAIGN'"
+                      class="reproved-campaign"
+                      value="Rejeitada"
+                      pTooltip="Nota Fiscal rejeitada por não ter campanha associada"
+                      tooltipPosition="left"
+                    ></p-tag>
+                    <p-tag
+                      *ngSwitchCase="'REJECTED_DONT_HAVE_PRODUCT_CAMPAIGN'"
+                      class="reproved-campaign"
+                      value="Rejeitada"
+                      pTooltip="Nota Fiscal rejeitada por não ter produto da campanha"
+                      tooltipPosition="left"
+                    ></p-tag>
+                    <p-tag
+                      *ngSwitchCase="'REJECTED_EMISSION_DATE_NOT_ALLOW'"
+                      class="reproved-campaign"
+                      value="Reprovada"
+                      pTooltip="Nota Fiscal reprovada por data de emissão fora do prazo"
+                      tooltipPosition="left"
+                    ></p-tag>
+                    <p-tag
+                      *ngSwitchCase="'REJECTED_STORE_NOT_FOUND'"
+                      class="reproved-campaign"
+                      value="Reprovada"
+                      pTooltip="Nota Fiscal reprovada por loja não encontrada"
+                      tooltipPosition="left"
+                    ></p-tag>
+                    <p-tag
+                      *ngSwitchCase="'REJECTED_CONSUMER_BLOCK'"
+                      class="reproved-campaign"
+                      value="Reprovada"
+                      pTooltip="Nota Fiscal reprovada por consumidor bloqueado"
+                      tooltipPosition="left"
+                    ></p-tag>
+                    <p-tag
+                      *ngSwitchCase="'REJECTED_CONSUMER_NOT_ALLOW'"
+                      class="reproved-campaign"
+                      value="Reprovada"
+                      pTooltip="Nota Fiscal reprovada, consumidor não tem permissão para participar da campanha"
+                      tooltipPosition="left"
+                    ></p-tag>
+                    <p-tag
+                      *ngSwitchCase="'REPROVED_LIMIT_PARTICIPATIONS_EXCEEDED'"
+                      class="reproved-campaign"
+                      value="Reprovada"
+                      pTooltip="Nota Fiscal reprovada por limite de participações excedido"
+                      tooltipPosition="left"
+                    ></p-tag>
+                    <p-tag
+                      *ngSwitchCase="'REPROVED_MINIMUM_VALUE'"
+                      class="reproved-campaign"
+                      value="Reprovada"
+                      pTooltip="Nota Fiscal reprovada por valor mínimo não atingido"
+                      tooltipPosition="left"
+                    ></p-tag>
+                    <p-tag
+                      *ngSwitchCase="'REPROVED_MINIMUM_QUANTITY'"
+                      class="reproved-campaign"
+                      value="Reprovada"
+                      pTooltip="Nota Fiscal reprovada por quantidade mínima não atingida"
+                      tooltipPosition="left"
+                    ></p-tag>
+                    <p-tag
+                      *ngSwitchCase="'REPROVED_BY_MERCHANT'"
+                      class="reproved-campaign"
+                      value="Reprovada"
+                      pTooltip="Nota Fiscal reprovada pelo comerciante"
+                      tooltipPosition="left"
+                    ></p-tag>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="centralize w-80">
+                  <button
+                    pButton
+                    pRipple
+                    pTooltip="Ver Transação"
+                    tooltipPosition="top"
+                    tooltipStyleClass="my-tooltip"
+                    type="button"
+                    icon="pi pi-eye"
+                    class="p-button-rounded p-button-text p-button-success p-button-sm"
+                    [routerLink]="['/reports/receipt-view', entitys.id]"
+                  ></button>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+      <!-- Se tabela estiver vazia -->
+      <div *ngIf="entitys.length === 0">
+        <div>
+          <span>Atenção, você ainda não possui nenhuma nota fiscal!</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

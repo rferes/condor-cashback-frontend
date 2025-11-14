@@ -1,0 +1,529 @@
+<p-toast class="custom-toast"></p-toast>
+<div class="container">
+  <h3 class="">Consumidores</h3>
+  <div class="topic-container">
+    <div class="topic-title">
+      <h5>Pesquisar Consumidor</h5>
+    </div>
+  </div>
+  <hr />
+  <div class="view-container col-12">
+    <div class="search-field">
+      <div class="input-icon">
+        <i class="pi pi-search"></i>
+        <p-inputMask
+          id="consumerDocument"
+          name="consumerDocument"
+          [(ngModel)]="consumerDocument"
+          placeholder="Digite o CPF do consumidor"
+          mask="999.999.999-99"
+          (onComplete)="getConsumerData()"
+          (onBlur)="clearConsumerData()"
+          pTooltip="Digite apenas os números do CPF do consumidor"
+        ></p-inputMask>
+      </div>
+    </div>
+
+    <div #STEPRESULTS *ngIf="receipts.length > 0">
+      <br />
+      <div>
+        <h5 class="mt-12">Dados do Consumidor</h5>
+        <hr />
+        <div class="ml-10 col-12 row">
+          <div class="col-3">
+            <label class="label-field bold">Documento</label>
+            <br />
+            <span>
+              {{
+                consumer.document.length === 11
+                  ? consumer.document.slice(0, 3) +
+                    "." +
+                    consumer.document.slice(3, 6) +
+                    "." +
+                    consumer.document.slice(6, 9) +
+                    "-" +
+                    consumer.document.slice(9)
+                  : consumer.document.length === 14
+                  ? consumer.document.slice(0, 2) +
+                    "." +
+                    consumer.document.slice(2, 5) +
+                    "." +
+                    consumer.document.slice(5, 8) +
+                    "/" +
+                    consumer.document.slice(8, 12) +
+                    "-" +
+                    consumer.document.slice(12)
+                  : consumer.document
+              }}
+            </span>
+          </div>
+          <div class="col-3">
+            <label class="label-field bold">Conta</label>
+            <br />
+            <span>
+              {{ consumer.is_active ? "Ativa" : "Inativa" }}
+            </span>
+          </div>
+          <div class="col-3">
+            <label class="label-field bold">CEP</label>
+            <br />
+            <span> {{ consumer.cep || "Não informado" }} </span>
+          </div>
+          <div class="col-3">
+            <label class="label-field bold">Cidade</label>
+            <br />
+            <span> {{ consumer.city || "Não informado" }} </span>
+          </div>
+        </div>
+        <br />
+        <h5 class="mt-12">Notas do Consumidor</h5>
+        <hr />
+        <div class="col-12">
+          <div class="table-list">
+            <p-progressSpinner
+              *ngIf="isLoading"
+              styleClass="w-4rem h-4rem"
+              strokeWidth="8"
+              fill="var(--surface-ground)"
+              animationDuration="0.8s"
+              class="centralize"
+            />
+            <p-table
+              [value]="itemsFiltrados"
+              [globalFilterFields]="[
+                'created_date',
+                'status',
+                'consumer_document',
+                'campaign',
+                'cashback_value_consumer',
+                'receipt_value'
+              ]"
+              [sortField]="'created_date'"
+              [sortOrder]="-1"
+              [paginator]="true"
+              [rows]="25"
+            >
+              <ng-template pTemplate="caption">
+                <div class="input-icon">
+                  <i class="pi pi-search ml-10"></i>
+                  <input
+                    pInputText
+                    id="globalFilter"
+                    name="globalFilter"
+                    type="text"
+                    [(ngModel)]="globalFilter"
+                    (input)="applyFilter()"
+                    placeholder="pesquisar Grupo de Consumidores"
+                  />
+                </div>
+                <button
+                  pButton
+                  type="button"
+                  pTooltip="Limpar o filtro"
+                  tooltipPosition="top"
+                  tooltipStyleClass="my-tooltip"
+                  label=""
+                  icon="pi pi-filter-slash"
+                  (click)="clearGlobalFilter()"
+                ></button>
+              </ng-template>
+              <ng-template pTemplate="header">
+                <tr>
+                  <th class="w-160" pSortableColumn="created_date">
+                    Data Envio <p-sortIcon field="created_date"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="status">
+                    Status <p-sortIcon field="status"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="consumer_document">
+                    Consumidor
+                    <p-sortIcon field="consumer_document"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="campaign">
+                    Campanha <p-sortIcon field="campaign"></p-sortIcon>
+                  </th>
+                  <th class="w-150" pSortableColumn="cashback_value_consumer">
+                    Valor Cashback
+                    <p-sortIcon field="cashback_value_consumer"></p-sortIcon>
+                  </th>
+                  <th class="w-150" pSortableColumn="receipt_value">
+                    Valor Nota
+                    <p-sortIcon field="receipt_value"></p-sortIcon>
+                  </th>
+                  <th>Ver</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-receipt let-i="rowIndex">
+                <tr>
+                  <td>
+                    {{ receipt.created_date | date : "dd/MM/yyyy HH:mm:ss" }}
+                  </td>
+                  <td>
+                    <div class="centralize-campaign-tag w-60">
+                      <div [ngSwitch]="receipt.status">
+                        <p-tag
+                          *ngSwitchCase="'APPROVED'"
+                          class="approved-campaign"
+                          value="Aprovado"
+                          pTooltip="Nota Fiscal aprovada"
+                        ></p-tag>
+                        <p-tag
+                          *ngSwitchCase="'PENDINGPAYMENT'"
+                          class="pending-receipt"
+                          value="Pend. Pgto"
+                          pTooltip="Nota Fiscal aguardando pagamento"
+                        ></p-tag>
+                        <p-tag
+                          *ngSwitchCase="'PAID'"
+                          class="active-campaign"
+                          value="Pago"
+                          pTooltip="Nota Fiscal paga"
+                        ></p-tag>
+                        <p-tag
+                          *ngSwitchCase="'NEW'"
+                          class="sketch-campaign"
+                          value="Novo"
+                          pTooltip="Nota Fiscal recém cadastrada"
+                        ></p-tag>
+                        <div *ngSwitchCase="'CHECKING'">
+                          <p-tag
+                            class="proposal-campaign"
+                            value="Checando"
+                            pTooltip="Nota Fiscal em processo de validação"
+                          ></p-tag>
+                        </div>
+                        <p-tag
+                          *ngSwitchCase="'NOT_FOUND'"
+                          class="reproved-campaign"
+                          value="Não Encontrada"
+                          pTooltip="Nota Fiscal não encontrada no sistema da SEFAZ"
+                        ></p-tag>
+                        <p-tag
+                          *ngSwitchCase="'REJECTED_DONT_HAVE_CAMPAIGN'"
+                          class="reproved-campaign"
+                          value="Rejeitada"
+                          pTooltip="Nota Fiscal rejeitada por não ter campanha associada"
+                        ></p-tag>
+                        <p-tag
+                          *ngSwitchCase="'REJECTED_DONT_HAVE_PRODUCT_CAMPAIGN'"
+                          class="reproved-campaign"
+                          value="Rejeitada"
+                          pTooltip="Nota Fiscal rejeitada por não ter produto da campanha"
+                        ></p-tag>
+                        <p-tag
+                          *ngSwitchCase="'REJECTED_EMISSION_DATE_NOT_ALLOW'"
+                          class="reproved-campaign"
+                          value="Reprovada"
+                          pTooltip="Nota Fiscal reprovada por data de emissão fora do prazo"
+                        ></p-tag>
+                        <p-tag
+                          *ngSwitchCase="'REJECTED_STORE_NOT_FOUND'"
+                          class="reproved-campaign"
+                          value="Reprovada"
+                          pTooltip="Nota Fiscal reprovada por loja não encontrada"
+                        ></p-tag>
+                        <p-tag
+                          *ngSwitchCase="'REJECTED_CONSUMER_BLOCK'"
+                          class="reproved-campaign"
+                          value="Reprovada"
+                          pTooltip="Nota Fiscal reprovada por consumidor bloqueado"
+                        ></p-tag>
+                        <p-tag
+                          *ngSwitchCase="'REJECTED_CONSUMER_NOT_ALLOW'"
+                          class="reproved-campaign"
+                          value="Reprovada"
+                          pTooltip="Nota Fiscal reprovada, consumidor não tem permissão para participar da campanha"
+                        ></p-tag>
+                        <p-tag
+                          *ngSwitchCase="
+                            'REPROVED_LIMIT_PARTICIPATIONS_EXCEEDED'
+                          "
+                          class="reproved-campaign"
+                          value="Reprovada"
+                          pTooltip="Nota Fiscal reprovada por limite de participações excedido"
+                        ></p-tag>
+                        <p-tag
+                          *ngSwitchCase="'REPROVED_MINIMUM_VALUE'"
+                          class="reproved-campaign"
+                          value="Reprovada"
+                          pTooltip="Nota Fiscal reprovada por valor mínimo não atingido"
+                        ></p-tag>
+                        <p-tag
+                          *ngSwitchCase="'REPROVED_MINIMUM_QUANTITY'"
+                          class="reproved-campaign"
+                          value="Reprovada"
+                          pTooltip="Nota Fiscal reprovada por quantidade mínima não atingida"
+                        ></p-tag>
+                        <p-tag
+                          *ngSwitchCase="'REPROVED_BY_MERCHANT'"
+                          class="reproved-campaign"
+                          value="Reprovada"
+                          pTooltip="Nota Fiscal reprovada pelo comerciante"
+                        ></p-tag>
+                      </div>
+                    </div>
+                  </td>
+                  <td>{{ receipt.consumer_document }}</td>
+                  <td>
+                    <a
+                      href="/campaign-view/{{ receipt.campaign.id }}"
+                      target="_blank"
+                      >{{ receipt.campaign.name }}</a
+                    >
+                  </td>
+                  <td>
+                    {{
+                      receipt.cashback_value_consumer
+                        ? (receipt.cashback_value_consumer | currency : "BRL")
+                        : "-----"
+                    }}
+                  </td>
+                  <td>
+                    {{
+                      receipt.receipt_value
+                        ? (receipt.receipt_value | currency : "BRL")
+                        : "-----"
+                    }}
+                  </td>
+                  <td>
+                    <a
+                      href="/reports/receipt-view/{{ receipt.id }}"
+                      target="_blank"
+                      ><i style="color: rgb(81, 81, 81)" class="pi pi-eye"></i
+                    ></a>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </div>
+        <hr *ngIf="coupons && coupons.length > 0" />
+        <h5 *ngIf="coupons && coupons.length > 0" class="mt-12">
+          Cupons do Consumidor
+        </h5>
+        <div *ngIf="coupons && coupons.length > 0" class="col-12">
+          <div class="table-list">
+            <p-progressSpinner
+              *ngIf="isLoading"
+              styleClass="w-4rem h-4rem"
+              strokeWidth="8"
+              fill="var(--surface-ground)"
+              animationDuration="0.8s"
+              class="centralize"
+            />
+            <p-table
+              [value]="couponsFiltrados ?? []"
+              [globalFilterFields]="['id']"
+              [sortField]="'id'"
+              [sortOrder]="1"
+              [paginator]="true"
+              [rows]="25"
+            >
+              <ng-template pTemplate="caption">
+                <div class="input-icon">
+                  <i class="pi pi-search ml-10"></i>
+                  <input
+                    pInputText
+                    id="globalFilterCoupon"
+                    name="globalFilterCoupon"
+                    type="text"
+                    [(ngModel)]="couponFilter"
+                    placeholder="pesquisar Grupo de Consumidores"
+                  />
+                </div>
+                <button
+                  pButton
+                  type="button"
+                  pTooltip="Limpar o filtro"
+                  tooltipPosition="top"
+                  tooltipStyleClass="my-tooltip"
+                  label=""
+                  icon="pi pi-filter-slash"
+                  (click)="clearGlobalFilter()"
+                ></button>
+              </ng-template>
+              <ng-template pTemplate="header">
+                <tr>
+                  <th pSortableColumn="used_date">
+                    Usado <p-sortIcon field="used_date"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="status">
+                    Status <p-sortIcon field="status"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="consumer_document">
+                    Consumidor
+                    <p-sortIcon field="consumer_document"></p-sortIcon>
+                  </th>
+                  <th class="w-150" pSortableColumn="red_credit_amount">
+                    Red Credits
+                    <p-sortIcon field="red_credit_amount"></p-sortIcon>
+                  </th>
+                  <th class="w-150" pSortableColumn="coupon_amount">
+                    Valor Cupom
+                    <p-sortIcon field="coupon_amount"></p-sortIcon>
+                  </th>
+                  <th>Ver</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-coupon let-i="rowIndex">
+                <tr>
+                  <td>{{ coupon.used_date | date : "dd/MM/yyyy HH:mm:ss" }}</td>
+                  <td>
+                    <div class="centralize-campaign-tag w-60">
+                      <div [ngSwitch]="coupon.status">
+                        <p-tag
+                          *ngSwitchCase="'PROVISIONED'"
+                          class="sketch-campaign"
+                          value="Provisionado"
+                          pTooltip="Cupom Provisionado"
+                        ></p-tag>
+                        <p-tag
+                          *ngSwitchCase="'GRANTED'"
+                          class="active-campaign"
+                          value="Concedido"
+                          pTooltip="Cupom Concedido"
+                        ></p-tag>
+                        <p-tag
+                          *ngSwitchCase="'PROCESSING_TRANSACTION'"
+                          class="pending-receipt"
+                          value="Processamento"
+                          pTooltip="Transação em Processamento"
+                        ></p-tag>
+                        <p-tag
+                          *ngSwitchCase="'USED'"
+                          class="finished-campaign"
+                          value="Utilizado"
+                          pTooltip="Cupom Utilizado"
+                        ></p-tag>
+                        <p-tag
+                          *ngSwitchCase="'REFUNDED'"
+                          class="reproved-campaign"
+                          value="Estornado"
+                          pTooltip="Cupom Estornado"
+                        ></p-tag>
+                        <p-tag
+                          *ngSwitchCase="'EXPIRED'"
+                          class="paused-manual-campaign"
+                          value="Expirado"
+                          pTooltip="Cupom Expirado"
+                        ></p-tag>
+                      </div>
+                    </div>
+                  </td>
+                  <td>{{ coupon.consumer_document }}</td>
+
+                  <td>
+                    {{
+                      coupon.red_credit_amount
+                        ? coupon.red_credit_amount
+                        : "-----"
+                    }}
+                  </td>
+                  <td>
+                    {{
+                      coupon.coupon_amount
+                        ? (coupon.coupon_amount | currency : "BRL")
+                        : "-----"
+                    }}
+                  </td>
+                  <td>
+                    <a
+                      href="/reports/coupon-view/{{ coupon.id }}"
+                      target="_blank"
+                      ><i style="color: rgb(81, 81, 81)" class="pi pi-eye"></i
+                    ></a>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </div>
+      </div>
+
+      <br />
+      <br />
+    </div>
+
+    <div
+      #STEPRESULTS
+      *ngIf="receipts.length == 0 && last_consumers_receipts.length > 0"
+    >
+      <br />
+      <div>
+        <h5 class="mt-12">Últimos Consumidores Ativos</h5>
+        <hr />
+        <div class="col-12">
+          <div class="table-list">
+            <p-progressSpinner
+              *ngIf="isLoading"
+              styleClass="w-4rem h-4rem"
+              strokeWidth="8"
+              fill="var(--surface-ground)"
+              animationDuration="0.8s"
+              class="centralize"
+            />
+            <p-table
+              [value]="last_consumers_receipts"
+              [globalFilterFields]="['created_date', 'consumer_document']"
+              [sortField]="'created_date'"
+              [sortOrder]="-1"
+              [paginator]="true"
+              [rows]="25"
+            >
+              <ng-template pTemplate="header">
+                <tr>
+                  <th pSortableColumn="created_date">
+                    Data Envio <p-sortIcon field="created_date"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="consumer_document">
+                    Documento
+                    <p-sortIcon field="consumer_document"></p-sortIcon>
+                  </th>
+                  <th>Ver</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-receipt let-i="rowIndex">
+                <tr>
+                  <td>
+                    {{ receipt.created_date | date : "dd/MM/yyyy HH:mm:ss" }}
+                  </td>
+                  <td>
+                    {{
+                      receipt.consumer_document.length === 11
+                        ? receipt.consumer_document.slice(0, 3) +
+                          "." +
+                          receipt.consumer_document.slice(3, 6) +
+                          "." +
+                          receipt.consumer_document.slice(6, 9) +
+                          "-" +
+                          receipt.consumer_document.slice(9)
+                        : receipt.consumer_document.length === 14
+                        ? receipt.consumer_document.slice(0, 2) +
+                          "." +
+                          receipt.consumer_document.slice(2, 5) +
+                          "." +
+                          receipt.consumer_document.slice(5, 8) +
+                          "/" +
+                          receipt.consumer_document.slice(8, 12) +
+                          "-" +
+                          receipt.consumer_document.slice(12)
+                        : receipt.consumer_document
+                    }}
+                  </td>
+                  <td>
+                    <button (click)="viewConsumer(receipt.consumer_document)">
+                      <i style="color: rgb(81, 81, 81)" class="pi pi-eye"></i>
+                    </button>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </div>
+      </div>
+
+      <br />
+      <br />
+    </div>
+  </div>
+</div>

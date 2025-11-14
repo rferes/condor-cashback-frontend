@@ -1,0 +1,1152 @@
+<p-toast class="custom-toast"></p-toast>
+<p-confirmDialog class="custom-dialog"></p-confirmDialog>
+<div class="container">
+  <h3 class="">Campanhas</h3>
+  <div
+    *ngIf="
+      influencerInvite.status === 'PROPOSAL' && entity.status != 'PROPOSAL'
+    "
+    class="topic-container"
+  >
+    <div class="topic-title">
+      <h5>Proposta</h5>
+      <span>({{ influencerInvite.id }})</span>
+    </div>
+    <div class="btns-container-small"></div>
+  </div>
+  <hr
+    *ngIf="
+      influencerInvite.status === 'PROPOSAL' && entity.status != 'PROPOSAL'
+    "
+  />
+  <div
+    *ngIf="
+      influencerInvite.status === 'PROPOSAL' && entity.status != 'PROPOSAL'
+    "
+    class="input-container"
+  >
+    <div>
+      <span class="bold">Participar da campanha ?</span>
+      <div class="button-container">
+        <button
+          class="positive"
+          pButton
+          label="Participar"
+          (click)="acceptInvite()"
+        ></button>
+        <button
+          class="negative"
+          pButton
+          label="Rejeitar"
+          (click)="rejectInvite()"
+        ></button>
+      </div>
+    </div>
+  </div>
+  <div class="topic-container">
+    <div class="topic-title">
+      <h5 pTooltip="ID: {{ entity.id }} ">Resultado</h5>
+      <!-- <button
+        class="button-download"
+        pButton
+        icon="pi pi-file-pdf"
+        (click)="downloadPDF()"
+        pTooltip="Baixar Resumo da campanha (PDF)"
+      ></button> -->
+      <button
+        class="button-download"
+        pButton
+        icon="pi pi-file-excel"
+        (click)="downloadCSV()"
+        pTooltip="Baixar lista com notas fiscais participante da campanha (.CSV)"
+      ></button>
+    </div>
+    <div class="btns-container-small"></div>
+  </div>
+  <hr />
+
+  <!-- Inputs -->
+  <div class="view-container col-12">
+    <div #STEPRESULTS>
+      <div class="ml-10 col-12 row">
+        <div class="col-3">
+          <label class="label-field bold">Status</label>
+          <br />
+          <div class="centralize-campaign-tag w-60">
+            <div class="d-flex align-items-center">
+              <i
+                *ngIf="!entity.linked_credit"
+                class="pi pi-dollar"
+                pTooltip="Crédito Livre"
+                style="margin-right: 5px"
+              ></i>
+              <i
+                *ngIf="entity.linked_credit"
+                class="pi pi-wallet"
+                pTooltip="Crédito Vinculado ({{ entity.linked_credit.name }})"
+                style="margin-right: 5px"
+              ></i>
+              <div [ngSwitch]="entity.status">
+                <p-tag
+                  *ngSwitchCase="'SKETCH'"
+                  class="sketch-campaign"
+                  value="Rascunho"
+                  pTooltip="Campanha em Rascunho"
+                ></p-tag>
+                <p-tag
+                  *ngSwitchCase="'PROPOSAL'"
+                  class="proposal-campaign"
+                  value="Proposta"
+                  pTooltip="Campanha Pendente"
+                ></p-tag>
+                <p-tag
+                  *ngSwitchCase="'REPROVED'"
+                  class="reproved-campaign"
+                  value="Reprovada"
+                  pTooltip="Campanha Reprovada"
+                ></p-tag>
+                <p-tag
+                  *ngSwitchCase="'APPROVED_NO_INFLUENCER'"
+                  class="approved-no-influencer-campaign"
+                  value="Aprovada SI"
+                  pTooltip="Campanha Aprovada sem Influenciador"
+                ></p-tag>
+                <p-tag
+                  *ngSwitchCase="'APPROVED'"
+                  class="approved-campaign"
+                  value="Aprovada"
+                  pTooltip="Campanha Aprovada"
+                ></p-tag>
+                <p-tag
+                  *ngSwitchCase="'ACTIVE'"
+                  class="active-campaign"
+                  value="Ativa"
+                  pTooltip="Campanha Ativa"
+                ></p-tag>
+                <p-tag
+                  *ngSwitchCase="'PAUSE_MANUAL'"
+                  class="paused-manual-campaign"
+                  value="Pausada"
+                  pTooltip="Campanha Pausada"
+                ></p-tag>
+                <p-tag
+                  *ngSwitchCase="'PAUSE_SYSTEM'"
+                  class="paused-manual-campaign"
+                  value="Pausada"
+                  pTooltip="Campanha Pausada"
+                ></p-tag>
+                <p-tag
+                  *ngSwitchCase="'PAUSE_NO_INFLUENCER'"
+                  class="paused-no-influencer-campaign"
+                  value="Pausada (SI)"
+                  pTooltip="Campanha Pausada sem Influenciador"
+                ></p-tag>
+                <p-tag
+                  *ngSwitchCase="'FINISHED'"
+                  class="finished-campaign"
+                  value="Encerrada"
+                  pTooltip="Campanha Encerrada"
+                ></p-tag>
+                <p-tag
+                  *ngSwitchCase="'FINISHED_MANUAL'"
+                  class="finished-manual-campaign"
+                  value="Encerrada (M)"
+                  pTooltip="Campanha Encerrada Manualmente"
+                ></p-tag>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- counter_times: number;
+        counter_products: number;
+        counter_consumers: number;
+
+        total_amount: number;
+        cashback_consumer_amount: number;
+        cashback_influencer_amount: number; -->
+        <div class="col-3">
+          <label class="label-field bold">Participações</label>
+          <br />
+          <span> {{ entity.counter_times }} </span>
+        </div>
+
+        <div class="col-3">
+          <label class="label-field bold">Produtos</label>
+          <br />
+          <span> {{ entity.counter_products }} </span>
+        </div>
+
+        <div class="col-3">
+          <label class="label-field bold">Consumidores</label>
+          <br />
+          <span> {{ entity.counter_consumers }} </span>
+        </div>
+
+        <div class="col-3">
+          <label class="label-field bold">Modo Divulgação</label>
+          <br />
+          <i
+            *ngIf="entity.dissemination_mode === 'MEMBER'"
+            class="pi pi-users"
+            pTooltip="Divulgação por Membros"
+            style="margin-right: 1px"
+          ></i>
+          <i
+            *ngIf="entity.dissemination_mode === 'INFLUENCER'"
+            class="pi pi-user"
+            pTooltip="Divulgação por Influenciadores"
+            style="margin-right: 1px"
+          ></i>
+          <span>
+            {{
+              entity.dissemination_mode === "MEMBER"
+                ? "Membro"
+                : entity.dissemination_mode === "INFLUENCER"
+                ? "Influenciador"
+                : entity.dissemination_mode
+            }}
+          </span>
+        </div>
+
+        <div class="col-3">
+          <label class="label-field bold">Valor Total</label>
+          <br />
+          <span> {{ entity.total_amount | currency : "BRL" }} </span>
+        </div>
+
+        <div class="col-3">
+          <label class="label-field bold">Cashback Consumidor</label>
+          <br />
+          <span>
+            {{ entity.cashback_consumer_amount | currency : "BRL" }}
+          </span>
+        </div>
+
+        <div class="col-3">
+          <label class="label-field bold">Cashback Influencer</label>
+          <br />
+          <span>
+            {{ entity.cashback_influencer_amount | currency : "BRL" }}
+          </span>
+        </div>
+      </div>
+    </div>
+    <br />
+
+    <div #STEP0>
+      <h5>Dados da Campanha</h5>
+      <hr />
+      <div class="row">
+        <div class="ml-10 col-9 row">
+          <div class="col-8">
+            <label class="label-field bold">Nome</label>
+            <br />
+
+            <span> {{ entity.name }} </span>
+          </div>
+          <div class="col-2">
+            <label class="label-field bold"> Data Inicio</label>
+            <br />
+            <span>
+              {{ entity.start_date | date : "dd/MM/yyyy" : "GMT-3" }}
+            </span>
+          </div>
+          <div class="col-2">
+            <label class="label-field bold"> Data Fim</label>
+            <br />
+            <span>
+              {{ entity.end_date | date : "dd/MM/yyyy" : "GMT-3" }}
+            </span>
+          </div>
+          <div class="col-12">
+            <label class="label-field bold"> Descrição</label>
+            <br />
+            <span> {{ entity.description }}</span>
+          </div>
+        </div>
+        <div class="col-2">
+          <label class="label-field bold">Banner</label>
+          <br />
+          <img
+            [src]="entity.banner"
+            alt="Banner Campanha"
+            class="image-tabview"
+          />
+        </div>
+        <div class="col-1"></div>
+      </div>
+    </div>
+
+    <div #STEP1>
+      <h5 class="mt-12">Patrocinador</h5>
+      <hr />
+      <div class="ml-10 col-12 row">
+        <div class="col-6">
+          <label class="label-field bold">Patrocinador</label>
+          <br />
+          <span *ngIf="entity.sponsor">
+            {{ entity.sponsor.name }} ({{
+              entity.sponsor.document | slice : 0 : 2
+            }}.{{ entity.sponsor.document | slice : 2 : 5 }}.{{
+              entity.sponsor.document | slice : 5 : 8
+            }}/{{ entity.sponsor.document | slice : 8 : 12 }}-{{
+              entity.sponsor.document | slice : 12 : 14
+            }})
+          </span>
+        </div>
+        <div class="col-6">
+          <label class="label-field bold">Lista de Grupos de Lojas</label>
+          <span
+            class="error-msg"
+            *ngIf="entity.store_groups && entity.store_groups.length === 0"
+            >Nenhum Grupo de Loja Selecionado</span
+          >
+          <div
+            *ngIf="entity.store_groups && entity.store_groups.length > 0"
+            class="table-tabview"
+          >
+            <p-table
+              [value]="entity.store_groups"
+              [scrollable]="true"
+              scrollHeight="330px"
+            >
+              <ng-template pTemplate="header">
+                <tr>
+                  <th class="w-270">Grupo de Loja</th>
+                  <th>Qnt. Lojas</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-stores_group>
+                <tr>
+                  <td>
+                    <ng-container *ngIf="user_type === 'merchant'; else label">
+                      <a
+                        [routerLink]="[
+                          '/merchant/store-group-view',
+                          stores_group.id
+                        ]"
+                        [queryParams]="{ view_only: true }"
+                        style="
+                          text-decoration: none;
+                          color: red;
+                          font-weight: bold;
+                          font-size: small;
+                        "
+                        >{{ stores_group.name }}</a
+                      >
+                    </ng-container>
+                    <ng-template #label>
+                      {{ stores_group.name }}
+                    </ng-template>
+                  </td>
+                  <td>
+                    {{ stores_group.stores.length }}
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div #STEP2>
+      <div>
+        <h5 class="mt-12">Lojas</h5>
+
+        <hr />
+        <div class="ml-10 col-12 row">
+          <div class="col-12">
+            <label class="label-field bold">Lista das Lojas Selecionadas</label>
+            <br />
+            <span
+              class="error-msg"
+              *ngIf="storesSellersParticipations.length === 0"
+              >Nenhuma Loja Selecionada</span
+            >
+            <div
+              *ngIf="storesSellersParticipations.length > 0"
+              class="table-tabviewfull"
+            >
+              <p-table
+                [value]="storesSellersParticipations"
+                [scrollable]="true"
+                scrollHeight="330px"
+              >
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th class="w-270">Loja</th>
+                    <th class="w-160">CNPJ Loja</th>
+                    <th class="w-270">Vendedor</th>
+                    <th class="w-160">CNPJ Vendedor</th>
+                    <th>Participação</th>
+                    <!-- <th>Data Proposta</th>
+                  <th>Data Resposta</th> -->
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-storeParticipation>
+                  <tr>
+                    <td>
+                      <a
+                        [routerLink]="[
+                          '/merchant/store-view',
+                          storeParticipation.store?.id
+                        ]"
+                        [queryParams]="{ view_only: true }"
+                        style="
+                          text-decoration: none;
+                          color: red;
+                          font-weight: bold;
+                          font-size: small;
+                        "
+                        >{{ storeParticipation.store?.name }}</a
+                      >
+                    </td>
+
+                    <td
+                      *ngIf="storeParticipation.store?.document.length === 14"
+                    >
+                      {{
+                        storeParticipation.store?.document | slice : 0 : 2
+                      }}.{{
+                        storeParticipation.store?.document | slice : 2 : 5
+                      }}.{{
+                        storeParticipation.store?.document | slice : 5 : 8
+                      }}/{{
+                        storeParticipation.store?.document | slice : 8 : 12
+                      }}-{{
+                        storeParticipation.store?.document | slice : 12 : 14
+                      }}
+                    </td>
+
+                    <td>
+                      {{ storeParticipation.seller?.name }}
+                    </td>
+                    <td
+                      *ngIf="storeParticipation.seller?.document.length === 14"
+                    >
+                      {{
+                        storeParticipation.seller?.document | slice : 0 : 2
+                      }}.{{
+                        storeParticipation.seller?.document | slice : 2 : 5
+                      }}.{{
+                        storeParticipation.seller?.document | slice : 5 : 8
+                      }}/{{
+                        storeParticipation.seller?.document | slice : 8 : 12
+                      }}-{{
+                        storeParticipation.seller?.document | slice : 12 : 14
+                      }}
+                    </td>
+                    <td>
+                      <div class="centralize-campaign-tag w-60">
+                        <p-tag
+                          *ngIf="storeParticipation.status == 'SKETCH'"
+                          class="sketch-campaign"
+                          value="Rascunho"
+                          pTooltip="Participação em Rascunho"
+                        ></p-tag>
+                        <p-tag
+                          *ngIf="storeParticipation.status == 'PROPOSAL'"
+                          class="proposal-campaign"
+                          value="Proposta"
+                          pTooltip="Participação Pendente"
+                        ></p-tag>
+                        <p-tag
+                          *ngIf="
+                            storeParticipation.status == 'PROPOSAL_FINISHED'
+                          "
+                          class="proposal-finished-campaign"
+                          value="Prop. Encerrada"
+                          pTooltip="Participação Pendente Encerrada"
+                        ></p-tag>
+                        <p-tag
+                          *ngIf="storeParticipation.status == 'REPROVED'"
+                          class="sketch-campaign"
+                          value="Reprovada"
+                          pTooltip="Participação Reprovada"
+                        ></p-tag>
+                        <p-tag
+                          *ngIf="storeParticipation.status == 'APPROVED'"
+                          class="approved-campaign"
+                          value="Aprovada"
+                          pTooltip="Participação Aprovada"
+                        ></p-tag>
+                        <p-tag
+                          *ngIf="storeParticipation.status == 'ACTIVE'"
+                          class="active-campaign"
+                          value="Ativa"
+                          pTooltip="Participação Ativa"
+                        ></p-tag>
+                        <p-tag
+                          *ngIf="
+                            storeParticipation.status ==
+                            'FINISHED_MANUAL_SELLER'
+                          "
+                          class="paused-manual-campaign"
+                          value="Encerrada (Vendedor)"
+                          pTooltip="Participação Encerrada pelo Vendedor"
+                        ></p-tag>
+                        <p-tag
+                          *ngIf="storeParticipation.status == 'FINISHED'"
+                          class="finished-campaign"
+                          value="Encerrada"
+                          pTooltip="Participação Encerrada"
+                        ></p-tag>
+                        <p-tag
+                          *ngIf="
+                            storeParticipation.status ==
+                            'FINISHED_MANUAL_MERCHANT'
+                          "
+                          class="finished-manual-campaign"
+                          value="Encerrada (M)"
+                        ></p-tag>
+                      </div>
+                    </td>
+                    <!-- <td>
+                    {{ storeParticipation.invite_date | date : "dd/MM/yyyy" }}
+                  </td>
+                  <td>
+                    {{
+                      (storeParticipation.answer_date | date : "dd/MM/yyyy") ||
+                        "-----"
+                    }}
+                  </td> -->
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div #STEP3>
+      <div *ngIf="entity.dissemination_mode === 'INFLUENCER'">
+        <h5 class="mt-12">Influencers</h5>
+        <hr />
+        <div class="ml-10 col-12 row">
+          <div class="col-12">
+            <label class="label-field bold"
+              >Lista de Influencers Convidados</label
+            >
+            <br />
+            <span
+              class="error-msg"
+              *ngIf="influencerParticipations.length === 0"
+              >Nenhum Influencer Selecionado</span
+            >
+            <div
+              *ngIf="influencerParticipations.length > 0"
+              class="table-tabviewfull"
+            >
+              <p-table
+                [value]="influencerParticipations"
+                [scrollable]="true"
+                scrollHeight="330px"
+              >
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th class="w-270">Influencer</th>
+                    <th class="w-160">Cidade</th>
+                    <th class="w-250">Participação</th>
+                    <th class="w-150">Data Proposta</th>
+                    <th>Data Resposta</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-influencerPart>
+                  <tr>
+                    <td>
+                      <a
+                        target="_blank"
+                        [routerLink]="[
+                          '/redeem',
+                          influencerPart.influencer?.url
+                        ]"
+                        style="
+                          text-decoration: none;
+                          color: red;
+                          font-weight: bold;
+                          font-size: small;
+                        "
+                      >
+                        {{ influencerPart.influencer?.name }}
+                      </a>
+                    </td>
+                    <td>
+                      {{ influencerPart.influencer?.city }}
+                    </td>
+                    <td>
+                      <div class="centralize-campaign-tag w-60">
+                        <div [ngSwitch]="influencerPart.status">
+                          <p-tag
+                            *ngSwitchCase="'SKETCH'"
+                            class="sketch-campaign"
+                            value="Rascunho"
+                            pTooltip="Participação em Rascunho"
+                          ></p-tag>
+                          <p-tag
+                            *ngSwitchCase="'PROPOSAL'"
+                            class="proposal-campaign"
+                            value="Proposta"
+                            pTooltip="Participação Pendente"
+                          ></p-tag>
+                          <p-tag
+                            *ngSwitchCase="'PROPOSAL_FINISHED'"
+                            class="proposal-finished-campaign"
+                            value="Prop. Encerrada"
+                            pTooltip="Participação Pendente Encerrada"
+                          ></p-tag>
+                          <p-tag
+                            *ngSwitchCase="'REPROVED'"
+                            class="sketch-campaign"
+                            value="Reprovada"
+                            pTooltip="Participação Reprovada"
+                          ></p-tag>
+                          <p-tag
+                            *ngSwitchCase="'APPROVED'"
+                            class="approved-campaign"
+                            value="Aprovada"
+                            pTooltip="Participação Aprovada"
+                          ></p-tag>
+                          <p-tag
+                            *ngSwitchCase="'ACTIVE'"
+                            class="active-campaign"
+                            value="Ativa"
+                            pTooltip="Participação Ativa"
+                          ></p-tag>
+                          <p-tag
+                            *ngSwitchCase="'PAUSE'"
+                            class="paused-manual-campaign"
+                            value="Pausada"
+                            pTooltip="Participação Pausada"
+                          ></p-tag>
+                          <p-tag
+                            *ngSwitchCase="'FINISHED_MANUAL_INFLUENCER'"
+                            class="paused-manual-campaign"
+                            value="Encerrada (I)"
+                            pTooltip="Participação Encerrada pelo Influenciador"
+                          ></p-tag>
+                          <p-tag
+                            *ngSwitchCase="'FINISHED'"
+                            class="finished-campaign"
+                            value="Encerrada"
+                            pTooltip="Participação Encerrada"
+                          ></p-tag>
+                          <p-tag
+                            *ngSwitchCase="'FINISHED_MANUAL_MERCHANT'"
+                            class="finished-manual-campaign"
+                            value="Encerrada (M)"
+                            pTooltip="Participação Encerrada pelo Comerciante"
+                          ></p-tag>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      {{ influencerPart.invite_date | date : "dd/MM/yyyy" }}
+                    </td>
+                    <td>
+                      {{
+                        (influencerPart.answer_date | date : "dd/MM/yyyy") ||
+                          "-----"
+                      }}
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="entity.dissemination_mode === 'MEMBER'">
+        <h5 class="mt-12">Membros</h5>
+        <div class="ml-10 col-12 row">
+          <div class="col-6">
+            <label class="label-field bold">Link para convidar membros</label>
+            <br />
+            <small class="warning-msg"> redads.com/redeem-member/ </small>
+            <a
+              class="error-msg"
+              href="{{ baseURL }}redeem-member/{{ entity.sponsor.url }}"
+              target="_blank"
+              style="
+                margin: 0 !important;
+                padding: 0 !important;
+                font-size: 14px;
+              "
+            >
+              {{ entity.sponsor.url }}
+            </a>
+          </div>
+          <div class="col-6">
+            <label class="label-field bold"
+              >Lista de Grupos de Membros Convidados</label
+            >
+            <br />
+            <span
+              class="warning-msg"
+              *ngIf="entity.member_groups_allow.length === 0"
+              >Todos os usuários estão liberados para serem membroswa</span
+            >
+            <div
+              *ngIf="entity.member_groups_allow.length > 0"
+              class="table-tabview"
+            >
+              <p-table
+                [value]="entity.member_groups_allow"
+                [scrollable]="true"
+                scrollHeight="330px"
+              >
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th>Grupo de Membros</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-member>
+                  <tr>
+                    <td>
+                      {{
+                        member.name.length > 30
+                          ? (member.name | slice : 0 : 30) + "..."
+                          : member.name
+                      }}
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div #STEP4>
+      <h5 class="mt-12">Consumidores</h5>
+      <hr />
+      <div class="ml-10 col-12 row">
+        <div class="col-6">
+          <label class="label-field bold" for="stores"
+            >Lista de Consumidores Liberados</label
+          >
+          <br />
+          <span
+            class="warning-msg"
+            *ngIf="
+              entity.consumer_groups_allow &&
+              entity.consumer_groups_allow.length === 0
+            "
+            >Todos os Consumidores Liberados</span
+          >
+          <div
+            *ngIf="
+              entity.consumer_groups_allow &&
+              entity.consumer_groups_allow.length > 0
+            "
+            class="table-tabview"
+          >
+            <p-table
+              [value]="entity.consumer_groups_allow"
+              [scrollable]="true"
+              scrollHeight="330px"
+            >
+              <ng-template pTemplate="header">
+                <tr>
+                  <th class="w-240">Nome</th>
+                  <th class="w-101">Qnt.</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-consumer_group_allow>
+                <tr>
+                  <td>
+                    {{
+                      consumer_group_allow.name.length > 30
+                        ? (consumer_group_allow.name | slice : 0 : 30) + "..."
+                        : consumer_group_allow.name
+                    }}
+                  </td>
+                  <td>
+                    {{ consumer_group_allow?.document_list?.length || 0 }}
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </div>
+        <div class="col-6">
+          <label class="label-field bold"
+            >Lista de Consumidores Bloqueados</label
+          >
+          <br />
+          <span
+            class="warning-msg"
+            *ngIf="
+              entity.consumer_groups_block &&
+              entity.consumer_groups_block.length === 0
+            "
+            >Nenhum Consumidor Bloqueado</span
+          >
+          <div
+            *ngIf="
+              entity.consumer_groups_block &&
+              entity.consumer_groups_block.length > 0
+            "
+            class="table-tabview"
+          >
+            <p-table
+              [value]="entity.consumer_groups_block"
+              [scrollable]="true"
+              scrollHeight="330px"
+            >
+              <ng-template pTemplate="header">
+                <tr>
+                  <th class="w-240">Nome</th>
+                  <th class="w-101">Qnt.</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-consumer_group_block>
+                <tr>
+                  <td>
+                    {{
+                      consumer_group_block.name.length > 30
+                        ? (consumer_group_block.name | slice : 0 : 30) + "..."
+                        : consumer_group_block.name
+                    }}
+                  </td>
+                  <td>
+                    {{ consumer_group_block?.document_list?.length || 0 }}
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br />
+    <div #STEP5>
+      <h5 class="mt-12">Regra do Negócio</h5>
+      <hr />
+      <div class="ml-10 col-12 row">
+        <div class="col-2">
+          <label class="label-field bold">Tipo da Campanha</label>
+          <br />
+          <span> {{ getCampaignModeLabel(entity.campaign_mode) }} </span>
+        </div>
+        <div class="col-2">
+          <label class="label-field bold">Tipo do Limite</label>
+          <br />
+          <span> {{ getRuleModeLabel(entity.rule_mode) }} </span>
+        </div>
+        <div class="col-2">
+          <label class="label-field bold">Limite Mínimo</label>
+          <br />
+          <span *ngIf="entity.rule_mode === 'QUANTITY'">
+            {{ entity.purchase_min_amount }}
+          </span>
+          <span *ngIf="entity.rule_mode === 'VALUE'">
+            {{ entity.purchase_min_amount | currency : "BRL" }}
+          </span>
+        </div>
+        <div class="col-2">
+          <label class="label-field bold">Limite Máximo</label>
+          <br />
+          <span *ngIf="entity.rule_mode === 'QUANTITY'">
+            {{ entity.purchase_max_amount }}
+          </span>
+          <span *ngIf="entity.rule_mode === 'VALUE'">
+            {{ entity.purchase_max_amount | currency : "BRL" }}
+          </span>
+        </div>
+        <div class="col-4">
+          <label class="label-field bold">Limite de Participações</label>
+          <br />
+          <span>
+            {{ entity.participations_maximum_permitted }}
+          </span>
+        </div>
+        <div class="col-2"></div>
+        <div *ngIf="entity.campaign_mode === 'PRODUCT'" class="col-12 row">
+          <div class="col-6">
+            <br />
+            <label class="label-field bold"
+              >Lista de Coleções de Produtos Selecionados</label
+            >
+            <br />
+            <span class="error-msg" *ngIf="entity.collections.length === 0"
+              >Nenhuma Coleção de Produto Selecionado</span
+            >
+            <div *ngIf="entity.collections.length > 0" class="table-tabview">
+              <p-table
+                [value]="entity.collections"
+                [scrollable]="true"
+                scrollHeight="330px"
+              >
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th class="w-270">Coleção</th>
+                    <th>Qnt.</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-collection>
+                  <tr>
+                    <td>
+                      <a
+                        [routerLink]="[
+                          '/merchant/collection-view',
+                          collection.id
+                        ]"
+                        [queryParams]="{ view_only: true }"
+                        style="
+                          text-decoration: none;
+                          color: red;
+                          font-weight: bold;
+                          font-size: small;
+                        "
+                      >
+                        {{
+                          collection.name.length > 30
+                            ? (collection.name | slice : 0 : 30) + "..."
+                            : collection.name
+                        }}</a
+                      >
+                    </td>
+                    <td>
+                      {{ collection.products.length }}
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+          </div>
+          <div class="col-6">
+            <br />
+            <label
+              *ngIf="entity.collections.length > 0"
+              class="label-field bold"
+              >Lista de Produtos Selecionados</label
+            >
+            <div *ngIf="entity.collections.length > 0" class="table-tabview">
+              <p-table
+                [value]="products"
+                [scrollable]="true"
+                scrollHeight="330px"
+              >
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th class="w-270">Produto</th>
+                    <th>Categoria</th>
+                    <th>Status</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-product>
+                  <tr>
+                    <td>
+                      <a
+                        [routerLink]="['/merchant/product-view', product.id]"
+                        [queryParams]="{ view_only: true }"
+                        style="
+                          text-decoration: none;
+                          color: red;
+                          font-weight: bold;
+                          font-size: small;
+                        "
+                      >
+                        {{
+                          product.name.length > 30
+                            ? (product.name | slice : 0 : 30) + "..."
+                            : product.name
+                        }}</a
+                      >
+                    </td>
+                    <td>
+                      {{ product.category }}
+                    </td>
+                    <td>
+                      <div class="centralize-campaign-tag w-60">
+                        <p-tag
+                          *ngIf="product.is_active"
+                          class="active"
+                          value="Ativo"
+                        ></p-tag>
+                        <p-tag
+                          *ngIf="!product.is_active"
+                          class="inactive"
+                          value="Inativo"
+                        ></p-tag>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br />
+    <div #STEP6>
+      <h5 class="mt-12">Comissões do Influencer</h5>
+      <hr />
+      <div class="ml-10 col-12 row">
+        <div class="col-3">
+          <label class="label-field bold">Comissão Influencer</label>
+          <br />
+          <span>
+            {{ getComissionTypeLabel(entity.influencer_comission_type) }}
+          </span>
+        </div>
+        <div class="col-1">
+          <label class="label-field bold">Valor</label>
+          <br />
+          <span *ngIf="entity.influencer_comission_type === 'PERC'">
+            {{
+              entity.influencer_comission
+                ? entity.influencer_comission + " %"
+                : "------"
+            }}
+          </span>
+          <span *ngIf="entity.influencer_comission_type === 'FIXED'">
+            {{
+              entity.influencer_comission
+                ? (entity.influencer_comission | currency : "BRL")
+                : "------"
+            }}
+          </span>
+        </div>
+      </div>
+    </div>
+    <br />
+    <div #STEP7>
+      <h5 class="mt-12">Cashback do Consumidor</h5>
+      <hr />
+      <div class="ml-10 col-12 row">
+        <div class="col-5">
+          <label class="label-field bold">{{
+            entity.linked_credit === null ? "Crédito Livre" : "Crédito Atrelado"
+          }}</label>
+          <br />
+          <span>{{
+            entity.linked_credit === null
+              ? "PIX"
+              : entity.linked_credit.name || "N/A"
+          }}</span>
+        </div>
+        <div class="col-3">
+          <label class="label-field bold">Cashback Consumidor</label>
+          <br />
+          <span>
+            {{ getComissionTypeLabel(entity.consumer_comission_type) }}
+          </span>
+        </div>
+        <div class="col-1">
+          <label class="label-field bold">Valor</label>
+          <br />
+          <span *ngIf="entity.consumer_comission_type === 'PERC'">
+            {{
+              entity.consumer_comission
+                ? entity.consumer_comission + " %"
+                : "------"
+            }}
+          </span>
+          <span *ngIf="entity.consumer_comission_type === 'FIXED'">
+            {{
+              entity.consumer_comission
+                ? (entity.consumer_comission | currency : "BRL")
+                : "------"
+            }}
+          </span>
+        </div>
+        <div class="col-3">
+          <label class="label-field bold">Tempo Provisionamento</label>
+          <br />
+          <span>
+            {{ entity.credit_provisioning_time }}
+            {{ entity.credit_provisioning_time <= 1 ? "dia" : "dias" }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="user_type == 'merchant'" #STEP8>
+      <h5 class="mt-12">Conflitos da Campanha</h5>
+      <div class="ml-10 col-12 row">
+        <div class="col-12">
+          <label class="label-field bold">Lista de Conflitos</label>
+          <br />
+          <span class="error-msg" *ngIf="campaignConflicts.length === 0"
+            >Essa campanha não possui conflitos</span
+          >
+          <div *ngIf="campaignConflicts.length > 0" class="table-tabviewfull">
+            <p-table
+              [value]="campaignConflicts"
+              [scrollable]="true"
+              scrollHeight="330px"
+              [style]="{ width: '86%' }"
+            >
+              <ng-template pTemplate="header">
+                <tr>
+                  <th
+                    style="width: 22%"
+                    pSortableColumn="existing_campaign.name"
+                  >
+                    Campanha Existente
+                    <p-sortIcon field="existing_campaign.name"></p-sortIcon>
+                  </th>
+                  <th style="width: 22%" pSortableColumn="new_campaign.name">
+                    Campanha Nova
+                    <p-sortIcon field="new_campaign.name"></p-sortIcon>
+                  </th>
+                  <th style="width: 32%" pSortableColumn="store.name">
+                    Loja com Conflito
+                    <p-sortIcon field="store.name"></p-sortIcon>
+                  </th>
+                  <th style="width: 12%" pSortableColumn="conflict_start_date">
+                    Inicio <p-sortIcon field="conflict_start_date"></p-sortIcon>
+                  </th>
+                  <th style="width: 12%" pSortableColumn="conflict_end_date">
+                    Fim <p-sortIcon field="conflict_end_date"></p-sortIcon>
+                  </th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-campaignConflict>
+                <tr>
+                  <td style="width: 22%">
+                    {{ campaignConflict.existing_campaign.name }}
+                  </td>
+                  <td style="width: 22%">
+                    {{ campaignConflict.new_campaign.name }}
+                  </td>
+                  <td style="width: 32%">{{ campaignConflict.store.name }}</td>
+                  <td style="width: 12%">
+                    {{
+                      campaignConflict.conflict_start_date | date : "dd/MM/yyyy"
+                    }}
+                  </td>
+                  <td style="width: 12%">
+                    {{
+                      campaignConflict.conflict_end_date | date : "dd/MM/yyyy"
+                    }}
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr />
+  </div>
+
+  <div class="footer">
+    <button
+      pButton
+      label=""
+      icon="pi pi-arrow-left"
+      class="w-110 btn-secondary"
+      type="button"
+      (click)="back()"
+      pTooltip="Voltar"
+    ></button>
+  </div>
+  <br />
+  <br />
+</div>

@@ -1,0 +1,487 @@
+<p-toast class="custom-toast"></p-toast>
+<p-confirmDialog class="custom-dialog"></p-confirmDialog>
+<div class="container">
+  <h3>Influenciadores</h3>
+
+  <div *ngIf="invite_influencer" class="topic-container">
+    <div class="topic-title">
+      <h5>Convidar Influenciador</h5>
+    </div>
+    <div class="btns-container-small">
+      <button
+        pButton
+        icon="pi pi-times"
+        type="button"
+        (click)="invite_influencer = false"
+        pTooltip="Cancelar convite por email"
+        style="
+          width: 40px !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          color: rgb(200, 0, 0) !important;
+          background: transparent !important;
+          border: 1px solid #ccc !important;
+          box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2) !important;
+        "
+      ></button>
+    </div>
+  </div>
+  <hr *ngIf="invite_influencer" />
+  <div *ngIf="invite_influencer" class="view-container col-12">
+    <div class="search-field" [formGroup]="emailForm">
+      <input
+        pInputText
+        formControlName="email"
+        type="email"
+        placeholder="Email do Influencer"
+        class="input-field"
+        pTooltip="Insira o email do influenciador que você deseja convidar para participar das campanhas"
+      />
+      <button
+        pButton
+        label="Convidar Influenciador"
+        type="button"
+        pTooltip="Enviar o convite para o influenciador"
+        (click)="sendInfluencerInviteEmail()"
+        [disabled]="!emailForm.valid"
+      ></button>
+    </div>
+  </div>
+  <br *ngIf="invite_influencer" />
+
+  <div class="topic-container">
+    <div class="topic-title">
+      <h5>Pesquisar Influenciador</h5>
+    </div>
+
+    <div class="btns-container-medium">
+      <button
+        *ngIf="!invite_influencer"
+        pButton
+        label="Convidar Influencer"
+        icon="pi pi-envelope"
+        iconPos="right"
+        class="btn-secondary"
+        type="button"
+        style="width: 300px"
+        (click)="invite_influencer = true"
+        pTooltip="Convidar um influencer para a plataforma"
+      ></button>
+    </div>
+  </div>
+
+  <hr />
+  <div class="view-container col-12 wp-95">
+    <div class="search-field">
+      <p-autoComplete
+        [(ngModel)]="influencerName"
+        [suggestions]="influencerSuggestions"
+        (completeMethod)="searchInfluencer($event)"
+        [minLength]="3"
+        [forceSelection]="true"
+        field="name"
+        (onSelect)="onSelectInfluencer($event)"
+        placeholder="Digite o nome do influencer"
+        pTooltip="Digite o nome do influenciador para pesquisar em nossa base"
+      >
+        <ng-template let-influencer pTemplate="item">
+          <div>{{ influencer.name }}</div>
+        </ng-template>
+      </p-autoComplete>
+      <i style="margin-left: 12px" class="pi pi-search"></i>
+    </div>
+    <div #STEPRESULTS *ngIf="influencer?.name">
+      <div>
+        <br />
+        <h5 class="mt-12">Dados do Influenciador</h5>
+        <hr />
+        <div class="ml-10 col-12 row">
+          <div class="col-1">
+            <label class="label-field bold">Favorito</label>
+            <br />
+            <div class="favorite-button">
+              <button *ngIf="isFavorited" (click)="unfavoriteInfluencer()">
+                <i class="pi pi-star-fill"></i>
+              </button>
+            </div>
+            <div class="unfavorite-button">
+              <button *ngIf="!isFavorited" (click)="favoriteInfluencer()">
+                <i class="pi pi-star"></i>
+              </button>
+            </div>
+          </div>
+          <div class="col-3">
+            <label class="label-field bold">Cidade</label>
+            <br />
+            <span>{{ influencer.city || "Não informado" }}</span>
+          </div>
+          <div class="col-2">
+            <label class="label-field bold">CEP</label>
+            <br />
+            <span>
+              {{
+                influencer.cep
+                  ? influencer.cep.slice(0, 5) + "-" + influencer.cep.slice(5)
+                  : "Não informado"
+              }}
+            </span>
+          </div>
+          <div class="col-5">
+            <label class="label-field bold">Página RedAds</label>
+            <br />
+            <span
+              style="font-size: smaller"
+              pTooltip="Acessar a página do influenciador no RedAds"
+            >
+              ...redeem/
+              <a
+                target="_blank"
+                [routerLink]="['/redeem', influencer.url]"
+                style="
+                  text-decoration: none;
+                  color: red;
+                  font-weight: bold;
+                  font-size: medium;
+                "
+                >{{ influencer.url }}</a
+              >
+            </span>
+          </div>
+          <!-- <div class="col-1">
+            <label class="label-field bold">Dados</label>
+            <button
+              class="button-download"
+              pButton
+              icon="pi pi-file-excel"
+              (click)="downloadCSV()"
+              pTooltip="Baixar lista com notas fiscais participante da campanha (.CSV)"
+              style="margin: 0; width: 2.5rem; height: 2.5rem; padding: 0"
+            ></button>
+          </div> -->
+        </div>
+        <div class="col-12" *ngIf="receipts && receipts.length > 0">
+          <div class="table-list">
+            <p-table
+              [value]="itemsFiltrados"
+              [globalFilterFields]="[
+                'id',
+                'created_date',
+                'status',
+                'consumer_document',
+                'campaign',
+                'comission_value_influencer',
+                'receipt_value'
+              ]"
+              [sortField]="'created_date'"
+              [sortOrder]="-1"
+              [paginator]="true"
+              [rows]="25"
+            >
+              <ng-template pTemplate="caption">
+                <div class="input-icon">
+                  <i class="pi pi-search ml-10"></i>
+                  <input
+                    pInputText
+                    id="globalFilter"
+                    name="globalFilter"
+                    type="text"
+                    [(ngModel)]="globalFilter"
+                    (input)="applyFilter()"
+                    placeholder="Pesquisar"
+                    pTooltip="Digite o nome do influenciador para pesquisar"
+                  />
+                </div>
+                <button
+                  pButton
+                  type="button"
+                  pTooltip="Limpar o filtro"
+                  tooltipPosition="top"
+                  tooltipStyleClass="my-tooltip"
+                  icon="pi pi-filter-slash"
+                  (click)="clearGlobalFilter()"
+                  style="
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                ></button>
+              </ng-template>
+              <ng-template pTemplate="header">
+                <tr>
+                  <th pSortableColumn="created_date">
+                    Data Envio <p-sortIcon field="created_date"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="status">
+                    Status <p-sortIcon field="status"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="consumer_document">
+                    Consumidor
+                    <p-sortIcon field="consumer_document"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="campaign">
+                    Campanha <p-sortIcon field="campaign"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="comission_value_influencer">
+                    Valor Comissão
+                    <p-sortIcon field="comission_value_influencer"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="receipt_value">
+                    Valor Nota <p-sortIcon field="receipt_value"></p-sortIcon>
+                  </th>
+                  <th>Ver</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-receipt let-i="rowIndex">
+                <tr>
+                  <td>
+                    {{ receipt.created_date | date : "dd/MM/yyyy HH:mm:ss" }}
+                  </td>
+                  <td>
+                    <div class="centralize-campaign-tag w-60">
+                      <div [ngSwitch]="receipt.status">
+                        <p-tag
+                          *ngSwitchCase="'APPROVED'"
+                          class="approved-campaign"
+                          value="Aprovado"
+                          pTooltip="Nota Fiscal aprovada"
+                        ></p-tag>
+                        <p-tag
+                          *ngSwitchCase="'PENDINGPAYMENT'"
+                          class="pending-receipt"
+                          value="Pend. Pgto"
+                          pTooltip="Nota Fiscal aguardando pagamento"
+                        ></p-tag>
+                        <p-tag
+                          *ngSwitchCase="'PAID'"
+                          class="active-campaign"
+                          value="Pago"
+                          pTooltip="Nota Fiscal paga"
+                        ></p-tag>
+                        <p-tag
+                          *ngSwitchCase="'NEW'"
+                          class="sketch-campaign"
+                          value="Novo"
+                          pTooltip="Nota Fiscal recém cadastrada"
+                        ></p-tag>
+                        <p-tag
+                          *ngSwitchCase="'CHECKING'"
+                          class="proposal-campaign"
+                          value="Checando"
+                          pTooltip="Nota Fiscal em processo de validação"
+                        ></p-tag>
+                        <p-tag
+                          *ngSwitchCase="'NOT_FOUND'"
+                          class="reproved-campaign"
+                          value="Não Encontrada"
+                          pTooltip="Nota Fiscal não encontrada no sistema da SEFAZ"
+                        ></p-tag>
+                        <p-tag
+                          *ngSwitchCase="'REJECTED_DONT_HAVE_CAMPAIGN'"
+                          class="reproved-campaign"
+                          value="Rejeitada"
+                          pTooltip="Nota Fiscal rejeitada por não ter campanha associada"
+                        ></p-tag>
+                        <p-tag
+                          *ngSwitchCase="'REJECTED_DONT_HAVE_PRODUCT_CAMPAIGN'"
+                          class="reproved-campaign"
+                          value="Rejeitada"
+                          pTooltip="Nota Fiscal rejeitada por não ter produto da campanha"
+                        ></p-tag>
+                        <p-tag
+                          *ngSwitchCase="'REJECTED_EMISSION_DATE_NOT_ALLOW'"
+                          class="reproved-campaign"
+                          value="Reprovada"
+                          pTooltip="Nota Fiscal reprovada por data de emissão fora do prazo"
+                        ></p-tag>
+                        <p-tag
+                          *ngSwitchCase="'REJECTED_STORE_NOT_FOUND'"
+                          class="reproved-campaign"
+                          value="Reprovada"
+                          pTooltip="Nota Fiscal reprovada por loja não encontrada"
+                        ></p-tag>
+                        <p-tag
+                          *ngSwitchCase="'REJECTED_CONSUMER_BLOCK'"
+                          class="reproved-campaign"
+                          value="Reprovada"
+                          pTooltip="Nota Fiscal reprovada por consumidor bloqueado"
+                        ></p-tag>
+                        <p-tag
+                          *ngSwitchCase="'REJECTED_CONSUMER_NOT_ALLOW'"
+                          class="reproved-campaign"
+                          value="Reprovada"
+                          pTooltip="Nota Fiscal reprovada, consumidor não tem permissão para participar da campanha"
+                        ></p-tag>
+                        <p-tag
+                          *ngSwitchCase="
+                            'REPROVED_LIMIT_PARTICIPATIONS_EXCEEDED'
+                          "
+                          class="reproved-campaign"
+                          value="Reprovada"
+                          pTooltip="Nota Fiscal reprovada por limite de participações excedido"
+                        ></p-tag>
+                        <p-tag
+                          *ngSwitchCase="'REPROVED_MINIMUM_VALUE'"
+                          class="reproved-campaign"
+                          value="Reprovada"
+                          pTooltip="Nota Fiscal reprovada por valor mínimo não atingido"
+                        ></p-tag>
+                        <p-tag
+                          *ngSwitchCase="'REPROVED_MINIMUM_QUANTITY'"
+                          class="reproved-campaign"
+                          value="Reprovada"
+                          pTooltip="Nota Fiscal reprovada por quantidade mínima não atingida"
+                        ></p-tag>
+                        <p-tag
+                          *ngSwitchCase="'REPROVED_BY_MERCHANT'"
+                          class="reproved-campaign"
+                          value="Reprovada"
+                          pTooltip="Nota Fiscal reprovada pelo comerciante"
+                        ></p-tag>
+                      </div>
+                    </div>
+                  </td>
+                  <td>{{ receipt.consumer_document }}</td>
+                  <td>
+                    <a [routerLink]="['/campaign-view', receipt.campaign?.id]">
+                      {{ receipt.campaign?.name }}
+                    </a>
+                  </td>
+                  <td>
+                    {{
+                      receipt.comission_value_influencer
+                        ? (receipt.comission_value_influencer
+                          | currency : "BRL")
+                        : "-----"
+                    }}
+                  </td>
+                  <td>
+                    {{
+                      receipt.receipt_value
+                        ? (receipt.receipt_value | currency : "BRL")
+                        : "-----"
+                    }}
+                  </td>
+                  <td>
+                    <a
+                      [routerLink]="['/reports/receipt-view', receipt.id]"
+                      target="_blank"
+                    >
+                      <i class="pi pi-eye" style="color: rgb(81, 81, 81)"></i>
+                    </a>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <br />
+  <div class="topic-container">
+    <div class="topic-title">
+      <h5>Favoritos</h5>
+    </div>
+  </div>
+  <hr />
+  <div class="view-container col-12 wp-95">
+    <div
+      class="col-12"
+      *ngIf="
+        merchantInfluencerFriendships &&
+        merchantInfluencerFriendships.length > 0
+      "
+    >
+      <div class="table-list">
+        <p-table
+          [value]="itemsFiltradosFriendship"
+          [globalFilterFields]="['id', 'influencer.name', 'influencer.city']"
+          [sortField]="'influencer.name'"
+          [sortOrder]="1"
+          [paginator]="true"
+          [rows]="25"
+        >
+          <ng-template pTemplate="caption">
+            <div class="input-icon">
+              <i class="pi pi-search ml-10"></i>
+              <input
+                pInputText
+                id="globalFilterFriendship"
+                name="globalFilterFriendship"
+                type="text"
+                [(ngModel)]="globalFilterFriendship"
+                (input)="applyFilterFriendship()"
+                placeholder="Pesquisar"
+                pTooltip="Digite o nome do influenciador para pesquisar"
+              />
+            </div>
+            <button
+              pButton
+              type="button"
+              pTooltip="Limpar o filtro"
+              tooltipPosition="top"
+              tooltipStyleClass="my-tooltip"
+              icon="pi pi-filter-slash"
+              (click)="clearGlobalFilter()"
+              style="
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+              "
+            ></button>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th pSortableColumn="influencer.name" class="w-600">
+                Influencer <p-sortIcon field="influencer.name"></p-sortIcon>
+              </th>
+              <th pSortableColumn="influencer.city">
+                Cidade <p-sortIcon field="influencer.city"></p-sortIcon>
+              </th>
+              <th class="w-80 text-center">Ação</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-friendship let-i="rowIndex">
+            <tr>
+              <td>{{ friendship.influencer?.name }}</td>
+              <td>{{ friendship.influencer?.city }}</td>
+              <td class="text-center">
+                <button
+                  pButton
+                  pRipple
+                  pTooltip="Ver influencer"
+                  tooltipPosition="top"
+                  tooltipStyleClass="my-tooltip"
+                  type="button"
+                  icon="pi pi-eye"
+                  class="p-button-rounded p-button-text p-button-success p-button-sm"
+                  (click)="
+                    viewInfluencer(
+                      friendship.influencer?.name,
+                      friendship.influencer?.id,
+                      friendship.influencer
+                    )
+                  "
+                ></button>
+                <button
+                  pButton
+                  pRipple
+                  pTooltip="Remover dos favoritos"
+                  tooltipPosition="top"
+                  tooltipStyleClass="my-tooltip"
+                  type="button"
+                  icon="pi pi-trash"
+                  class="p-button-rounded p-button-text p-button-danger p-button-sm"
+                  (click)="deleteMerchantInfluencerFriendship(i, $event)"
+                ></button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+    <div class="col-12" *ngIf="merchantInfluencerFriendships?.length === 0">
+      <span>Atenção, você ainda não possui nenhum influencer selecionado!</span>
+    </div>
+  </div>
+</div>

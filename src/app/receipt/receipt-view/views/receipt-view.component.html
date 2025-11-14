@@ -1,0 +1,730 @@
+<p-toast class="custom-toast"></p-toast>
+<p-confirmDialog class="custom-dialog"></p-confirmDialog>
+<div class="container">
+  <h3>Nota Fiscal</h3>
+
+  <!-- Inputs -->
+  <div class="view-container col-12">
+    <div #STEPRESULTS>
+      <h5
+        pTooltip="ID: {{ entity.id }} "
+        pTooltipPosition="bottom"
+        pTooltipStyleClass="custom-tooltip"
+        *ngIf="entity.campaign.campaign_mode === 'TICKET'"
+      >
+        Dados da Nota Fiscal (Ticket)
+      </h5>
+      <h5
+        pTooltip="ID: {{ entity.id }} "
+        pTooltipPosition="top"
+        pTooltipStyleClass="custom-tooltip"
+        *ngIf="entity.campaign.campaign_mode === 'PRODUCT'"
+      >
+        Dados da Nota Fiscal (Produto)
+      </h5>
+      <hr />
+      <div class="ml-10 col-12 row">
+        <div class="col-3">
+          <label class="label-field bold">Status</label>
+          <br />
+
+          <div class="centralize-campaign-tag w-60">
+            <div class="d-flex align-items-center">
+              <i
+                *ngIf="entity.dissemination_mode === 'MEMBER'"
+                class="pi pi-users"
+                pTooltip="Divulgação por Membros"
+                style="margin-right: 1px"
+              ></i>
+              <i
+                *ngIf="entity.dissemination_mode === 'INFLUENCER'"
+                class="pi pi-user"
+                pTooltip="Divulgação por Influenciadores"
+                style="margin-right: 1px"
+              ></i>
+              <div [ngSwitch]="entity.status">
+                <p-tag
+                  *ngSwitchCase="'APPROVED'"
+                  class="approved-campaign"
+                  value="Aprovado"
+                  pTooltip="Nota Fiscal aprovada"
+                ></p-tag>
+                <p-tag
+                  *ngSwitchCase="'PIX_NOT_FOUND'"
+                  class="approved-campaign"
+                  value="Pix Error"
+                  pTooltip="Nota Fiscal validada, mas não foi possível encontrar o pix"
+                ></p-tag>
+                <p-tag
+                  *ngSwitchCase="'PENDINGPAYMENT'"
+                  class="pending-receipt"
+                  value="Pend. Pgto"
+                  pTooltip="Nota Fiscal aguardando pagamento"
+                ></p-tag>
+                <p-tag
+                  *ngSwitchCase="'PAID'"
+                  class="active-campaign"
+                  value="Pago"
+                  pTooltip="Nota Fiscal paga"
+                ></p-tag>
+                <p-tag
+                  *ngSwitchCase="'PAYMENT_FAILED'"
+                  class="reproved-campaign"
+                  value="Error Pgto"
+                  pTooltip="Nota Fiscal com falha no pagamento"
+                  tooltipPosition="left"
+                ></p-tag>
+                <p-tag
+                  *ngSwitchCase="'NEW'"
+                  class="sketch-campaign"
+                  value="Novo"
+                  pTooltip="Nota Fiscal recém cadastrada"
+                ></p-tag>
+                <p-tag
+                  *ngSwitchCase="'CHECKING'"
+                  class="proposal-campaign"
+                  value="Checando"
+                  pTooltip="Nota Fiscal em processo de validação"
+                ></p-tag>
+                <p-tag
+                  *ngSwitchCase="'NOT_FOUND'"
+                  class="reproved-campaign"
+                  value="Não Encontrada"
+                  pTooltip="Nota Fiscal não encontrada no sistema da SEFAZ"
+                ></p-tag>
+                <p-tag
+                  *ngSwitchCase="'REJECTED_DONT_HAVE_CAMPAIGN'"
+                  class="reproved-campaign"
+                  value="Rejeitada"
+                  pTooltip="Nota Fiscal rejeitada por não ter campanha associada"
+                ></p-tag>
+                <p-tag
+                  *ngSwitchCase="'REJECTED_DONT_HAVE_PRODUCT_CAMPAIGN'"
+                  class="reproved-campaign"
+                  value="Rejeitada"
+                  pTooltip="Nota Fiscal rejeitada por não ter produto da campanha"
+                ></p-tag>
+                <p-tag
+                  *ngSwitchCase="'REJECTED_EMISSION_DATE_NOT_ALLOW'"
+                  class="reproved-campaign"
+                  value="Reprovada"
+                  pTooltip="Nota Fiscal reprovada por data de emissão fora do prazo"
+                ></p-tag>
+                <p-tag
+                  *ngSwitchCase="'REJECTED_STORE_NOT_FOUND'"
+                  class="reproved-campaign"
+                  value="Reprovada"
+                  pTooltip="Nota Fiscal reprovada por loja não encontrada"
+                ></p-tag>
+                <p-tag
+                  *ngSwitchCase="'REJECTED_CONSUMER_BLOCK'"
+                  class="reproved-campaign"
+                  value="Reprovada"
+                  pTooltip="Nota Fiscal reprovada por consumidor bloqueado"
+                ></p-tag>
+                <p-tag
+                  *ngSwitchCase="'REJECTED_CONSUMER_NOT_ALLOW'"
+                  class="reproved-campaign"
+                  value="Reprovada"
+                  pTooltip="Nota Fiscal reprovada, consumidor não tem permissão para participar da campanha"
+                ></p-tag>
+                <p-tag
+                  *ngSwitchCase="'REPROVED_LIMIT_PARTICIPATIONS_EXCEEDED'"
+                  class="reproved-campaign"
+                  value="Reprovada"
+                  pTooltip="Nota Fiscal reprovada por limite de participações excedido"
+                ></p-tag>
+                <p-tag
+                  *ngSwitchCase="'REPROVED_MINIMUM_VALUE'"
+                  class="reproved-campaign"
+                  value="Reprovada"
+                  pTooltip="Nota Fiscal reprovada por valor mínimo não atingido"
+                ></p-tag>
+                <p-tag
+                  *ngSwitchCase="'REPROVED_MINIMUM_QUANTITY'"
+                  class="reproved-campaign"
+                  value="Reprovada"
+                  pTooltip="Nota Fiscal reprovada por quantidade mínima não atingida"
+                ></p-tag>
+                <p-tag
+                  *ngSwitchCase="'REPROVED_BY_MERCHANT'"
+                  class="reproved-campaign"
+                  value="Reprovada"
+                  pTooltip="Nota Fiscal reprovada pelo comerciante"
+                ></p-tag>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-5">
+          <label class="label-field bold">Chave de Acesso</label>
+          <br />
+          <span>{{ entity.access_key }}</span>
+        </div>
+
+        <div class="col-2">
+          <label class="label-field bold">Emissão</label>
+          <br />
+          <span style="font-size: 0.85em">
+            {{
+              entity.emission_date
+                ? (entity.emission_date | date : "dd/MM/yyyy HH:mm:ss")
+                : "-------"
+            }}
+          </span>
+        </div>
+        <div class="col-2">
+          <label class="label-field bold">Valor</label>
+          <br />
+          <span>
+            {{
+              entity.receipt_value
+                ? (entity.receipt_value | currency : "BRL")
+                : "-------"
+            }}
+          </span>
+        </div>
+        <div class="col-8">
+          <label class="label-field bold">Observação</label>
+          <br />
+          <div [ngSwitch]="entity.status">
+            <p *ngSwitchCase="'APPROVED'">Nota Fiscal aprovada</p>
+            <p *ngSwitchCase="'PENDINGPAYMENT'">
+              Nota Fiscal aguardando pagamento
+            </p>
+            <p *ngSwitchCase="'PAID'">Nota Fiscal paga</p>
+            <p *ngSwitchCase="'PAYMENT_FAILED'">
+              Nota Fiscal com falha no pagamento
+            </p>
+            <p *ngSwitchCase="'PIX_NOT_FOUND'">
+              Nota Fiscal validada, mas não foi possível encontrar o pix
+            </p>
+            <p *ngSwitchCase="'NEW'">Nota Fiscal recém cadastrada</p>
+            <p *ngSwitchCase="'CHECKING'">
+              Nota Fiscal em processo de validação
+            </p>
+            <p *ngSwitchCase="'NOT_FOUND'">
+              Nota Fiscal não encontrada no sistema da SEFAZ
+            </p>
+            <p *ngSwitchCase="'REJECTED_DONT_HAVE_CAMPAIGN'">
+              Nota Fiscal rejeitada por não ter campanha associada
+            </p>
+            <p *ngSwitchCase="'REJECTED_DONT_HAVE_PRODUCT_CAMPAIGN'">
+              Nota Fiscal rejeitada por não ter produto da campanha
+            </p>
+            <p *ngSwitchCase="'REJECTED_EMISSION_DATE_NOT_ALLOW'">
+              Nota Fiscal reprovada por data de emissão fora do prazo
+            </p>
+            <p *ngSwitchCase="'REJECTED_STORE_NOT_FOUND'">
+              Nota Fiscal reprovada por loja não encontrada
+            </p>
+            <p *ngSwitchCase="'REJECTED_CONSUMER_BLOCK'">
+              Nota Fiscal reprovada por consumidor bloqueado
+            </p>
+            <p *ngSwitchCase="'REJECTED_CONSUMER_NOT_ALLOW'">
+              Nota Fiscal reprovada, consumidor não tem permissão para
+              participar da campanha
+            </p>
+            <p *ngSwitchCase="'REPROVED_LIMIT_PARTICIPATIONS_EXCEEDED'">
+              Nota Fiscal reprovada por limite de participações excedido
+            </p>
+            <p *ngSwitchCase="'REPROVED_MINIMUM_VALUE'">
+              Nota Fiscal reprovada por valor mínimo não atingido
+            </p>
+            <p *ngSwitchCase="'REPROVED_MINIMUM_QUANTITY'">
+              Nota Fiscal reprovada por quantidade mínima não atingida
+            </p>
+            <p *ngSwitchCase="'REPROVED_BY_MERCHANT'">
+              Nota Fiscal reprovada pelo comerciante
+            </p>
+          </div>
+        </div>
+        <div class="col-2">
+          <label class="label-field bold">{{
+            entity.linked_credit === null ? "Crédito Livre" : "Crédito Atrelado"
+          }}</label>
+          <br />
+          <div class="d-flex align-items-center">
+            <i
+              *ngIf="!entity.linked_credit"
+              class="pi pi-dollar"
+              pTooltip="Crédito Livre"
+              style="margin-right: 5px"
+            ></i>
+            <i
+              *ngIf="entity.linked_credit"
+              class="pi pi-wallet"
+              pTooltip="Crédito Vinculado ({{ entity.linked_credit.name }})"
+              style="margin-right: 5px"
+            ></i>
+            <span style="margin-left: 0px">
+              {{
+                entity.linked_credit === null
+                  ? "PIX"
+                  : entity.linked_credit.name
+              }}
+            </span>
+          </div>
+        </div>
+        <div class="col-2">
+          <label class="label-field bold">Taxa RedADS</label>
+          <br />
+          <span>
+            {{
+              entity.tax_redads_value
+                ? (entity.tax_redads_value | currency : "BRL")
+                : "-------"
+            }}
+          </span>
+        </div>
+      </div>
+    </div>
+    <div #STEPCONSUMER>
+      <h5 class="mt-12">Consumidor</h5>
+      <hr />
+      <div class="ml-10 col-12 row">
+        <div class="col-3">
+          <label class="label-field bold">Documento</label>
+          <br />
+          <span>
+            {{
+              entity.consumer_document.length === 11
+                ? entity.consumer_document.slice(0, 3) +
+                  "." +
+                  entity.consumer_document.slice(3, 6) +
+                  "." +
+                  entity.consumer_document.slice(6, 9) +
+                  "-" +
+                  entity.consumer_document.slice(9)
+                : entity.consumer_document.length === 14
+                ? entity.consumer_document.slice(0, 2) +
+                  "." +
+                  entity.consumer_document.slice(2, 5) +
+                  "." +
+                  entity.consumer_document.slice(5, 8) +
+                  "/" +
+                  entity.consumer_document.slice(8, 12) +
+                  "-" +
+                  entity.consumer_document.slice(12)
+                : entity.consumer_document
+            }}</span
+          >
+        </div>
+        <div class="col-3">
+          <label class="label-field bold">Conta</label>
+          <br />
+          <span> {{ entity.consumer.is_active ? "Ativa" : "Inativa" }} </span>
+        </div>
+        <div class="col-3">
+          <label class="label-field bold">Chave Pix</label>
+          <br />
+          <span> {{ entity.consumer_pix_code }} </span>
+        </div>
+        <div class="col-3">
+          <label class="label-field bold">Cashback</label>
+          <br />
+          <span>
+            {{
+              entity.cashback_value_consumer
+                ? (entity.cashback_value_consumer | currency : "BRL")
+                : "-------"
+            }}
+          </span>
+        </div>
+      </div>
+    </div>
+    <br />
+    <div #STEPINFLUENCER *ngIf="entity.influencer">
+      <h5 class="mt-12">Influenciador</h5>
+      <hr />
+      <div class="ml-10 col-12 row">
+        <div class="col-3">
+          <label class="label-field bold">Cidade</label>
+          <br />
+          <span>
+            {{ entity.influencer ? entity.influencer.city.name : "------" }}
+          </span>
+        </div>
+        <div class="col-3">
+          <label class="label-field bold">Nome Influenciador</label>
+          <br />
+          <span>
+            {{ entity.influencer ? entity.influencer.name : "------" }}
+          </span>
+        </div>
+        <div class="col-3">
+          <label class="label-field bold">RedADS Link</label>
+          <br />
+          <span style="font-size: smaller">
+            <ng-container *ngIf="entity.influencer; else noUrl">
+              redads.io/
+              <a
+                target="_blank"
+                [routerLink]="['/redeem', entity.influencer.url]"
+                style="
+                  text-decoration: none;
+                  color: red;
+                  font-weight: bold;
+                  font-size: medium;
+                "
+              >
+                {{ entity.influencer.url }}
+              </a>
+            </ng-container>
+            <ng-template #noUrl> ------ </ng-template>
+          </span>
+        </div>
+        <div class="col-3">
+          <label class="label-field bold">Comissão</label>
+          <br />
+          <span>
+            {{
+              entity.influencer
+                ? (entity.comission_value_influencer | currency : "BRL")
+                : "-------"
+            }}
+          </span>
+        </div>
+      </div>
+      <br />
+    </div>
+
+    <div #STEPMEMBER *ngIf="entity.member">
+      <h5 class="mt-12">Membro</h5>
+      <hr />
+      <div class="ml-10 col-12 row">
+        <div class="col-3">
+          <label class="label-field bold">Documento</label>
+          <br />
+          <span>
+            {{ entity.member_document ? entity.member_document : "----" }}
+          </span>
+        </div>
+        <div class="col-3">
+          <label class="label-field bold">Conta</label>
+          <br />
+          <span> {{ entity.member ? "Ativa" : "------" }} </span>
+        </div>
+        <div class="col-3">
+          <label class="label-field bold">Chave Pix</label>
+          <br />
+          <span>
+            {{ entity.member_pix_code ? entity.member_pix_code : "------" }}
+          </span>
+        </div>
+        <div class="col-3">
+          <label class="label-field bold">Comissão</label>
+          <br />
+          <span>
+            {{
+              entity.member
+                ? (entity.comission_value_influencer | currency : "BRL")
+                : "-------"
+            }}
+          </span>
+        </div>
+      </div>
+      <br />
+    </div>
+    <div #STEPSPONSOR>
+      <h5 class="mt-12">Patrocinador Campanha</h5>
+      <hr />
+      <div class="ml-10 col-12 row">
+        <div class="col-3">
+          <label class="label-field bold">Documento</label>
+          <br />
+          <span>
+            {{
+              entity.sponsor_cnpj.slice(0, 2) +
+                "." +
+                entity.sponsor_cnpj.slice(2, 5) +
+                "." +
+                entity.sponsor_cnpj.slice(5, 8) +
+                "/" +
+                entity.sponsor_cnpj.slice(8, 12) +
+                "-" +
+                entity.sponsor_cnpj.slice(12)
+            }}</span
+          >
+        </div>
+        <div class="col-3">
+          <label class="label-field bold">Nome Comerciante</label>
+          <br />
+          <span> {{ entity.sponsor.name }} </span>
+        </div>
+        <div class="col-3">
+          <label class="label-field bold">Custo do Patrocinador</label>
+          <br />
+          <span> {{ entity.campaign.sponsor_part }} % </span>
+        </div>
+        <div class="col-3">
+          <label class="label-field bold">Custo do Vendedor</label>
+          <br />
+          <span> {{ entity.campaign.sellers_part }} % </span>
+        </div>
+      </div>
+      <br />
+    </div>
+    <div #STEPSELLER>
+      <h5 class="mt-12">Vendedor (Lojista)</h5>
+      <hr />
+      <div class="ml-10 col-12 row">
+        <div class="col-3">
+          <label class="label-field bold">Documento</label>
+          <br />
+          <span>
+            {{
+              entity.seller_cnpj.slice(0, 2) +
+                "." +
+                entity.seller_cnpj.slice(2, 5) +
+                "." +
+                entity.seller_cnpj.slice(5, 8) +
+                "/" +
+                entity.seller_cnpj.slice(8, 12) +
+                "-" +
+                entity.seller_cnpj.slice(12)
+            }}</span
+          >
+        </div>
+        <div class="col-3">
+          <label class="label-field bold">Nome Comerciante</label>
+          <br />
+          <span> {{ entity.seller.name }} </span>
+        </div>
+        <div class="col-3">
+          <label class="label-field bold">Nome da Loja</label>
+          <br />
+          <span>
+            <a
+              [routerLink]="['/merchant/store-view', entity.store.id]"
+              [queryParams]="{ view_only: true }"
+              style="
+                text-decoration: none;
+                color: red;
+                font-weight: bold;
+                font-size: small;
+              "
+              >{{ entity.store.name }}</a
+            ></span
+          >
+        </div>
+        <div class="col-3">
+          <label class="label-field bold">CNPJ da Loja</label>
+          <br />
+          <span>
+            {{
+              entity.cnpj.slice(0, 2) +
+                "." +
+                entity.cnpj.slice(2, 5) +
+                "." +
+                entity.cnpj.slice(5, 8) +
+                "/" +
+                entity.cnpj.slice(8, 12) +
+                "-" +
+                entity.cnpj.slice(12)
+            }}
+          </span>
+        </div>
+      </div>
+    </div>
+    <br />
+    <div #CAMPANHA>
+      <h5 class="mt-12">Campanha</h5>
+      <hr />
+      <div class="ml-10 col-12 row">
+        <div class="col-3">
+          <label class="label-field bold">Nome</label>
+          <br />
+          <span>
+            <a
+              [routerLink]="['/campaign-view', entity.campaign.id]"
+              style="
+                text-decoration: none;
+                color: red;
+                font-weight: bold;
+                font-size: small;
+              "
+              >{{ entity.campaign.name }}</a
+            ></span
+          >
+        </div>
+        <div class="col-3">
+          <label class="label-field bold">Status</label>
+          <span>
+            <div class="centralize-campaign-tag w-60">
+              <div [ngSwitch]="entity.campaign.status">
+                <p-tag
+                  *ngSwitchCase="'SKETCH'"
+                  class="sketch-campaign"
+                  value="Rascunho"
+                ></p-tag>
+                <p-tag
+                  *ngSwitchCase="'PROPOSAL'"
+                  class="proposal-campaign"
+                  value="Proposta"
+                ></p-tag>
+                <p-tag
+                  *ngSwitchCase="'REPROVED'"
+                  class="reproved-campaign"
+                  value="Reprovada"
+                ></p-tag>
+                <p-tag
+                  *ngSwitchCase="'APPROVED_NO_INFLUENCER'"
+                  class="approved-no-influencer-campaign"
+                  value="Aprovada SI"
+                ></p-tag>
+                <p-tag
+                  *ngSwitchCase="'APPROVED'"
+                  class="approved-campaign"
+                  value="Aprovada"
+                ></p-tag>
+                <p-tag
+                  *ngSwitchCase="'ACTIVE'"
+                  class="active-campaign"
+                  value="Ativa"
+                ></p-tag>
+                <p-tag
+                  *ngSwitchCase="'PAUSE_MANUAL'"
+                  class="paused-manual-campaign"
+                  value="Pausada"
+                ></p-tag>
+                <p-tag
+                  *ngSwitchCase="'PAUSE_SYSTEM'"
+                  class="paused-manual-campaign"
+                  value="Pausada"
+                ></p-tag>
+                <p-tag
+                  *ngSwitchCase="'PAUSE_NO_INFLUENCER'"
+                  class="paused-no-influencer-campaign"
+                  value="Pausada (SI)"
+                ></p-tag>
+                <p-tag
+                  *ngSwitchCase="'FINISHED'"
+                  class="finished-campaign"
+                  value="Encerrada"
+                ></p-tag>
+                <p-tag
+                  *ngSwitchCase="'FINISHED_MANUAL'"
+                  class="finished-manual-campaign"
+                  value="Encerrada (M)"
+                ></p-tag>
+              </div>
+            </div>
+          </span>
+        </div>
+        <div class="col-3">
+          <label class="label-field bold">Faturamento</label>
+          <br />
+          <span> {{ entity.campaign.total_amount | currency : "BRL" }} </span>
+        </div>
+        <div class="col-3">
+          <label class="label-field bold">Valor Valido</label>
+          <br />
+          <span>
+            {{
+              entity.promocional_receipt_value
+                ? (entity.promocional_receipt_value | currency : "BRL")
+                : "-------"
+            }}
+          </span>
+        </div>
+      </div>
+    </div>
+    <br />
+    <div
+      #PRODUCTS
+      *ngIf="entity.products_quantity && entity.products_quantity > 0"
+    >
+      <h5 class="mt-12">Produtos</h5>
+      <hr />
+      <div class="table-tabviewsuperfull">
+        <span *ngIf="entity.products_log.length === 0"
+          >-------------------</span
+        >
+        <p-table
+          *ngIf="entity.products_log && entity.products_log.length > 0"
+          [value]="entity.products_log"
+          [globalFilterFields]="['name', 'amount', 'quantity', 'total_amount']"
+          [sortField]="'name'"
+          [sortOrder]="1"
+          [paginator]="true"
+          [rows]="25"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th pSortableColumn="name" style="width: 300px">
+                Produto<p-sortIcon field="name"></p-sortIcon>
+              </th>
+              <th pSortableColumn="name" style="width: 300px">
+                Descrição (NF) <p-sortIcon field="name"></p-sortIcon>
+              </th>
+              <th pSortableColumn="amount">
+                Valor Unit <p-sortIcon field="amount"></p-sortIcon>
+              </th>
+              <th pSortableColumn="quantity">
+                Quantidade <p-sortIcon field="quantity"></p-sortIcon>
+              </th>
+              <th pSortableColumn="unit_code">
+                Unidade <p-sortIcon field="unit_code"></p-sortIcon>
+              </th>
+              <th pSortableColumn="total_amount">
+                Valor Total <p-sortIcon field="total_amount"></p-sortIcon>
+              </th>
+              <th pSortableColumn="total_amount">
+                Código <p-sortIcon field="total_amount"></p-sortIcon>
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-item>
+            <tr>
+              <td>
+                <a
+                  [routerLink]="['/merchant/product-view/', item.product.id]"
+                  [queryParams]="{ view_only: true }"
+                  style="
+                    text-decoration: none;
+                    color: red;
+                    font-weight: bold;
+                    font-size: small;
+                  "
+                  >{{ item.product.name }}</a
+                >
+              </td>
+              <td>{{ item.description }}</td>
+              <td>{{ item.unit_value | currency : "BRL" }}</td>
+              <td>{{ item.quantity }}</td>
+              <td>{{ item.unit_code }}</td>
+              <td>{{ item.total_value | currency : "BRL" }}</td>
+              <td>{{ item.ean }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+    <div #PRODUCTS *ngIf="entity.promocional_products_quantity == 0">
+      <h5 class="mt-12">Produtos</h5>
+      <hr />
+      <div class="ml-10 col-12 row">
+        <div class="col-12">
+          <span style="color: red">
+            Nenhum produto promocional encontrado na nota fiscal
+          </span>
+        </div>
+      </div>
+    </div>
+    <br />
+    <div class="footer">
+      <button
+        pButton
+        label=""
+        icon="pi pi-arrow-left"
+        class="w-110 btn-secondary"
+        type="button"
+        (click)="back()"
+        pTooltip="Voltar"
+      ></button>
+    </div>
+    <br />
+    <br />
+  </div>
+</div>

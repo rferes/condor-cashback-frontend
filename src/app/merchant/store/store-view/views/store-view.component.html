@@ -1,0 +1,282 @@
+<p-toast> </p-toast>
+<div class="container">
+  <h3 class="">Lojas</h3>
+  <div class="topic-container">
+    <div class="topic-title">
+      <h5 pTooltip="ID: {{ entity.id }} ">Loja</h5>
+      <!-- <button
+        class="button-download"
+        pButton
+        icon="pi pi-file-excel"
+        (click)="downloadCSV()"
+        pTooltip="Baixar lista com notas fiscais participante da campanha (.CSV)"
+      ></button> -->
+    </div>
+    <div class="btns-container-medium">
+      <!-- Read Mode -->
+      <button
+        *ngIf="!editMode && !viewOnly"
+        pButton
+        label="Editar"
+        icon="pi pi-pencil"
+        iconPos="right"
+        class="btn-secondary"
+        style="width: 80px !important"
+        type="button"
+        (click)="edit()"
+      ></button>
+      <!-- Edit Mode -->
+      <button
+        *ngIf="editMode && !newObject"
+        pButton
+        label="Cancelar"
+        class="btn-secondary"
+        style="width: 80px !important"
+        type="button"
+        (click)="cancel()"
+      ></button>
+      <button
+        *ngIf="editMode && !newObject"
+        pButton
+        label="Salvar"
+        class="btn-primary"
+        style="width: 80px !important"
+        type="button"
+        [disabled]="entityForm.pristine || entityForm.invalid"
+        (click)="save()"
+        pTooltip="Salvar Loja"
+      ></button>
+      <button
+        *ngIf="newObject && !viewOnly"
+        pButton
+        label="Criar"
+        class="btn-primary"
+        style="width: 80px !important"
+        type="button"
+        (click)="save()"
+        pTooltip="Criar Nova Loja"
+        [disabled]="entityForm.invalid"
+      ></button>
+    </div>
+  </div>
+  <hr />
+
+  <!-- Inputs -->
+  <!-- Inputs -->
+  <form [formGroup]="entityForm">
+    <div class="input-container">
+      <!-- Main Inputs -->
+      <div class="fields-container">
+        <div class="field-container">
+          <label class="label-field" for="is_active">Status</label>
+          <p-inputSwitch
+            formControlName="is_active"
+            class="inputSwitch-field"
+            id="is_active"
+          ></p-inputSwitch>
+          <label
+            class="inputSwitch-label"
+            *ngIf="
+              (entityForm.get('is_active')?.valueChanges | async) === false
+            "
+            for="is_active"
+            >Inativo</label
+          >
+          <label
+            class="inputSwitch-label"
+            *ngIf="(entityForm.get('is_active')?.valueChanges | async) === true"
+            for="is_active"
+            >Ativo</label
+          >
+        </div>
+        <div class="field-container">
+          <label class="label-field" for="document">CNPJ</label>
+          <span *ngIf="!newObject" class="span-field">
+            {{
+              (entityForm.get("document")?.value?.substr(0, 2) || "") +
+                "." +
+                (entityForm.get("document")?.value?.substr(2, 3) || "") +
+                "." +
+                (entityForm.get("document")?.value?.substr(5, 3) || "") +
+                "/" +
+                (entityForm.get("document")?.value?.substr(8, 4) || "") +
+                "-" +
+                (entityForm.get("document")?.value?.substr(12, 2) || "")
+            }}
+          </span>
+          <p-inputMask
+            *ngIf="newObject"
+            mask="99.999.999/9999-99"
+            id="document"
+            formControlName="document"
+            placeholder="xx.xxx.xxx/xxxx-xx"
+            class="input-mask-field"
+            pTooltip="Digite apenas os números do CNPJ"
+          ></p-inputMask>
+        </div>
+        <div class="field-container">
+          <label class="label-field" for="name">Nome</label>
+          <span *ngIf="!editMode" class="span-field">
+            {{
+              entityForm.get("name")?.value.length > 80
+                ? (entityForm.get("name")?.value | slice : 0 : 80) + "..."
+                : entityForm.get("name")?.value
+            }}
+          </span>
+          <input
+            pInputText
+            *ngIf="editMode"
+            formControlName="name"
+            type="text"
+            class="input-field"
+            id="name"
+            pTooltip="Nome da loja que será exibido para o consumidores, influenciadores e comerciantes"
+          />
+        </div>
+        <div formGroupName="address">
+          <div class="field-container">
+            <label class="label-field" for="zipcode">CEP</label>
+            <span *ngIf="!editMode" class="span-field">
+              {{
+                (entityForm.get("address.zipcode")?.value?.slice(0, 2) || "") +
+                  "." +
+                  (entityForm.get("address.zipcode")?.value?.slice(2, 5) ||
+                    "") +
+                  "-" +
+                  (entityForm.get("address.zipcode")?.value?.slice(5, 8) || "")
+              }}
+            </span>
+            <p-inputMask
+              *ngIf="editMode"
+              mask="99.999-999"
+              id="zipcode"
+              formControlName="zipcode"
+              placeholder="xx.xxx-xx"
+              class="input-mask-field"
+              pTooltip="Digite apenas os números do CEP"
+            ></p-inputMask>
+            <button
+              *ngIf="editMode"
+              pButton
+              type="button"
+              label=""
+              icon="pi pi-search"
+              class="button-field-search"
+              (click)="searchZipcode()"
+              [disabled]="entityForm.get('address.zipcode')?.invalid"
+            ></button>
+          </div>
+          <div class="field-container">
+            <label class="label-field" for="state">Estado</label>
+            <p-dropdown
+              formControlName="state"
+              [options]="states"
+              optionLabel="name"
+              optionValue="id"
+              placeholder="Selecione"
+              class="dropdown-field"
+              [readonly]="!editMode"
+              (onChange)="getCities($event.value, 0)"
+            ></p-dropdown>
+          </div>
+          <div class="field-container">
+            <label class="label-field" for="city">Cidade</label>
+            <p-dropdown
+              formControlName="city"
+              [options]="cities"
+              optionLabel="name"
+              optionValue="id"
+              placeholder="Selecione"
+              class="dropdown-field"
+              [readonly]="!editMode"
+            ></p-dropdown>
+          </div>
+          <div class="field-container">
+            <label class="label-field" for="neighborhood">Bairro</label>
+            <span *ngIf="!editMode" class="span-field">
+              {{
+                entityForm.get("address.neighborhood")?.value.length > 80
+                  ? (entityForm.get("address.neighborhood")?.value
+                      | slice : 0 : 80) + "..."
+                  : entityForm.get("address.neighborhood")?.value
+              }}
+            </span>
+            <input
+              pInputText
+              *ngIf="editMode"
+              formControlName="neighborhood"
+              type="text"
+              class="input-field"
+            />
+          </div>
+          <div class="field-container">
+            <label class="label-field" for="street">Logadouro</label>
+            <span *ngIf="!editMode" class="span-field">
+              {{
+                entityForm.get("address.street")?.value.length > 80
+                  ? (entityForm.get("address.street")?.value | slice : 0 : 80) +
+                    "..."
+                  : entityForm.get("address.street")?.value
+              }}
+            </span>
+            <input
+              pInputText
+              *ngIf="editMode"
+              formControlName="street"
+              type="text"
+              class="input-field"
+            />
+          </div>
+          <div class="field-container">
+            <label class="label-field" for="number">Número</label>
+            <span *ngIf="!editMode" class="span-field">
+              {{ entityForm.get("address.number")?.value }}
+            </span>
+            <input
+              id="number"
+              pInputText
+              *ngIf="editMode"
+              formControlName="number"
+              type="text"
+              class="input-field"
+            />
+          </div>
+          <div class="field-container">
+            <label class="label-field" for="complement">Complemento</label>
+            <span *ngIf="!editMode" class="span-field">
+              {{
+                entityForm.get("address.complement")?.value.length > 80
+                  ? (entityForm.get("address.complement")?.value
+                      | slice : 0 : 80) + "..."
+                  : entityForm.get("address.complement")?.value
+              }}
+            </span>
+            <input
+              id="complement"
+              pInputText
+              *ngIf="editMode"
+              formControlName="complement"
+              type="text"
+              class="input-field"
+            />
+          </div>
+        </div>
+      </div>
+      <!-- Divisor
+      <div class="vertical-line"></div>
+      Side Inputs
+      <div class="side-container"></div> -->
+    </div>
+    <div class="footer">
+      <button
+        pButton
+        label=""
+        icon="pi pi-arrow-left"
+        class="w-110 btn-secondary"
+        type="button"
+        (click)="back()"
+        pTooltip="Voltar"
+      ></button>
+    </div>
+  </form>
+</div>

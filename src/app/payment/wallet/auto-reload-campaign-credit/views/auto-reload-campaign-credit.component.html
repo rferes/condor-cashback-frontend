@@ -1,0 +1,163 @@
+<p-toast class="custom-toast"></p-toast>
+<div class="container">
+  <h3 class="">Recarga de Créditos</h3>
+  <div *ngIf="!isLoading" style="width: 98%">
+    <div class="topic-container">
+      <div class="topic-title">
+        <h5>Créditos de Campanha</h5>
+      </div>
+      <div class="btns-container-medium">
+        <!-- Read Mode -->
+        <button
+          *ngIf="!editMode && creditCards.length > 0"
+          pButton
+          label="Editar"
+          icon="pi pi-pencil"
+          iconPos="right"
+          class="w-80 btn-secondary"
+          type="button"
+          style="width: 100px !important"
+          (click)="edit()"
+        ></button>
+        <!-- Edit Mode -->
+        <button
+          *ngIf="editMode"
+          pButton
+          label="Cancelar"
+          class="w-80 btn-secondary"
+          type="button"
+          style="width: 100px !important"
+          (click)="cancel()"
+        ></button>
+        <button
+          *ngIf="editMode"
+          pButton
+          label="Salvar"
+          class="w-80 btn-primary"
+          type="button"
+          [disabled]="entityForm.pristine || entityForm.invalid"
+          (click)="save()"
+          style="width: 100px !important"
+          pTooltip="Salvar Coleção"
+        ></button>
+      </div>
+    </div>
+    <hr />
+
+    <!-- Inputs -->
+    <form [formGroup]="entityForm">
+      <div class="input-container">
+        <!-- Main Inputs -->
+        <div *ngIf="creditCards.length > 0" class="fields-container">
+          <div class="field-container">
+            <label class="label-field" for="auto_reload"
+              >Recarga de Créditos</label
+            >
+            <p-inputSwitch
+              formControlName="auto_reload"
+              class="inputSwitch-field"
+              id="auto_reload"
+              pTooltip="Ativa ou inativa a recarga automática de créditos"
+            ></p-inputSwitch>
+            <label
+              class="inputSwitch-label"
+              *ngIf="
+                (entityForm.get('auto_reload')?.valueChanges | async) === false
+              "
+              for="auto_reload"
+              >Inativo</label
+            >
+            <label
+              class="inputSwitch-label"
+              *ngIf="
+                (entityForm.get('auto_reload')?.valueChanges | async) === true
+              "
+              for="auto_reload"
+              >Ativo</label
+            >
+          </div>
+          <div class="field-container">
+            <label class="label-field" for="credit_card"
+              >Cartão de Crédito</label
+            >
+            <p-dropdown
+              formControlName="credit_card"
+              [options]="creditCards"
+              optionLabel="last_four_digits"
+              optionValue="id"
+              placeholder="Selecione"
+              class="dropdown-field"
+              pTooltip="Cartão para cobrança automática da recarga"
+            ></p-dropdown>
+          </div>
+          <div class="field-container">
+            <label class="label-field" for="min_balance">Saldo Mínimo</label>
+            <span *ngIf="!editMode" class="span-field">
+              {{ entityForm.get("min_balance")?.value | currency : "BRL" }}
+            </span>
+            <p-inputNumber
+              *ngIf="editMode"
+              formControlName="min_balance"
+              inputId="min_balance_currency-br"
+              mode="currency"
+              currency="BRL"
+              locale="pt-BR"
+              [min]="this.entityForm.get('system_min_balance')?.value"
+              pTooltip="Quando o saldo atingir este valor, a recarga automática será realizada"
+            ></p-inputNumber>
+          </div>
+          <div class="field-container">
+            <label class="label-field" for="add_balance"
+              >Valor da Recarga</label
+            >
+            <span *ngIf="!editMode" class="span-field">
+              {{ entityForm.get("add_balance")?.value | currency : "BRL" }}
+            </span>
+            <p-inputNumber
+              formControlName="add_balance"
+              inputId="add_balance_currency-br"
+              mode="currency"
+              currency="BRL"
+              locale="pt-BR"
+              [min]="this.entityForm.get('system_add_balance')?.value"
+              *ngIf="editMode"
+              pTooltip="Valor da recarga automática"
+            ></p-inputNumber>
+          </div>
+        </div>
+        <div *ngIf="creditCards.length === 0" class="fields-container">
+          <div>
+            <div>
+              <button
+                pButton
+                label="Adicionar Cartão de Crédito"
+                icon="pi pi-plus"
+                class="btn-primary"
+                type="button"
+                [routerLink]="['/payment/credit-card-view', 'new']"
+              ></button>
+            </div>
+            <span
+              >Atenção, você ainda não possui nenhum cartão de crédito
+              registrado, para configurar a recarga automática você precisa ter
+              um cartão de crédito cadastrado.</span
+            >
+          </div>
+        </div>
+
+        <!-- Divisor
+      <div class="vertical-line"></div>
+      Side Inputs
+      <div class="side-container"></div> -->
+      </div>
+    </form>
+  </div>
+  <p-progressSpinner
+    *ngIf="isLoading"
+    styleClass="w-4rem h-4rem"
+    strokeWidth="8"
+    fill="var(--surface-ground)"
+    animationDuration="0.8s"
+    class="centralize"
+  />
+</div>

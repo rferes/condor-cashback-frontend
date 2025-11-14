@@ -1,0 +1,455 @@
+<p-toast class="custom-toast"></p-toast>
+<div class="container">
+  <h3 pTooltip="ID: {{ entity.id }} ">Carteira</h3>
+  <div *ngIf="user_mode == 'merchant'">
+    <div class="topic-container">
+      <div class="topic-title">
+        <h5>Créditos de Campanha</h5>
+      </div>
+    </div>
+    <hr />
+
+    <!-- Inputs -->
+    <!-- Inputs -->
+    <form [formGroup]="entityForm">
+      <div class="input-container">
+        <!-- Main Inputs -->
+        <div
+          *ngIf="entity.campaign_credit_auto_reload"
+          class="fields-container"
+        >
+          <div class="field-container">
+            <label
+              class="label-field"
+              for="balance"
+              pTooltip="Créditos que foram adquiridos mas ainda não estão disponíveis para uso"
+              >Créditos Provisionado</label
+            >
+            <span class="span-field">
+              {{ entity.campaign_credits_provisional | currency : "BRL" }}
+            </span>
+            <label
+              class="label-field"
+              for="campaign_credits_granted"
+              pTooltip="Créditos que já estão disponíveis para uso em campanhas"
+              >Créditos Disponíveis</label
+            >
+            <span class="span-field">
+              {{ entity.campaign_credits_granted | currency : "BRL" }}
+            </span>
+          </div>
+          <div class="field-container">
+            <label
+              class="label-field"
+              for="campaign_credits_granted"
+              pTooltip="Créditos que estão em processo de transferência ou processamento"
+              >Créditos em Transação</label
+            >
+            <span class="span-field">
+              {{
+                entity.campaign_credits_processing_transaction
+                  | currency : "BRL"
+              }}
+            </span>
+            <label
+              class="label-field"
+              for="campaign_credits_used"
+              pTooltip="Total de créditos já utilizados em campanhas"
+              >Créditos Usados</label
+            >
+            <span class="span-field">
+              {{ entity.campaign_credits_used | currency : "BRL" }}
+            </span>
+          </div>
+          <div class="field-container">
+            <label
+              class="label-field"
+              for="expiration_date"
+              pTooltip="Créditos concedidos que expiram em 30 dias"
+              >Créditos há Vencer</label
+            >
+            <span class="span-field" for="campaign_credits_expiring_soon">
+              {{
+                entity_expiring_soon.campaign_credits_expiring_soon
+                  | currency : "BRL"
+              }}
+            </span>
+            <label
+              class="label-field"
+              for="expiration_date"
+              pTooltip="Créditos que não foram usados e expiraram"
+              >Créditos Expirados</label
+            >
+            <span class="span-field" for="campaign_credits_expiring_soon">
+              {{ entity.campaign_credits_expired | currency : "BRL" }}
+            </span>
+          </div>
+          <div class="field-container">
+            <label
+              class="label-field"
+              for="campaign_credit_auto_reload.auto_reload"
+              pTooltip="Indica se a recarga automática está ativada para o cartão de crédito vinculado a esta carteira"
+              >Auto Recarga</label
+            >
+            <label
+              class="inputSwitch-label"
+              style="color: red"
+              *ngIf="entity.campaign_credit_auto_reload.auto_reload === false"
+              for="campaign_credit_auto_reload.auto_reload"
+              pTooltip="Auto Recarga Inativa"
+              ><b>Inativa</b></label
+            >
+            <label
+              class="inputSwitch-label"
+              *ngIf="entity.campaign_credit_auto_reload.auto_reload === true"
+              for="campaign_credit_auto_reload.auto_reload"
+              style="color: rgb(0, 188, 3)"
+              pTooltip="Auto Recarga Ativa"
+              ><b>Ativa</b></label
+            >
+          </div>
+        </div>
+        <div
+          *ngIf="!entity.campaign_credit_auto_reload"
+          class="fields-container"
+        >
+          <div>
+            <span
+              >&nbsp;&nbsp;Atenção, você precisa configurar a recarga automática
+              para que o saldo seja atualizado automaticamente.</span
+            >
+            &nbsp;
+          </div>
+        </div>
+
+        <!-- Divisor
+      <div class="vertical-line"></div>
+      Side Inputs
+      <div class="side-container"></div> -->
+      </div>
+    </form>
+    <br />
+    <br />
+    <div *ngIf="!isLoading" style="width: 98%">
+      <div class="topic-container">
+        <div class="topic-title">
+          <h5>Resgatar Créditos de Campanha</h5>
+        </div>
+      </div>
+      <hr />
+
+      <!-- Inputs -->
+      <!-- Inputs -->
+      <form [formGroup]="withdrawForm">
+        <div class="input-container">
+          <!-- Main Inputs -->
+          <div *ngIf="pixKeys.length > 0" class="fields-container">
+            <div class="field-container">
+              <label class="label-field" for="pix_key">Chave Pix</label>
+              <p-dropdown
+                formControlName="pix_key"
+                [options]="pixKeys"
+                optionLabel="pix_key"
+                optionValue="id"
+                placeholder="Selecione"
+                class="dropdown-field"
+                pTooltip="Chave Pix para resgate de Créditos de Campanha"
+              ></p-dropdown>
+            </div>
+            <div class="field-container">
+              <label class="label-field" for="amount">Valor</label>
+              <p-inputNumber
+                formControlName="amount"
+                inputId="amount_currency-br"
+                mode="currency"
+                currency="BRL"
+                locale="pt-BR"
+                [min]="0"
+                [max]="entity.campaign_credits_granted"
+                (ngModelChange)="withdrawTax()"
+                pTooltip="Valor a ser descontado do saldo de créditos concedidos da carteira"
+              ></p-inputNumber>
+            </div>
+            <div class="field-container">
+              <label
+                class="label-field"
+                for="tax"
+                pTooltip="Custo da transferência de créditos"
+                >Taxa de Transferência</label
+              >
+              <span class="span-field" for="tax">
+                <span style="color: red"
+                  >{{ tax_withdraw | currency : "BRL" }} - ({{
+                    tax_withdraw_percentage | number : "1.2-2"
+                  }}%)</span
+                >
+              </span>
+            </div>
+            <div class="field-container">
+              <label
+                class="label-field"
+                for="tax"
+                pTooltip="Valor líquido a ser resgatado"
+                >Valor Líquido</label
+              >
+              <span class="span-field" for="tax">
+                {{
+                  withdrawForm.value.amount - tax_withdraw | currency : "BRL"
+                }}
+              </span>
+            </div>
+          </div>
+          <div *ngIf="pixKeys.length === 0" class="fields-container">
+            <div>
+              <div>
+                <button
+                  pButton
+                  label="Adicionar Chave Pix"
+                  icon="pi pi-plus"
+                  class="btn-primary"
+                  type="button"
+                  [routerLink]="['/payment/pix-key-view', 'new']"
+                ></button>
+              </div>
+              <span
+                >Atenção, você ainda não possui nenhuma Chave Pix registrada,
+                para resgatar saldo você precisa ter uma Chave Pix
+                cadastrada.</span
+              >
+            </div>
+          </div>
+          <!-- Divisor
+      <div class="vertical-line"></div>
+      Side Inputs
+      <div class="side-container"></div> -->
+        </div>
+      </form>
+      <div style="width: 80%">
+        <div class="topic-container">
+          <div class="topic-title"></div>
+          <div *ngIf="pixKeys.length > 0" class="btns-container-small">
+            <!-- Read Mode -->
+            <button
+              pButton
+              label="Resgatar"
+              class="w-80 btn-primary"
+              type="button"
+              [disabled]="withdrawForm.invalid"
+              (click)="withdraw()"
+              pTooltip="Resgatar Créditos de Campanha por Pix"
+            ></button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p-progressSpinner
+      *ngIf="isLoading"
+      styleClass="w-4rem h-4rem"
+      strokeWidth="8"
+      fill="var(--surface-ground)"
+      animationDuration="0.8s"
+      class="centralize"
+    />
+  </div>
+  <div *ngIf="user_mode == 'influencer'">
+    <div class="topic-container">
+      <div class="topic-title">
+        <h5 pTooltip="ID: {{ entity.id }} ">Red Créditos</h5>
+      </div>
+    </div>
+    <hr />
+
+    <!-- Inputs -->
+    <!-- Inputs -->
+    <form [formGroup]="entityForm">
+      <div class="input-container">
+        <!-- Main Inputs -->
+        <div class="fields-container">
+          <div class="field-container">
+            <label
+              class="label-field"
+              for="balance"
+              pTooltip="Créditos que foram gerados mas ainda não estão disponíveis para resgate"
+              >Créditos Provisionado</label
+            >
+            <span class="span-field">
+              {{ entity.red_comission_provisional | currency : "BRL" }}
+            </span>
+            <label
+              class="label-field"
+              for="last_recharged"
+              pTooltip="Créditos que já estão disponíveis para resgate"
+              >Créditos Disponíveis</label
+            >
+            <span class="span-field" for="last_recharged">
+              {{ entity.red_comission_granted | currency : "BRL" }}
+            </span>
+          </div>
+          <div
+            *ngIf="entity.red_comission_processing_transaction"
+            class="field-container"
+          >
+            <label
+              class="label-field"
+              for="last_recharge"
+              pTooltip="Créditos que estão em processo de transferência ou processamento"
+              >Créditos em Transação</label
+            >
+            <span class="span-field">
+              {{
+                entity.red_comission_processing_transaction | currency : "BRL"
+              }}
+            </span>
+            <label
+              class="label-field"
+              for="last_recharge"
+              pTooltip="Total de créditos já resgatados"
+              >Créditos Resgatados</label
+            >
+            <span class="span-field">
+              {{ entity.red_comission_redeemed | currency : "BRL" }}
+            </span>
+          </div>
+          <div class="field-container">
+            <label
+              class="label-field"
+              for="expiration_date"
+              pTooltip="Créditos concedidos que expiram em 30 dias"
+              >Créditos há Vencer</label
+            >
+            <span class="span-field" for="expiration_date">
+              {{
+                entity_expiring_soon.red_comission_expiring_soon
+                  | currency : "BRL"
+              }}
+            </span>
+            <label
+              class="label-field"
+              for="last_recharged"
+              pTooltip="Créditos que não foram resgatados e expiraram"
+              >Créditos Expirados</label
+            >
+            <span class="span-field" for="last_recharged">
+              {{ entity.red_comission_expired | currency : "BRL" }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="!entity.campaign_credit_auto_reload" class="fields-container">
+        <div>
+          <span
+            >&nbsp;&nbsp;Atenção, você precisa configurar a recarga automática
+            para que o saldo seja atualizado automaticamente.</span
+          >
+          &nbsp;
+        </div>
+      </div>
+
+      <!-- Divisor
+      <div class="vertical-line"></div>
+      Side Inputs
+      <div class="side-container"></div> -->
+    </form>
+
+    <br />
+    <br />
+    <div *ngIf="!isLoading" style="width: 95%">
+      <div class="topic-container">
+        <div class="topic-title">
+          <h5>Resgatar Red Créditos</h5>
+        </div>
+      </div>
+      <hr />
+
+      <!-- Inputs -->
+      <!-- Inputs -->
+      <form [formGroup]="withdrawForm">
+        <div class="input-container">
+          <!-- Main Inputs -->
+          <div *ngIf="pixKeys.length > 0" class="fields-container">
+            <div class="field-container">
+              <label class="label-field" for="pix_key">Chave Pix</label>
+              <p-dropdown
+                formControlName="pix_key"
+                [options]="pixKeys"
+                optionLabel="pix_key"
+                optionValue="id"
+                placeholder="Selecione"
+                class="dropdown-field"
+                pTooltip="Chave Pix para resgate de Red Créditos"
+              ></p-dropdown>
+            </div>
+            <div class="field-container">
+              <label class="label-field" for="amount">Valor</label>
+              <p-inputNumber
+                formControlName="amount"
+                inputId="amount_currency-br"
+                mode="currency"
+                currency="BRL"
+                locale="pt-BR"
+                [min]="0"
+                [max]="entity.red_comission_granted"
+                pTooltip="Valor a ser descontado do saldo de créditos concedidos da carteira"
+              ></p-inputNumber>
+            </div>
+          </div>
+          <div *ngIf="pixKeys.length === 0" class="fields-container">
+            <div>
+              <div>
+                <button
+                  pButton
+                  label="Adicionar Chave Pix"
+                  icon="pi pi-plus"
+                  class="btn-primary"
+                  type="button"
+                  [routerLink]="['/payment/pix-key-view', 'new']"
+                ></button>
+              </div>
+              <span
+                >Atenção, você ainda não possui nenhuma Chave Pix registrada,
+                para resgatar saldo você precisa ter uma Chave Pix
+                cadastrada.</span
+              >
+            </div>
+          </div>
+          <!-- Divisor
+        <div class="vertical-line"></div>
+        Side Inputs
+        <div class="side-container"></div> -->
+        </div>
+      </form>
+      <div style="width: 100%">
+        <div class="topic-container">
+          <div class="topic-title"></div>
+          <div
+            *ngIf="pixKeys.length > 0"
+            class="btns-container-small"
+            style="display: flex; justify-content: center"
+          >
+            <!-- Read Mode -->
+            <button
+              pButton
+              label="Resgatar"
+              class="w-80 btn-primary"
+              type="button"
+              [disabled]="withdrawForm.invalid"
+              (click)="withdraw()"
+              pTooltip="Resgatar Red Créditos por Pix"
+            ></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p-progressSpinner
+      *ngIf="isLoading"
+      styleClass="w-4rem h-4rem"
+      strokeWidth="8"
+      fill="var(--surface-ground)"
+      animationDuration="0.8s"
+      class="centralize"
+    />
+  </div>
+</div>
+<br />

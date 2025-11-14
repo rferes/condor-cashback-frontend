@@ -1,0 +1,258 @@
+<p-toast class="custom-toast"></p-toast>
+<p-confirmDialog class="custom-dialog"></p-confirmDialog>
+<div class="container">
+  <h3>Gerenciamento de Chaves de API</h3>
+  <div *ngIf="showCreateForm" class="topic-container">
+    <div class="topic-title">
+      <h5>Criar novo par de chaves</h5>
+      <button
+        pButton
+        type="button"
+        icon="pi pi-times"
+        class="p-button-rounded p-button-text p-button-sm"
+        (click)="closeCreateForm()"
+        style="position: absolute; right: 1rem"
+      ></button>
+    </div>
+  </div>
+  <hr *ngIf="!showGenerateNewApiKey && showCreateForm" />
+  <div *ngIf="showCreateForm" class="input-container">
+    <!-- Adicionar o formulário aqui -->
+    <div class="fields-container">
+      <div
+        *ngIf="
+          apiKeys.length >= 5 && !showGenerateNewApiKey && showCreateForm;
+          else showForm
+        "
+      >
+        <div class="alert-container">
+          <p class="alert-message">
+            Você atingiu o limite máximo de 5 chaves de API. Para criar uma nova
+            chave, exclua alguma chave existente.
+          </p>
+        </div>
+      </div>
+
+      <ng-template #showForm>
+        <form [formGroup]="apiKeyForm" (ngSubmit)="createApiKey()">
+          <div class="field-container">
+            <label class="label-field" for="name">Nome da Chave *</label>
+            <input
+              id="name"
+              type="text"
+              pInputText
+              class="input-field"
+              formControlName="name"
+              placeholder="Digite o nome da chave"
+              [disabled]="showGenerateNewApiKey"
+            />
+          </div>
+
+          <div class="field-container">
+            <label class="label-field" for="description">Descrição</label>
+            <textarea
+              id="description"
+              pInputTextarea
+              formControlName="description"
+              placeholder="Digite uma descrição (opcional)"
+              class="input-textarea-field"
+              [readonly]="showGenerateNewApiKey"
+            ></textarea>
+          </div>
+
+          <div class="field-container">
+            <label class="label-field" for="expirationDays"
+              >Dias de Validade *</label
+            >
+            <input
+              id="expirationDays"
+              type="number"
+              pInputText
+              formControlName="expirationDays"
+              min="1"
+              max="365"
+              placeholder="Digite o número de dias"
+              class="input-field"
+              [disabled]="showGenerateNewApiKey"
+            />
+          </div>
+          <div class="field-container" *ngIf="showGenerateNewApiKey">
+            <label class="label-field" for="publicKey">ID das Chaves</label>
+            <label
+              class="label-field"
+              for="publicKey"
+              style="font-size: 0.75rem"
+              >{{ generatedKeys?.id }}</label
+            >
+          </div>
+          <div class="field-container" *ngIf="showGenerateNewApiKey">
+            <label class="label-field" for="publicKey">Chave Pública</label>
+            <button
+              pButton
+              type="button"
+              icon="pi pi-copy"
+              class="p-button-text p-button-sm"
+              (click)="copyToClipboard(generatedKeys?.publicKey || '')"
+              pTooltip="Copiar chave"
+            ></button>
+          </div>
+
+          <div class="field-container" *ngIf="showGenerateNewApiKey">
+            <label class="label-field" for="privateKey">Chave Privada</label>
+            <button
+              pButton
+              type="button"
+              icon="pi pi-copy"
+              class="p-button-text p-button-sm"
+              (click)="copyToClipboard(generatedKeys?.privateKey || '')"
+              pTooltip="Copiar chave"
+            ></button>
+          </div>
+
+          <div class="btns-container">
+            <button
+              *ngIf="!showGenerateNewApiKey"
+              pButton
+              type="submit"
+              label="Criar Chave"
+              class="btn-primary"
+              [disabled]="!apiKeyForm.valid"
+              style="float: right; width: 150px"
+            ></button>
+          </div>
+        </form>
+      </ng-template>
+    </div>
+  </div>
+  <br *ngIf="showCreateForm" />
+
+  <div class="topic-container">
+    <div class="topic-title">
+      <h5>Lista de Chaves de API</h5>
+    </div>
+    <div class="btns-container-small">
+      <button
+        *ngIf="!showCreateForm"
+        pButton
+        label="Gerar Nova Chave"
+        type="button"
+        pTooltip="Gerar uma nova chave de API"
+        class="w-80 btn-primary"
+        (click)="generateNewApiKey()"
+      ></button>
+    </div>
+  </div>
+
+  <hr />
+  <div class="view-container col-12 wp-95">
+    <div class="col-12">
+      <div class="table-list" *ngIf="apiKeys && apiKeys.length > 0">
+        <p-table
+          [value]="filteredApiKeys"
+          [globalFilterFields]="[
+            'id',
+            'name',
+            'status',
+            'created_at',
+            'expires_at'
+          ]"
+          [sortField]="'name'"
+          [sortOrder]="1"
+          [paginator]="true"
+          [rows]="25"
+        >
+          <ng-template pTemplate="caption">
+            <div class="input-icon">
+              <i class="pi pi-search ml-10"></i>
+              <input
+                pInputText
+                type="text"
+                [(ngModel)]="globalFilterApiKeys"
+                (input)="applyFilterApiKeys()"
+                placeholder="Pesquisar"
+              />
+            </div>
+            <button
+              pButton
+              type="button"
+              pTooltip="Limpar o filtro"
+              tooltipPosition="top"
+              tooltipStyleClass="my-tooltip"
+              icon="pi pi-filter-slash"
+              (click)="clearGlobalFilter()"
+            ></button>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th pSortableColumn="name">
+                Nome
+                <p-sortIcon field="name"></p-sortIcon>
+              </th>
+              <th class="w-321" pSortableColumn="id">
+                ID <p-sortIcon field="id"></p-sortIcon>
+              </th>
+              <th class="w-99" pSortableColumn="status">
+                Status <p-sortIcon field="status"></p-sortIcon>
+              </th>
+              <th class="w-151" pSortableColumn="createdAt">
+                Criada em <p-sortIcon field="createdAt"></p-sortIcon>
+              </th>
+              <th class="w-151" pSortableColumn="expiresAt">
+                Expira em <p-sortIcon field="expiresAt"></p-sortIcon>
+              </th>
+              <th class="w-81 text-center">Ação</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-apiKey let-i="rowIndex">
+            <tr>
+              <td>{{ apiKey.name }}</td>
+              <td>{{ apiKey.id }}</td>
+              <td>
+                <p-tag
+                  *ngIf="apiKey.status == 'active'"
+                  class="active"
+                  value="Ativa"
+                  pTooltip="Chave Ativa"
+                ></p-tag>
+                <p-tag
+                  *ngIf="apiKey.status == 'revoked'"
+                  class="inactive"
+                  value="Inativa"
+                  pTooltip="Chave Inativa"
+                ></p-tag>
+                <p-tag
+                  *ngIf="apiKey.status == 'expired'"
+                  class="expired"
+                  value="Expirada"
+                  pTooltip="Chave Expirada"
+                ></p-tag>
+              </td>
+              <td>
+                {{ apiKey.created_at | date : "dd/MM/yyyy HH:mm" }}
+              </td>
+              <td>
+                {{ apiKey.expires_at | date : "dd/MM/yyyy HH:mm" }}
+              </td>
+              <td class="text-center">
+                <button
+                  pButton
+                  pRipple
+                  pTooltip="Excluir chave"
+                  tooltipPosition="left"
+                  tooltipStyleClass="my-tooltip"
+                  type="button"
+                  icon="pi pi-trash"
+                  class="p-button-rounded p-button-text p-button-danger p-button-sm"
+                  (click)="deleteApiKey(i, $event)"
+                ></button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+    <div class="col-12" *ngIf="apiKeys?.length === 0">
+      <span>Você ainda não possui nenhuma chave de API!</span>
+    </div>
+  </div>
+</div>

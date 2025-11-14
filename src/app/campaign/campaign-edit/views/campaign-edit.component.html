@@ -1,0 +1,1689 @@
+<p-toast class="custom-toast"></p-toast>
+<div class="container">
+  <h3 class="">Campanhas</h3>
+  <div class="topic-container">
+    <div class="topic-title">
+      <h5 pTooltip="ID: {{ entityForm.get('id')?.value }}">Campanha</h5>
+    </div>
+    <div class="btns-container-medium">
+      <!-- Edit Mode -->
+      <button
+        *ngIf="!newObject"
+        pButton
+        label="Voltar"
+        class="w-80 btn-secondary"
+        type="button"
+        style="width: 100px !important"
+        (click)="cancel()"
+        pTooltip="Voltar para lista de campanhas sem salvar alterações"
+      ></button>
+      <button
+        *ngIf="newObject"
+        pButton
+        label="Cancelar"
+        class="w-80 btn-secondary"
+        type="button"
+        style="width: 100px !important"
+        (click)="cancel()"
+        pTooltip="Cancelar e descartar rascunho"
+      ></button>
+    </div>
+  </div>
+  <hr />
+
+  <!-- Inputs -->
+  <form
+    action="/upload"
+    method="post"
+    enctype="multipart/form-data"
+    [formGroup]="entityForm"
+  >
+    <p-tabView
+      class="campaign-edit"
+      (onChange)="panelChange()"
+      [(activeIndex)]="activeIndex"
+    >
+      <p-tabPanel header="Dados da Campanha"> </p-tabPanel>
+      <p-tabPanel header="Patrocinador"> </p-tabPanel>
+      <p-tabPanel header="Divulgadores"> </p-tabPanel>
+      <p-tabPanel header="Consumidores"></p-tabPanel>
+      <p-tabPanel header="Regras"> </p-tabPanel>
+      <p-tabPanel header="Bonificações"> </p-tabPanel>
+      <p-tabPanel header="Finalização"> </p-tabPanel>
+    </p-tabView>
+
+    <div>
+      <!-- Main Inputs -->
+      <div class="input-container" *ngIf="activeIndex == 0">
+        <div class="fields-container">
+          <div class="field-container">
+            <label class="label-field" for="name"
+              ><b>Nome</b> da Campanha *</label
+            >
+            <input
+              pInputText
+              formControlName="name"
+              type="text"
+              class="input-field"
+              id="name"
+              pTooltip="Digite um nome claro e objetivo que identifique a promoção (ex: Cashback Verão 2024, 10% Off em Eletrônicos)"
+              maxlength="60"
+            />
+          </div>
+          <div class="field-container">
+            <label class="label-field" for="name"
+              >Data de <b>Início</b> *</label
+            >
+            <p-calendar
+              inputId="start_date"
+              (onSelect)="start_date_change()"
+              (onBlur)="start_date_change()"
+              name="start_date"
+              formControlName="start_date"
+              placeholder="Início"
+              [minDate]="minDateStart"
+              [showIcon]="true"
+              [touchUI]="true"
+              dateFormat="dd/mm/yy"
+            ></p-calendar>
+          </div>
+          <div class="field-container">
+            <label class="label-field" for="name">Data de <b>Fim</b> *</label>
+            <p-calendar
+              inputId="end_date"
+              (onSelect)="end_date_change()"
+              (onBlur)="end_date_change()"
+              (onFocus)="dataFinishMinSet()"
+              formControlName="end_date"
+              placeholder="Fim"
+              [minDate]="minDateFinish"
+              [showIcon]="true"
+              [touchUI]="true"
+              dateFormat="dd/mm/yy"
+            ></p-calendar>
+          </div>
+          <div class="field-container">
+            <label class="label-field" for="description"
+              ><b>Descrição</b> da Campanha *</label
+            >
+            <textarea
+              pInputTextarea
+              formControlName="description"
+              type="text"
+              class="input-textarea-field"
+              id="description"
+              pTooltip="Digite uma descrição clara e objetiva que identifique a promoção"
+              maxlength="300"
+            ></textarea>
+          </div>
+        </div>
+        <!-- Divisor -->
+        <div class="vertical-line"></div>
+        <!-- Side Inputs -->
+        <div class="side-container">
+          <div class="fields-container">
+            <div class="image-cropper-container">
+              <label class="label-field" for="banner">Banner</label>
+              <img
+                *ngIf="!imageLoaded && !newObject"
+                [src]="
+                  entityForm.get('banner')?.value.startsWith('http')
+                    ? entityForm.get('banner')?.value
+                    : baseUrl + 'media/' + entityForm.get('banner')?.value
+                "
+                alt="Imagem do Comerciante"
+                class="image-field"
+                pTooltip="Imagem da Campanha"
+              />
+              <img
+                *ngIf="!imageLoaded && newObject"
+                [src]="entityForm.get('banner')?.value"
+                alt="Imagem do Comerciante"
+                class="image-field"
+                pTooltip="Imagem da Campanha"
+              />
+              <div class="image-cropper-field">
+                <image-cropper
+                  *ngIf="imageLoaded"
+                  [imageChangedEvent]="imageChangedEvent"
+                  [maintainAspectRatio]="true"
+                  [aspectRatio]="1"
+                  [resizeToWidth]="600"
+                  format="png"
+                  (imageCropped)="onImageCropped($event)"
+                  class="image-cropper-cropper"
+                ></image-cropper>
+
+                <p *ngIf="fileName">
+                  <a href="javascript:void(0)" (click)="cancelImage()">X</a
+                  >{{ fileName }}
+                </p>
+                <input
+                  type="file"
+                  id="file"
+                  accept=".jpg, .jpeg, .png"
+                  (change)="onFileSelected($event)"
+                />
+                <label
+                  class="label-field"
+                  for="file"
+                  pTooltip="Trocar imagem da campanha"
+                  >Trocar</label
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="input-container" *ngIf="activeIndex == 1">
+        <div class="fields-container">
+          <div class="field-container">
+            <label class="label-field" for="sponsor"><b>Patrocinador</b></label>
+            <input
+              *ngIf="!isInfluencerMode"
+              pInputText
+              [value]="entityForm.get('sponsor')?.value?.name"
+              type="text"
+              class="input-field"
+              id="sponsor"
+              [readOnly]="true"
+              style="
+                color: grey !important ;
+                background-color: lightgray !important;
+              "
+            />
+            <p-dropdown
+              *ngIf="isInfluencerMode"
+              [options]="availableMerchants"
+              formControlName="sponsor"
+              optionLabel="name"
+              class="dropdown-field"
+              id="sponsor"
+              pTooltip="Selecione o patrocinador para esta campanha"
+              (onChange)="onMerchantSelect($event)"
+            ></p-dropdown>
+          </div>
+          <div
+            *ngIf="storeGroupListScroolerItems.length > 0"
+            class="field-container"
+          >
+            <label class="label-field" for="store_groups"
+              >Grupos de <b>Lojas</b></label
+            >
+            <p-listbox
+              [options]="storeGroupListScroolerItems"
+              formControlName="store_groups"
+              optionLabel="name"
+              [multiple]="true"
+              [metaKeySelection]="false"
+              class="listbox-field"
+              (onChange)="storeGroupChange($event)"
+              pTooltip="Selecione os grupos de lojas que terão acesso a campanha"
+            ></p-listbox>
+          </div>
+
+          <div class="fields-container">
+            <div class="field-container">
+              <label
+                *ngIf="storeGroupListScroolerItems.length === 0"
+                class="label-field"
+                for="store_groups"
+                >Lista Grupos de Lojas</label
+              >
+              <span
+                class="error-msg"
+                *ngIf="storeGroupListScroolerItems.length === 0"
+              >
+                Atenção, esse patrocinador não possui nenhum grupo de loja
+                registrado.
+              </span>
+              <label
+                class="label-field"
+                *ngIf="
+                  entityForm.get('store_groups')?.value.length === 0 &&
+                  storeGroupListScroolerItems.length > 0
+                "
+              >
+              </label>
+              <span
+                class="error-msg"
+                *ngIf="
+                  entityForm.get('store_groups')?.value.length === 0 &&
+                  storeGroupListScroolerItems.length > 0
+                "
+              >
+                Nenhuma Loja foi selecionada
+              </span>
+            </div>
+          </div>
+        </div>
+        <!-- Divisor -->
+        <div class="vertical-line"></div>
+        <!-- Side Inputs -->
+        <div class="side-container">
+          <div class="fields-container">
+            <label class="label-field mb-10" for="stores"
+              >Lojas Selecionadas</label
+            >
+            <span
+              class="error-msg"
+              *ngIf="entityForm.get('store_groups')?.value.length === 0"
+              >Nenhum Grupo de Loja Selecionado</span
+            >
+            <div
+              *ngIf="entityForm.get('store_groups')?.value.length > 0"
+              class="table-container"
+            >
+              <p-table
+                [value]="entityForm.get('stores')?.value"
+                [scrollable]="true"
+                scrollHeight="330px"
+              >
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th class="w-220">Loja</th>
+                    <th>CNPJ</th>
+                    <!-- <th>Status</th> -->
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-store>
+                  <tr>
+                    <td
+                      pTooltip="{{ store.address.zipcode | slice : 0 : 2 }}.{{
+                        store.address.zipcode | slice : 2 : 5
+                      }}-{{ store.address.zipcode | slice : 5 : 8 }} - {{
+                        store.address.city.name
+                      }}"
+                    >
+                      {{
+                        store.name.length > 26
+                          ? (store.name | slice : 0 : 26) + "..."
+                          : store.name
+                      }}
+                    </td>
+                    <td style="font-size: 0.8em">
+                      {{ store.document | slice : 0 : 2 }}.{{
+                        store.document | slice : 2 : 5
+                      }}.{{ store.document | slice : 5 : 8 }}/{{
+                        store.document | slice : 8 : 12
+                      }}-{{ store.document | slice : 12 : 14 }}
+                    </td>
+                    <!-- <td>
+                      <div class="centralize">
+                        <p-tag
+                          *ngIf="store.is_active"
+                          class="active"
+                          value="Ativa"
+                        ></p-tag>
+                        <p-tag
+                          *ngIf="!store.is_active"
+                          class="inactive"
+                          value="Inativa"
+                        ></p-tag>
+                      </div>
+                    </td> -->
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="input-container" *ngIf="activeIndex == 2">
+        <div class="fields-container">
+          <div class="field-container" *ngIf="!isInfluencerMode">
+            <label class="label-field" for="influencer_comission_type"
+              >Modo de <b>Divulgação</b></label
+            >
+            <p-selectButton
+              [options]="disseminationMode"
+              formControlName="dissemination_mode"
+              optionLabel="label"
+              [allowEmpty]="false"
+              class="w-360"
+              id="rule_mode"
+              pTooltip="Selecione o tipo de comissão que será aplicado na campanha, se será por valor fixo ou por percentual"
+            ></p-selectButton>
+            <label
+              class="label-field"
+              *ngIf="!user.is_premium"
+              pTooltip="Para utitlizar o modo créditos atrelados, fazer update da sua conta para premium account"
+            >
+            </label>
+          </div>
+          <div
+            class="field-container"
+            *ngIf="entityForm.value.dissemination_mode?.value === 'INFLUENCER'"
+          >
+            <label class="label-field" for="influencer_search"
+              >Influenciador</label
+            >
+            <p-autoComplete
+              formControlName="influencer_selected"
+              [suggestions]="influencerSuggestions"
+              (completeMethod)="searchInfluencer($event)"
+              [minLength]="0"
+              [forceSelection]="true"
+              field="name"
+              (onSelect)="onSelectInfluencer($event)"
+              placeholder="Digite o nome do influenciador..."
+              pTooltip="Digite os primeiros caracteres do nome do influenciador e selecione, você pode selecionar mais de um influenciador"
+            >
+              <ng-template let-influencer pTemplate="item">
+                <div>{{ influencer.name }} ({{ influencer.city }})</div>
+              </ng-template>
+            </p-autoComplete>
+          </div>
+          <div
+            class="view-container"
+            *ngIf="entityForm.value.dissemination_mode?.value === 'INFLUENCER'"
+          >
+            <label class="label-field mb-10 bold" for="stores"
+              >Influenciadores Selecionados</label
+            >
+            <br />
+            <span
+              class="error-msg"
+              *ngIf="entityForm.get('influencers')?.value.length === 0"
+            >
+              Nenhum Influenciador Selecionado
+            </span>
+            <div
+              *ngIf="entityForm.get('influencers')?.value.length > 0"
+              class="table-tabviewfull"
+            >
+              <p-table
+                [value]="entityForm.get('influencers')?.value"
+                [scrollable]="true"
+                scrollHeight="330px"
+              >
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th class="w-220">Nome</th>
+                    <th class="w-140">Cidade</th>
+                    <!-- <th class="w-80">Status</th> -->
+                    <th class="w-80">Remover</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-influencer>
+                  <tr>
+                    <td>
+                      <div class="influencer-item">
+                        <img
+                          [src]="influencer.avatar_url"
+                          class="influencer-avatar-small"
+                        />
+                        <span class="influencer-name">{{
+                          influencer.name
+                        }}</span>
+                      </div>
+                    </td>
+                    <td>{{ influencer.city }}</td>
+                    <!-- <td>
+                      <div class="centralize w-60">
+                        <p-tag
+                          *ngIf="influencer.is_active"
+                          class="active"
+                          value="Ativa"
+                        ></p-tag>
+                        <p-tag
+                          *ngIf="!influencer.is_active"
+                          class="inactive"
+                          value="Inativa"
+                        ></p-tag>
+                      </div>
+                    </td> -->
+                    <td>
+                      <div
+                        class="centralize w-60 d-flex justify-content-center"
+                      >
+                        <button
+                          pButton
+                          icon="pi pi-trash"
+                          class="btn-secondary"
+                          (click)="removeInfluencer(influencer)"
+                          [disabled]="
+                            entityForm.value.creator !== user.id &&
+                            user.influencer &&
+                            influencer.id === user.influencer.id
+                          "
+                          style="
+                            padding: 10px 20px !important;
+                            margin: 5px !important;
+                            border-radius: 6px !important;
+                            box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.3) !important;
+                            background-color: #f6f6f6 !important;
+                          "
+                        ></button>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+          </div>
+          <div
+            class="field-container"
+            *ngIf="entityForm.value.dissemination_mode?.value === 'MEMBER'"
+          >
+            <label class="label-field">Membros <b>Permitidos</b></label>
+            <p-selectButton
+              [options]="consumersGroupsAllow"
+              formControlName="member_groups_allow_mode"
+              optionLabel="label"
+              [allowEmpty]="false"
+              (onChange)="consumerGroupsAllowChange($event)"
+              pTooltip="Selecione os grupos de membros que terão acesso a campanha"
+            ></p-selectButton>
+          </div>
+          <div
+            *ngIf="
+              entityForm.value.dissemination_mode?.value === 'MEMBER' &&
+              entityForm.value.member_groups_allow_mode?.value === true
+            "
+            class="field-container"
+          >
+            <label class="label-field" for="member_groups_allow"
+              >Grupos <b>Permitidos</b></label
+            >
+            <p-listbox
+              *ngIf="consumerGroupListScroolerItems.length > 0"
+              [options]="consumerGroupListScroolerItems"
+              formControlName="member_groups_allow"
+              optionLabel="name"
+              [multiple]="true"
+              [metaKeySelection]="false"
+              class="listbox-field"
+            ></p-listbox>
+            <span
+              *ngIf="consumerGroupListScroolerItems.length === 0"
+              class="warning-msg"
+              >Atenção, esse patrocinador não possui nenhum grupo de membros
+              registrado.
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="input-container" *ngIf="activeIndex == 3">
+        <div class="fields-container">
+          <div class="field-container">
+            <label class="label-field">Consumidores <b>Liberados</b></label>
+            <p-selectButton
+              [options]="consumersGroupsAllow"
+              formControlName="consumer_groups_allow_mode"
+              optionLabel="label"
+              [allowEmpty]="false"
+              (onChange)="consumerGroupsAllowChange($event)"
+              pTooltip="Selecione os grupos de consumidores que terão acesso a campanha"
+            ></p-selectButton>
+          </div>
+          <div
+            *ngIf="entityForm.value.consumer_groups_allow_mode?.value"
+            class="field-container"
+          >
+            <label class="label-field" for="consumer_groups_allow"
+              >Grupos <b>Liberados</b></label
+            >
+            <p-listbox
+              *ngIf="consumerGroupListScroolerItems.length > 0"
+              [options]="consumerGroupListScroolerItems"
+              formControlName="consumer_groups_allow"
+              optionLabel="name"
+              [multiple]="true"
+              [metaKeySelection]="false"
+              class="listbox-field"
+              pTooltip="Selecione os grupos de consumidores que terão acesso a campanha"
+            ></p-listbox>
+            <span
+              *ngIf="consumerGroupListScroolerItems.length === 0"
+              class="warning-msg"
+              >Atenção, esse patrocinador não possui nenhum grupo de
+              consumidores registrado.
+            </span>
+          </div>
+          <div class="field-container">
+            <label class="label-field">Consumidores <b>Bloqueados</b></label>
+            <p-selectButton
+              [options]="consumersGroupsBlock"
+              formControlName="consumer_groups_block_mode"
+              optionLabel="label"
+              [allowEmpty]="false"
+              (onChange)="consumerGroupsBlockChange($event)"
+              pTooltip="Selecione os grupos de consumidores que não terão acesso a campanha"
+            ></p-selectButton>
+          </div>
+          <div
+            *ngIf="entityForm.value.consumer_groups_block_mode?.value"
+            class="field-container"
+          >
+            <label class="label-field" for="consumer_groups_block"
+              >Grupos <b>Bloqueados</b></label
+            >
+            <p-listbox
+              *ngIf="consumerGroupListScroolerItems.length > 0"
+              [options]="consumerGroupListScroolerItems"
+              formControlName="consumer_groups_block"
+              optionLabel="name"
+              [multiple]="true"
+              [metaKeySelection]="false"
+              class="listbox-field"
+              pTooltip="Selecione os grupos de consumidores que não terão acesso a campanha"
+            ></p-listbox>
+            <span
+              *ngIf="consumerGroupListScroolerItems.length === 0"
+              class="warning-msg"
+              >Atenção, esse patrocinador não possui nenhum grupo de
+              consumidores registrado.
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="input-container" *ngIf="activeIndex == 4">
+        <div class="fields-container">
+          <div class="field-container">
+            <label class="label-field"><b>Modo</b> da Campanha</label>
+            <p-selectButton
+              [options]="campaignMode"
+              formControlName="campaign_mode"
+              optionLabel="label"
+              [allowEmpty]="false"
+              (onChange)="campaignModeChange($event)"
+              class="w-360"
+              id="campaign_mode"
+              pTooltip="Selecione o modo da campanha, se será por produto ou por coleção de produtos"
+            ></p-selectButton>
+          </div>
+          <div
+            *ngIf="entityForm.value.campaign_mode?.value === 'PRODUCT'"
+            class="field-container"
+          >
+            <label class="label-field" for="collections"
+              >Coleções de <b>Produtos</b></label
+            >
+            <p-listbox
+              *ngIf="colectionListScroolerItems.length > 0"
+              [options]="colectionListScroolerItems"
+              formControlName="collections"
+              optionLabel="name"
+              [multiple]="true"
+              [metaKeySelection]="false"
+              class="listbox-field"
+              (onChange)="productCollectionChange($event)"
+              pTooltip="Selecione as coleções de produtos que terão acesso a campanha"
+            ></p-listbox>
+            <span
+              *ngIf="colectionListScroolerItems.length === 0"
+              class="error-msg"
+              >Atenção, esse patrocinador não possui nenhuma coleção de produtos
+              registrada.
+            </span>
+          </div>
+          <div
+            *ngIf="entityForm.value.campaign_mode?.value === 'PRODUCT'"
+            class="field-container"
+          >
+            <label class="label-field" for="rule_mode"
+              >Tipo do <b>Limite</b></label
+            >
+            <p-selectButton
+              [options]="ruleMode"
+              formControlName="rule_mode"
+              optionLabel="label"
+              [allowEmpty]="false"
+              class="w-360"
+              id="rule_mode"
+              pTooltip="Selecione o tipo de limite que será aplicado na campanha, se será por valor ou por quantidade"
+            ></p-selectButton>
+          </div>
+          <div class="field-container">
+            <label
+              *ngIf="entityForm.value.rule_mode?.value === 'VALUE'"
+              class="label-field"
+              for="purchase_min_amount"
+              >Valor <b>Mínimo</b> da Nota</label
+            >
+            <label
+              *ngIf="entityForm.value.rule_mode?.value === 'QUANTITY'"
+              class="label-field"
+              for="purchase_min_amount"
+              >Quantidade <b>Mínimo</b> da Nota</label
+            >
+            <div
+              *ngIf="
+                entityForm.value.rule_mode?.value === 'QUANTITY';
+                else elsetyperuleModeTicket
+              "
+            >
+              <p-inputNumber
+                formControlName="purchase_min_amount"
+                inputId="purchase_min_amount"
+                [useGrouping]="false"
+                locale="pt-BR"
+                [minFractionDigits]="2"
+                suffix=""
+                [min]="0"
+                [max]="100"
+                pTooltip="Quantidade mínima de produtos que o consumidor precisa comprar para poder participar da campanha"
+              ></p-inputNumber>
+            </div>
+            <ng-template #elsetyperuleModeTicket>
+              <p-inputNumber
+                formControlName="purchase_min_amount"
+                inputId="purchase_min_amount_currency-br"
+                mode="currency"
+                currency="BRL"
+                locale="pt-BR"
+                [min]="0"
+                pTooltip="Valor mínimo que o consumidor precisa gastar para poder participar da campanha"
+              ></p-inputNumber>
+            </ng-template>
+          </div>
+          <div class="field-container">
+            <label
+              *ngIf="entityForm.value.rule_mode?.value === 'VALUE'"
+              class="label-field"
+              for="purchase_max_amount"
+              >Valor <b>Máximo</b> da Nota</label
+            >
+            <label
+              *ngIf="entityForm.value.rule_mode?.value === 'QUANTITY'"
+              class="label-field"
+              for="purchase_max_amount"
+              >Quantidade <b>Máximo</b> da Nota</label
+            >
+            <div
+              *ngIf="
+                entityForm.value.rule_mode?.value === 'QUANTITY';
+                else elseTypeRuleModeProduct
+              "
+            >
+              <p-inputNumber
+                formControlName="purchase_max_amount"
+                inputId="purchase_max_amount"
+                [useGrouping]="false"
+                locale="pt-BR"
+                [minFractionDigits]="2"
+                suffix=""
+                [min]="0"
+                [max]="100"
+                pTooltip="Digite a quantidade máxima de produtos na nota fiscal que será considerado para o cálculo do cashback"
+              ></p-inputNumber>
+            </div>
+            <ng-template #elseTypeRuleModeProduct>
+              <p-inputNumber
+                formControlName="purchase_max_amount"
+                inputId="purchase_max_amount_currency-br"
+                mode="currency"
+                currency="BRL"
+                locale="pt-BR"
+                [min]="0"
+                pTooltip="Digite o valor máximo promocional da nota fiscal que será considerado para o cálculo do cashback"
+              ></p-inputNumber>
+            </ng-template>
+          </div>
+          <div class="field-container">
+            <label class="label-field" for="participations_maximum_permitted"
+              >Limite de <b>Participações</b></label
+            >
+            <p-inputNumber
+              formControlName="participations_maximum_permitted"
+              mode="decimal"
+              inputId="participations_maximum_permitted"
+              [min]="1"
+              [max]="1000"
+              pTooltip="Digite o limite de participações que cada usuario (cpf) poderá fazer na campanha"
+            ></p-inputNumber>
+          </div>
+          <div class="field-container">
+            <label class="label-field" for="maximum_cost_campaign">
+              <b>Custo</b> Máximo da Operação</label
+            >
+            <p-inputNumber
+              formControlName="maximum_cost_campaign"
+              inputId="maximum_cost_campaign"
+              mode="currency"
+              currency="BRL"
+              locale="pt-BR"
+              [min]="1000"
+              [max]="100000000"
+              pTooltip="Valor máximo do custo operacional da campanha em reais, considerando o cashback do consumidor, a comissão do influencer e o custo operação da RedRed"
+            ></p-inputNumber>
+          </div>
+        </div>
+        <!-- Divisor -->
+        <div class="vertical-line"></div>
+        <!-- Side Inputs -->
+        <div class="side-container">
+          <div
+            *ngIf="entityForm.value.campaign_mode?.value === 'PRODUCT'"
+            class="fields-container"
+          >
+            <label class="label-field mb-10" for="products"
+              >Produtos Selecionadas</label
+            >
+            <span
+              class="error-msg"
+              *ngIf="entityForm.get('collections')?.value.length === 0"
+              >Nenhuma Coleção de Produto Selecionado</span
+            >
+            <div
+              *ngIf="entityForm.get('collections')?.value.length > 0"
+              class="table-container"
+            >
+              <p-table
+                [value]="entityForm.get('products')?.value"
+                [scrollable]="true"
+                scrollHeight="330px"
+              >
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th class="w-270">Produto</th>
+                    <th>Codigos</th>
+                    <th>Status</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-product>
+                  <tr>
+                    <td>
+                      {{
+                        product.name.length > 30
+                          ? (product.name | slice : 0 : 30) + "..."
+                          : product.name
+                      }}
+                    </td>
+                    <td>
+                      {{
+                        product.product_eans.length > 30
+                          ? (product.product_eans | slice : 0 : 30) + "..."
+                          : product.product_eans
+                      }}
+                    </td>
+                    <td>
+                      <div class="centralize w-60">
+                        <p-tag
+                          *ngIf="product.is_active"
+                          class="active"
+                          value="Ativa"
+                        ></p-tag>
+                        <p-tag
+                          *ngIf="!product.is_active"
+                          class="inactive"
+                          value="Inativa"
+                        ></p-tag>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="input-container" *ngIf="activeIndex == 5">
+        <div class="fields-container">
+          <div class="field-container" *ngIf="linkedCreditOptions.length > 0">
+            <label class="label-field" for="influencer_comission_type"
+              >Modo de <b>Bonificação</b></label
+            >
+            <p-selectButton
+              [options]="bonificationMode"
+              formControlName="bonification_type"
+              optionLabel="label"
+              [allowEmpty]="false"
+              class="w-360"
+              id="rule_mode"
+              pTooltip="Selecione o tipo de comissão que será aplicado na campanha, se será por valor fixo ou por percentual"
+              *ngIf="linkedCreditOptions.length > 0"
+              (onChange)="bonificationTypeChange($event)"
+            ></p-selectButton>
+            <label
+              class="label-field"
+              *ngIf="linkedCreditOptions.length === 0"
+              pTooltip="Para utitlizar o modo créditos vinculados, fazer update da sua conta para premium account ou ter um parceiro vinculado"
+              ><b>Créditos Livres</b>
+            </label>
+          </div>
+          <div
+            class="field-container"
+            *ngIf="
+              linkedCreditOptions.length > 0 &&
+              entityForm.value.bonification_type?.value === 'LINKED_CREDIT'
+            "
+          >
+            <label class="label-field" for="sponsor"
+              ><b>Crédito Vinculado</b></label
+            >
+            <p-dropdown
+              formControlName="linked_credit"
+              [ngModel]="entityForm.get('linked_credit')?.value"
+              [options]="linkedCreditOptions"
+              optionLabel="name"
+              optionValue="id"
+              class="dropdown-field"
+              id="linked_credit"
+              [style]="{ 'background-color': 'lightgray' }"
+              [required]="true"
+              (onChange)="bonificationTypeChangeInfluencer($event)"
+            ></p-dropdown>
+          </div>
+
+          <div class="field-container">
+            <label class="label-field" for="influencer_comission_type"
+              >Comissão <b>Influencers</b></label
+            >
+            <p-selectButton
+              [options]="typesComission"
+              formControlName="influencer_comission_type"
+              optionLabel="label"
+              [allowEmpty]="false"
+              class="w-360"
+              id="rule_mode"
+              pTooltip="Selecione o tipo de comissão que será aplicado na campanha, se será por valor fixo ou por percentual"
+            ></p-selectButton>
+          </div>
+          <div class="field-container">
+            <label class="label-field" for="influencer_comission"
+              >Valor Comissão <b>Influencers</b>
+            </label>
+            <div
+              *ngIf="
+                entityForm.value.influencer_comission_type?.value === 'PERC';
+                else elseBlockInfluencerComissionType
+              "
+            >
+              <p-inputNumber
+                formControlName="influencer_comission"
+                inputId="influencer_comission"
+                [useGrouping]="false"
+                locale="pt-BR"
+                [minFractionDigits]="2"
+                suffix=" %"
+                [min]="0"
+                [max]="100"
+                pTooltip="Digite o valor da comissão em percentual que será aplicado na campanha para os influencers"
+              ></p-inputNumber>
+            </div>
+            <ng-template #elseBlockInfluencerComissionType>
+              <p-inputNumber
+                formControlName="influencer_comission"
+                inputId="influencer_comission_currency-br"
+                mode="currency"
+                currency="BRL"
+                locale="pt-BR"
+                [min]="0"
+                pTooltip="Digite o valor da comissão em valor fixo que será aplicado na campanha para os influencers"
+              ></p-inputNumber>
+            </ng-template>
+          </div>
+          <div class="field-container">
+            <label class="label-field" for="consumer_comission_type"
+              >Cashback <b>Consumidores</b></label
+            >
+            <p-selectButton
+              [options]="typesComission"
+              formControlName="consumer_comission_type"
+              optionLabel="label"
+              [allowEmpty]="false"
+              class="w-360"
+              id="rule_mode"
+              pTooltip="Selecione o tipo de comissão que será aplicado na campanha, se será por valor fixo ou por percentual"
+            ></p-selectButton>
+          </div>
+          <div class="field-container">
+            <label class="label-field" for="consumer_comission"
+              >Valor Cashback <b>Consumidores</b></label
+            >
+            <div
+              *ngIf="
+                entityForm.value.consumer_comission_type?.value === 'PERC';
+                else elseBlockConsumerComissionType
+              "
+            >
+              <p-inputNumber
+                formControlName="consumer_comission"
+                inputId="consumer_comission"
+                [useGrouping]="false"
+                locale="pt-BR"
+                [minFractionDigits]="2"
+                suffix=" %"
+                [min]="0"
+                [max]="100"
+                pTooltip="Digite o valor do cashback em percentual que será aplicado na campanha para os consumidores"
+              ></p-inputNumber>
+            </div>
+            <ng-template #elseBlockConsumerComissionType>
+              <p-inputNumber
+                formControlName="consumer_comission"
+                inputId="consumer_comission_currency-br"
+                mode="currency"
+                currency="BRL"
+                locale="pt-BR"
+                [min]="0"
+                pTooltip="Digite o valor do cashback em valor fixo que será aplicado na campanha para os consumidores"
+              ></p-inputNumber>
+            </ng-template>
+          </div>
+          <div class="field-container">
+            <label class="label-field" for="credit_provisioning_time"
+              ><b>Tempo</b> de provisionamento do Cashback</label
+            >
+            <p-inputNumber
+              formControlName="credit_provisioning_time"
+              inputId="credit_provisioning_time"
+              [useGrouping]="false"
+              [min]="0"
+              [max]="365"
+              [suffix]="
+                entityForm.get('credit_provisioning_time')?.value <= 1
+                  ? ' dia'
+                  : ' dias'
+              "
+              pTooltip="Digite o tempo de provisionamento do cashback em dias que será aplicado na campanha para os consumidores"
+            ></p-inputNumber>
+          </div>
+        </div>
+      </div>
+      <div class="view-container" *ngIf="activeIndex == 6">
+        <div #STEP0>
+          <h5>Dados da Campanha</h5>
+          <div class="row">
+            <div class="ml-10 col-9 row">
+              <div class="col-8">
+                <label class="label-field bold">Nome da Campanha</label>
+                <br />
+                <span>
+                  {{
+                    entityForm.get("name")?.value
+                      ? entityForm.get("name")?.value
+                      : "---------"
+                  }}
+                </span>
+              </div>
+              <div class="col-2">
+                <label class="label-field bold"> Início</label>
+                <br />
+                <span>
+                  {{
+                    entityForm.get("start_date")?.value
+                      ? (entityForm.get("start_date")?.value
+                        | date : "dd/MM/yyyy" : "GMT-3")
+                      : "------"
+                  }}
+                </span>
+              </div>
+              <div class="col-2">
+                <label class="label-field bold"> Fim</label>
+                <br />
+                <span>
+                  {{
+                    entityForm.get("end_date")?.value
+                      ? (entityForm.get("end_date")?.value
+                        | date : "dd/MM/yyyy" : "GMT-3")
+                      : "------"
+                  }}
+                </span>
+              </div>
+              <div class="col-12" style="max-width: 1000px !important">
+                <label class="label-field bold"> Descrição</label>
+                <br />
+                <p
+                  style="
+                    white-space: pre-wrap;
+                    word-wrap: break-word;
+                    max-width: 100%;
+                  "
+                >
+                  {{
+                    entityForm.get("description")?.value
+                      ? entityForm.get("description")?.value
+                      : "---------------------------"
+                  }}
+                </p>
+              </div>
+            </div>
+            <div class="col-2">
+              <label class="label-field bold">Banner</label>
+              <br />
+              <img
+                *ngIf="imageLoaded || (!imageLoaded && newObject)"
+                [src]="entityForm.get('banner')?.value"
+                alt="Banner Campanha"
+                class="image-tabview"
+              />
+
+              <img
+                *ngIf="!imageLoaded && !newObject"
+                [src]="entityForm.get('banner')?.value"
+                alt="Imagem do Comerciante"
+                class="image-tabview"
+              />
+            </div>
+            <div class="col-1"></div>
+          </div>
+        </div>
+        <hr />
+        <div #STEP1>
+          <h5 class="mt-12">Patrocinador</h5>
+          <div class="ml-10 col-12 row">
+            <div class="col-6">
+              <label class="label-field bold" for="sponsor">Patrocinador</label>
+              <br />
+              <span>
+                {{ entityForm.get("sponsor")?.value.name || "--------" }} (
+                {{
+                  entityForm.get("sponsor")?.value.document | slice : 0 : 2
+                }}.{{
+                  entityForm.get("sponsor")?.value.document | slice : 2 : 5
+                }}.{{
+                  entityForm.get("sponsor")?.value.document | slice : 5 : 8
+                }}/{{
+                  entityForm.get("sponsor")?.value.document | slice : 8 : 12
+                }}-{{
+                  entityForm.get("sponsor")?.value.document | slice : 12 : 14
+                }}
+                )
+              </span>
+            </div>
+            <div class="col-6">
+              <label class="label-field bold" for="stores"
+                >Grupos de Lojas</label
+              >
+              <br />
+              <span
+                class="error-msg"
+                *ngIf="entityForm.get('store_groups')?.value.length === 0"
+                >Nenhum Grupo de Loja Selecionado</span
+              >
+              <div
+                *ngIf="entityForm.get('store_groups')?.value.length > 0"
+                class="table-tabview"
+              >
+                <p-table
+                  [value]="entityForm.get('store_groups')?.value"
+                  [scrollable]="true"
+                  scrollHeight="330px"
+                >
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <th class="w-270">Grupo de Loja</th>
+                      <th>Quantidade Lojas</th>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-stores_group>
+                    <tr>
+                      <td>
+                        {{
+                          stores_group.name.length > 30
+                            ? (stores_group.name | slice : 0 : 30) + "..."
+                            : stores_group.name
+                        }}
+                      </td>
+                      <td>
+                        {{ stores_group.stores.length }}
+                      </td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr />
+        <div #STEP2>
+          <div
+            *ngIf="
+              entityForm.get('dissemination_mode')?.value?.value ===
+              'INFLUENCER'
+            "
+          >
+            <h5 class="mt-12">Influencers</h5>
+            <div class="ml-10 col-12 row">
+              <div class="col-12">
+                <label class="label-field bold" for="stores"
+                  >Lista de Influencers Convidados</label
+                >
+                <br />
+                <span
+                  class="error-msg"
+                  *ngIf="entityForm.get('influencers')?.value.length === 0"
+                  >Nenhum Influencer Selecionado</span
+                >
+                <div
+                  *ngIf="entityForm.get('influencers')?.value.length > 0"
+                  class="table-tabview"
+                >
+                  <p-table
+                    [value]="entityForm.get('influencers')?.value"
+                    [scrollable]="true"
+                    scrollHeight="330px"
+                  >
+                    <ng-template pTemplate="header">
+                      <tr>
+                        <th class="w-270">Influencer</th>
+                        <th>Cidade</th>
+                        <th>Status</th>
+                      </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-influencer>
+                      <tr>
+                        <td>
+                          {{
+                            influencer.name.length > 30
+                              ? (influencer.name | slice : 0 : 30) + "..."
+                              : influencer.name
+                          }}
+                        </td>
+                        <td>
+                          {{ influencer.city }}
+                        </td>
+                        <td>
+                          <p-tag
+                            *ngIf="influencer.is_active"
+                            class="active m-0"
+                            value="Ativo"
+                          ></p-tag>
+                          <p-tag
+                            *ngIf="!influencer.is_active"
+                            class="inactive m-0"
+                            value="Inativo"
+                          ></p-tag>
+                        </td>
+                      </tr>
+                    </ng-template>
+                  </p-table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            *ngIf="
+              entityForm.get('dissemination_mode')?.value?.value === 'MEMBER'
+            "
+          >
+            <h5 class="mt-12">Membros</h5>
+            <div class="ml-10 col-12 row">
+              <div class="col-12">
+                <label class="label-field bold" for="stores"
+                  >Lista de Grupos de Membros Convidados</label
+                >
+                <br />
+                <span
+                  class="error-msg"
+                  *ngIf="
+                    entityForm.get('member_groups_allow')?.value.length === 0
+                  "
+                  >Nenhum Grupo de Membros Selecionado</span
+                >
+                <div
+                  *ngIf="
+                    entityForm.get('member_groups_allow')?.value.length > 0
+                  "
+                  class="table-tabview"
+                >
+                  <p-table
+                    [value]="entityForm.get('member_groups_allow')?.value"
+                    [scrollable]="true"
+                    scrollHeight="330px"
+                  >
+                    <ng-template pTemplate="header">
+                      <tr>
+                        <th>Grupo de Membros</th>
+                      </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-member>
+                      <tr>
+                        <td>
+                          {{
+                            member.name.length > 30
+                              ? (member.name | slice : 0 : 30) + "..."
+                              : member.name
+                          }}
+                        </td>
+                      </tr>
+                    </ng-template>
+                  </p-table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr />
+        <div #STEP3>
+          <h5 class="mt-12">Consumidores</h5>
+          <div class="ml-10 col-12 row">
+            <div class="col-6">
+              <label class="label-field bold" for="stores"
+                >Lista de Grupos de Consumidores Liberados</label
+              >
+              <br />
+              <span
+                class="warning-msg"
+                *ngIf="
+                  entityForm.get('consumer_groups_allow')?.value.length === 0
+                "
+                >Todos os Grupos de Consumidores Liberados</span
+              >
+              <div
+                *ngIf="
+                  entityForm.get('consumer_groups_allow')?.value.length > 0
+                "
+                class="table-tabview"
+              >
+                <p-table
+                  [value]="entityForm.get('consumer_groups_allow')?.value"
+                  [scrollable]="true"
+                  scrollHeight="330px"
+                >
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <th>Nome</th>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-consumer_group_allow>
+                    <tr>
+                      <td>
+                        {{
+                          consumer_group_allow.name.length > 30
+                            ? (consumer_group_allow.name | slice : 0 : 30) +
+                              "..."
+                            : consumer_group_allow.name
+                        }}
+                      </td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </div>
+            </div>
+            <div class="col-6">
+              <label class="label-field bold" for="stores"
+                >Lista de Grupos de Consumidores Bloqueados</label
+              >
+              <br />
+              <span
+                class="warning-msg"
+                *ngIf="
+                  entityForm.get('consumer_groups_block')?.value.length === 0
+                "
+                >Nenhum Grupo de Consumidores Bloqueado</span
+              >
+              <div
+                *ngIf="
+                  entityForm.get('consumer_groups_block')?.value.length > 0
+                "
+                class="table-tabview"
+              >
+                <p-table
+                  [value]="entityForm.get('consumer_groups_block')?.value"
+                  [scrollable]="true"
+                  scrollHeight="330px"
+                >
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <th>Nome</th>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-consumer_group_block>
+                    <tr>
+                      <td>
+                        {{
+                          consumer_group_block.name.length > 30
+                            ? (consumer_group_block.name | slice : 0 : 30) +
+                              "..."
+                            : consumer_group_block.name
+                        }}
+                      </td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr />
+        <div #STEP4>
+          <h5 class="mt-12">Regra do Negócio</h5>
+          <div class="ml-10 col-12 row">
+            <div class="col-2">
+              <label class="label-field bold">Modo</label>
+              <br />
+              <span> {{ entityForm.get("campaign_mode")?.value.label }} </span>
+            </div>
+            <div class="col-2">
+              <label class="label-field bold">Tipo do Limite</label>
+              <br />
+              <span> {{ entityForm.get("rule_mode")?.value.label }} </span>
+            </div>
+            <div class="col-2">
+              <label
+                *ngIf="entityForm.get('rule_mode')?.value.value === 'VALUE'"
+                class="label-field bold"
+                >Valor Mínimo</label
+              >
+              <label
+                *ngIf="entityForm.get('rule_mode')?.value.value === 'QUANTITY'"
+                class="label-field bold"
+                >Quantidade Mínimo</label
+              >
+              <br />
+              <span
+                *ngIf="entityForm.get('rule_mode')?.value.value === 'QUANTITY'"
+              >
+                {{
+                  entityForm.get("purchase_min_amount")?.value
+                    ? entityForm.get("purchase_min_amount")?.value
+                    : "-----"
+                }}
+              </span>
+              <span
+                *ngIf="entityForm.get('rule_mode')?.value.value === 'VALUE'"
+              >
+                {{
+                  entityForm.get("purchase_min_amount")?.value
+                    ? (entityForm.get("purchase_min_amount")?.value
+                      | currency : "BRL")
+                    : "-----"
+                }}
+              </span>
+            </div>
+            <div class="col-2">
+              <label
+                *ngIf="entityForm.get('rule_mode')?.value.value === 'VALUE'"
+                class="label-field bold"
+                >Valor Máximo</label
+              >
+              <label
+                *ngIf="entityForm.get('rule_mode')?.value.value === 'QUANTITY'"
+                class="label-field bold"
+                >Quantidade Máxima</label
+              >
+
+              <br />
+              <span
+                *ngIf="entityForm.get('rule_mode')?.value.value === 'QUANTITY'"
+              >
+                {{
+                  entityForm.get("purchase_max_amount")?.value
+                    ? entityForm.get("purchase_max_amount")?.value
+                    : "-----"
+                }}
+              </span>
+              <span
+                *ngIf="entityForm.get('rule_mode')?.value.value === 'VALUE'"
+              >
+                {{
+                  entityForm.get("purchase_max_amount")?.value
+                    ? (entityForm.get("purchase_max_amount")?.value
+                      | currency : "BRL")
+                    : "-----"
+                }}
+              </span>
+            </div>
+            <div class="col-4">
+              <label class="label-field bold">Limite de Participações</label>
+              <br />
+              <span>
+                {{
+                  entityForm.get("participations_maximum_permitted")?.value
+                    ? entityForm.get("participations_maximum_permitted")?.value
+                    : "-----"
+                }}
+              </span>
+            </div>
+            <div class="col-2"></div>
+            <div
+              *ngIf="entityForm.get('campaign_mode')?.value.value === 'PRODUCT'"
+              class="col-12"
+            >
+              <br />
+              <label class="label-field bold" for="collections"
+                >Lista de Coleções de Produtos Selecionados</label
+              >
+              <br />
+              <span
+                class="error-msg"
+                *ngIf="entityForm.get('collections')?.value.length === 0"
+                >Nenhuma Coleção de Produto Selecionado</span
+              >
+              <div
+                *ngIf="entityForm.get('collections')?.value.length > 0"
+                class="table-tabview"
+              >
+                <p-table
+                  [value]="entityForm.get('collections')?.value"
+                  [scrollable]="true"
+                  scrollHeight="330px"
+                >
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <th class="w-270">Coleção</th>
+                      <th>Quantidade</th>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-collection>
+                    <tr>
+                      <td>
+                        {{
+                          collection.name.length > 30
+                            ? (collection.name | slice : 0 : 30) + "..."
+                            : collection.name
+                        }}
+                      </td>
+                      <td>
+                        {{ collection.products.length }}
+                      </td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr />
+        <div #STEP5>
+          <h5 class="mt-12">Comissões do Influencer</h5>
+          <div class="ml-10 col-12 row">
+            <div class="col-3">
+              <label class="label-field bold">Comissão Influencer</label>
+              <br />
+              <span>
+                {{ entityForm.get("influencer_comission_type")?.value.label }}
+              </span>
+            </div>
+            <div class="col-1">
+              <label class="label-field bold">Valor</label>
+              <br />
+              <span
+                *ngIf="
+                  entityForm.get('influencer_comission_type')?.value.value ===
+                  'PERC'
+                "
+              >
+                {{
+                  entityForm.get("influencer_comission")?.value
+                    ? entityForm.get("influencer_comission")?.value + " %"
+                    : "------"
+                }}
+              </span>
+              <span
+                *ngIf="
+                  entityForm.get('influencer_comission_type')?.value.value ===
+                  'FIXED'
+                "
+              >
+                {{
+                  entityForm.get("influencer_comission")?.value
+                    ? (entityForm.get("influencer_comission")?.value
+                      | currency : "BRL")
+                    : "------"
+                }}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div #STEP6>
+          <hr />
+          <h5 class="mt-12">Cashback do Consumidor</h5>
+          <div class="ml-10 col-12 row">
+            <div class="col-5">
+              <label class="label-field bold">{{
+                entityForm.get("bonification_type")?.value?.value ===
+                "FREE_CREDIT"
+                  ? "Crédito Livre"
+                  : "Crédito Atrelado"
+              }}</label>
+              <br />
+
+              <span>{{
+                entityForm.get("bonification_type")?.value?.value ===
+                "FREE_CREDIT"
+                  ? "PIX"
+                  : entityForm.get("linked_credit")?.value
+              }}</span>
+            </div>
+
+            <div class="col-3">
+              <label class="label-field bold">Cashback Consumidor</label>
+              <br />
+              <span>
+                {{ entityForm.get("consumer_comission_type")?.value.label }}
+              </span>
+            </div>
+            <div class="col-1">
+              <label class="label-field bold">Valor</label>
+              <br />
+              <span
+                *ngIf="
+                  entityForm.get('consumer_comission_type')?.value.value ===
+                  'PERC'
+                "
+              >
+                {{
+                  entityForm.get("consumer_comission")?.value
+                    ? entityForm.get("consumer_comission")?.value + " %"
+                    : "------"
+                }}
+              </span>
+              <span
+                *ngIf="
+                  entityForm.get('consumer_comission_type')?.value.value ===
+                  'FIXED'
+                "
+              >
+                {{
+                  entityForm.get("consumer_comission")?.value
+                    ? (entityForm.get("consumer_comission")?.value
+                      | currency : "BRL")
+                    : "------"
+                }}
+              </span>
+            </div>
+            <div class="col-3">
+              <label class="label-field bold">Tempo Provisionamento</label>
+              <br />
+              <span>
+                {{ entityForm.get("credit_provisioning_time")?.value }}
+                {{
+                  entityForm.get("credit_provisioning_time")?.value <= 1
+                    ? "dia"
+                    : "dias"
+                }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br />
+    <div class="footer-campaign-edit">
+      <div *ngIf="activeIndex === 0" style="flex: 1"></div>
+      <button
+        *ngIf="activeIndex > 0"
+        pButton
+        label="Voltar"
+        icon="pi pi-arrow-left"
+        class="w-301 btn-secondary"
+        type="button"
+        (click)="previousActiveIndex()"
+        pTooltip="Voltar para a etapa anterior"
+      ></button>
+
+      <div style="display: flex; gap: 10px; justify-content: flex-end">
+        <button
+          *ngIf="activeIndex < 6"
+          pButton
+          label="Continuar"
+          icon="pi pi-arrow-right"
+          iconPos="right"
+          class="w-301 btn-secondary"
+          type="button"
+          (click)="nextActiveIndex()"
+          pTooltip="Continuar para a próxima etapa"
+        ></button>
+        <button
+          *ngIf="!newObject && activeIndex === 6"
+          pButton
+          label="Salvar Rascunho"
+          class="button-secondary-200px"
+          type="button"
+          [disabled]="
+            entityForm.controls['name'].invalid ||
+            entityForm.controls['start_date'].invalid ||
+            entityForm.controls['end_date'].invalid ||
+            entityForm.controls['description'].invalid
+          "
+          (click)="save(false)"
+          pTooltip="Salvar Rascunho da Campanha"
+        ></button>
+
+        <button
+          *ngIf="newObject && activeIndex === 6"
+          pButton
+          label="Criar Rascunhos"
+          class="button-secondary-200px"
+          type="button"
+          (click)="save(false)"
+          pTooltip="Criar Rascunho da Nova Campanha"
+          [disabled]="
+            entityForm.controls['name'].invalid ||
+            entityForm.controls['start_date'].invalid ||
+            entityForm.controls['end_date'].invalid ||
+            entityForm.controls['description'].invalid
+          "
+        ></button>
+        <button
+          *ngIf="activeIndex === 6"
+          pButton
+          label="Aprovar Campanha"
+          icon="pi pi-arrow-right"
+          iconPos="right"
+          class="button-200px"
+          type="button"
+          (click)="save(true)"
+          pTooltip="Aprovar Campanha"
+          [disabled]="
+            entityForm.valid === false ||
+            (entityForm.get('influencers')?.value.length === 0 &&
+              entityForm.get('dissemination_mode')?.value.value ===
+                'INFLUENCER')
+          "
+        ></button>
+      </div>
+    </div>
+  </form>
+  <br />
+  <br />
+</div>
+<!-- <div
+  *ngFor="let key of getFormControls()"
+  style="display: flex; flex-direction: column"
+>
+  <div>
+    {{ key }}: {{ entityForm.get(key)?.valid ? "Valid" : "Invalid" }}
+    <span
+      *ngIf="!entityForm.get(key)?.valid"
+      style="display: flex; flex-direction: column"
+    >
+      Errors: {{ entityForm.get(key)?.errors | json }}
+    </span>
+  </div>
+</div> -->

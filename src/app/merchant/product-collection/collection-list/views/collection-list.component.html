@@ -1,0 +1,149 @@
+<p-toast class="custom-toast"></p-toast>
+<p-confirmDialog class="custom-dialog"></p-confirmDialog>
+<div class="container">
+  <h3 class="">Coleções de Produtos</h3>
+  <div class="topic-container">
+    <div class="topic-title">
+      <h5>Lista de Coleções de Produtos</h5>
+    </div>
+    <div class="btns-container-small">
+      <!-- Read Mode -->
+      <button
+        pButton
+        label="Nova"
+        icon="pi pi-plus"
+        class="w-110 btn-primary"
+        type="button"
+        [routerLink]="['/merchant/collection-view', 'new']"
+        pTooltip="Criar uma coleção de produtos nova"
+      ></button>
+    </div>
+  </div>
+  <hr />
+
+  <!-- Inputs -->
+  <div class="input-container">
+    <!-- Main Inputs -->
+    <div class="fields-container">
+      <div class="table-list">
+        <p-progressSpinner
+          *ngIf="isLoading"
+          styleClass="w-4rem h-4rem"
+          strokeWidth="8"
+          fill="var(--surface-ground)"
+          animationDuration="0.8s"
+          class="centralize"
+        />
+        <p-table
+          *ngIf="collections.length > 0; else emptyTable"
+          [value]="itemsFiltrados"
+          [globalFilterFields]="['name']"
+          [sortField]="'name'"
+          [sortOrder]="1"
+          [paginator]="true"
+          [rows]="25"
+        >
+          <ng-template pTemplate="caption">
+            <div class="input-icon">
+              <i class="pi pi-search ml-10"></i>
+              <input
+                pInputText
+                id="globalFilter"
+                name="globalFilter"
+                type="text"
+                [(ngModel)]="globalFilter"
+                (input)="applyFilter()"
+                placeholder="pesquisar Coleções de Produtos"
+              />
+            </div>
+            <button
+              pButton
+              type="button"
+              pTooltip="Limpar o filtro"
+              tooltipPosition="top"
+              tooltipStyleClass="my-tooltip"
+              label=""
+              icon="pi pi-filter-slash"
+              (click)="clearGlobalFilter()"
+            ></button>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th pSortableColumn="name">
+                Nome <p-sortIcon field="name"></p-sortIcon>
+              </th>
+              <th>Produtos</th>
+              <th>Qnt</th>
+              <div class="centralize w-60"><th>Ação</th></div>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-collections let-i="rowIndex">
+            <tr>
+              <td>
+                {{
+                  collections.name.length > 40
+                    ? (collections.name | slice : 0 : 40) + "..."
+                    : collections.name
+                }}
+              </td>
+              <td>
+                {{ getProductsString(collections) }}
+              </td>
+              <td>
+                <ng-container *ngIf="collections?.products; else noStores">
+                  {{ collections.products.length }}
+                </ng-container>
+                <ng-template #noStores>0</ng-template>
+              </td>
+              <td>
+                <div class="centralize w-60">
+                  <button
+                    pButton
+                    pRipple
+                    pTooltip="Ver a Coleção"
+                    tooltipPosition="top"
+                    tooltipStyleClass="my-tooltip"
+                    type="button"
+                    icon="pi pi-eye"
+                    class="p-button-rounded p-button-text p-button-success p-button-sm"
+                    [routerLink]="['/merchant/collection-view', collections.id]"
+                  ></button>
+                  <button
+                    pButton
+                    pRipple
+                    pTooltip="Deletar a Coleção"
+                    tooltipPosition="top"
+                    tooltipStyleClass="my-tooltip"
+                    type="button"
+                    icon="pi pi-trash"
+                    class="p-button-rounded p-button-text p-button-danger p-button-sm"
+                    (click)="deleteComponent(i, $event)"
+                  ></button>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+      <!-- Se tabela estiver vazia -->
+      <ng-template #emptyTable>
+        <div>
+          <div>
+            <button
+              pButton
+              label="Nova Coleção"
+              icon="pi pi-plus"
+              class="btn-primary"
+              type="button"
+              [routerLink]="['/merchant/collection-view', 'new']"
+            ></button>
+          </div>
+          <span
+            >Atenção, você ainda não possui nenhuma coleção de produtos, crie
+            uma agora!</span
+          >
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>

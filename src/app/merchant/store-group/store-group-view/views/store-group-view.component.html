@@ -1,0 +1,155 @@
+<p-toast class="custom-toast"></p-toast>
+<div class="container">
+  <h3 class="">Grupos de Lojas</h3>
+  <div class="topic-container">
+    <div class="topic-title">
+      <h5 pTooltip="ID: {{ entity.id }} ">Grupo de Lojas</h5>
+    </div>
+    <div class="btns-container-medium">
+      <!-- Read Mode -->
+      <button
+        *ngIf="!editMode && !viewOnly"
+        pButton
+        label="Editar"
+        icon="pi pi-pencil"
+        iconPos="right"
+        class="btn-secondary"
+        style="width: 80px !important"
+        type="button"
+        (click)="edit()"
+      ></button>
+      <!-- Edit Mode -->
+      <button
+        *ngIf="editMode && !newObject"
+        pButton
+        label="Cancelar"
+        class="btn-secondary"
+        style="width: 80px !important"
+        type="button"
+        (click)="cancel()"
+      ></button>
+      <button
+        *ngIf="editMode && !newObject"
+        pButton
+        label="Salvar"
+        class="btn-primary"
+        style="width: 80px !important"
+        type="button"
+        [disabled]="entityForm.pristine || entityForm.invalid"
+        (click)="save()"
+        pTooltip="Salvar Loja"
+      ></button>
+      <button
+        *ngIf="newObject"
+        pButton
+        label="Criar"
+        class="btn-primary"
+        style="width: 80px !important"
+        type="button"
+        (click)="save()"
+        pTooltip="Criar Grupo"
+        [disabled]="entityForm.invalid"
+      ></button>
+    </div>
+  </div>
+  <hr />
+
+  <!-- Inputs -->
+  <!-- Inputs -->
+  <form [formGroup]="entityForm">
+    <div class="input-container">
+      <!-- Main Inputs -->
+      <div *ngIf="stores.length > 0" class="fields-container">
+        <div class="field-container">
+          <label class="label-field" for="name">Nome</label>
+          <span *ngIf="!editMode" class="span-field">
+            {{
+              entityForm.get("name")?.value.length > 80
+                ? (entityForm.get("name")?.value | slice : 0 : 80) + "..."
+                : entityForm.get("name")?.value
+            }}
+          </span>
+          <input
+            pInputText
+            *ngIf="editMode"
+            formControlName="name"
+            type="text"
+            class="input-field"
+            id="name"
+            pTooltip="Nome do grupo de lojas que será exibido para o consumidores, influenciadores e comerciantes"
+          />
+        </div>
+        <div class="field-container">
+          <label class="label-field" for="stores">Lista Lojas</label>
+          <p-scroller
+            *ngIf="!editMode"
+            [items]="entityForm.get('stores')?.value"
+            [itemSize]="scroolerItemsQuantity"
+            class="scroller-field"
+          >
+            <ng-template pTemplate="item" let-item let-options="options">
+              <div>
+                {{
+                  item.name.length > 30
+                    ? (item.name | slice : 0 : 30) + "..."
+                    : item.name
+                }}
+
+                <span
+                  [ngStyle]="{
+                    color: item.is_active ? 'green' : 'rgb(170, 170, 190)'
+                  }"
+                >
+                  {{ item.is_active ? "(Ativa)" : "(Inativa)" }}
+                </span>
+              </div>
+            </ng-template>
+          </p-scroller>
+          <p-listbox
+            *ngIf="editMode"
+            [options]="listScroolerItems"
+            formControlName="stores"
+            optionLabel="combinedLabel"
+            [multiple]="true"
+            [metaKeySelection]="false"
+            class="listbox-field"
+            pTooltip="Selecione as lojas que deseja adicionar ao grupo"
+          ></p-listbox>
+        </div>
+      </div>
+      <div *ngIf="stores.length === 0" class="fields-container">
+        <div>
+          <div>
+            <button
+              pButton
+              label="Nova Loja"
+              icon="pi pi-plus"
+              class="btn-primary"
+              type="button"
+              [routerLink]="['/merchant/store-view', 'new']"
+            ></button>
+          </div>
+          <span
+            >Atenção, você ainda não possui nenhuma loja registrada, para criar
+            um grupo de loja você precisa primeiro criar uma loja.</span
+          >
+        </div>
+      </div>
+      <!-- Divisor
+      <div class="vertical-line"></div>
+      Side Inputs
+      <div class="side-container"></div> -->
+    </div>
+    <div class="footer">
+      <button
+        pButton
+        label=""
+        icon="pi pi-arrow-left"
+        class="w-110 btn-secondary mt-20"
+        type="button"
+        (click)="back()"
+        pTooltip="Voltar"
+      ></button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,382 @@
+<p-toast class="custom-toast"></p-toast>
+<p-confirmDialog class="custom-dialog"></p-confirmDialog>
+<div class="container">
+  <h3>Parceiros Comerciais</h3>
+  <div *ngIf="invite_merchant && userIsPremium" class="topic-container">
+    <div class="topic-title">
+      <h5>Convidar Parceiro Comercial para Plataforma</h5>
+    </div>
+    <div class="btns-container-small">
+      <button
+        pButton
+        icon="pi pi-times"
+        type="button"
+        (click)="invite_merchant = false"
+        pTooltip="Cancelar convite por email"
+        style="
+          width: 40px !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          color: rgb(202, 0, 0) !important;
+          background: transparent !important;
+          border: 1px solid #ccc !important;
+          box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2) !important;
+        "
+      ></button>
+    </div>
+  </div>
+  <hr *ngIf="invite_merchant && userIsPremium" />
+  <div *ngIf="invite_merchant && userIsPremium" class="view-container col-12">
+    <div class="search-field" [formGroup]="emailForm">
+      <input
+        pInputText
+        formControlName="email"
+        type="email"
+        placeholder="Email do Comerciante Parceiro"
+        class="input-field"
+        pTooltip="Insira o email do comerciante que você deseja convidar para entrar na plataforma"
+      />
+      <button
+        pButton
+        label="Enviar Email Convite"
+        type="button"
+        pTooltip="Enviar o convite para o comerciante via email"
+        (click)="sendMerchantInviteEmail()"
+        [disabled]="!emailForm.valid"
+      ></button>
+    </div>
+    <br />
+  </div>
+  <div *ngIf="userIsPremium" class="topic-container">
+    <div class="topic-title">
+      <h5>Convidar Parceiro Comercial</h5>
+    </div>
+    <div class="btns-container-medium">
+      <button
+        *ngIf="!invite_merchant"
+        pButton
+        label="Convidar Parceiro"
+        icon="pi pi-envelope"
+        iconPos="right"
+        class="btn-secondary"
+        type="button"
+        style="width: 300px"
+        (click)="invite_merchant = true"
+        pTooltip="Convidar um comerciante para a plataforma"
+      ></button>
+    </div>
+  </div>
+  <hr *ngIf="userIsPremium" />
+  <div *ngIf="userIsPremium" class="view-container col-12">
+    <div class="search-field" [formGroup]="documentForm">
+      <p-inputMask
+        formControlName="document"
+        mask="99.999.999/9999-99"
+        placeholder="CNPJ do comerciante parceiro"
+        pTooltip="O comerciante parceiro tem que ter uma conta de comerciante ativa na plataforma"
+        [style]="{ display: 'flex', 'align-items': 'center' }"
+      ></p-inputMask>
+      <button
+        pButton
+        label="Convidar Comerciante"
+        type="button"
+        pTooltip="Convidar comerciante para participar das campanhas"
+        (click)="sendMerchantInviteCnpj()"
+        [disabled]="!documentForm.valid"
+      ></button>
+    </div>
+  </div>
+  <br *ngIf="userIsPremium" />
+  <div *ngIf="userIsPremium" class="topic-container">
+    <div class="topic-title">
+      <h5>Seu Ecosistema Comercial</h5>
+    </div>
+  </div>
+
+  <hr *ngIf="userIsPremium" />
+  <div *ngIf="userIsPremium" class="view-container col-12 wp-95">
+    <div class="col-12">
+      <div
+        class="table-list"
+        *ngIf="partnerships_guests && partnerships_guests.length > 0"
+      >
+        <p-table
+          [value]="itemsFiltradosPartnerships_guests"
+          [globalFilterFields]="[
+            'merchant_guest.name',
+            'merchant_guest.document'
+          ]"
+          [sortField]="'merchant_guest.name'"
+          [sortOrder]="1"
+          [paginator]="true"
+          [rows]="25"
+        >
+          <ng-template pTemplate="caption">
+            <div class="input-icon">
+              <i class="pi pi-search ml-10"></i>
+              <input
+                pInputText
+                id="globalFilterPartnerships"
+                name="globalFilterPartnerships"
+                type="text"
+                [(ngModel)]="globalFilterPartnerships_guests"
+                (input)="applyFilterPartnershipsGuests()"
+                placeholder="Pesquisar"
+                pTooltip="Pesquisar parceiros comerciais convidados"
+              />
+            </div>
+            <button
+              pButton
+              type="button"
+              pTooltip="Limpar o filtro"
+              tooltipPosition="top"
+              tooltipStyleClass="my-tooltip"
+              icon="pi pi-filter-slash"
+              (click)="clearGlobalFilterGuests()"
+            ></button>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th pSortableColumn="merchant_guest.name">
+                Comerciante Convidado
+                <p-sortIcon field="merchant_guest.name"></p-sortIcon>
+              </th>
+              <th class="w-200" pSortableColumn="status">
+                Status <p-sortIcon field="status"></p-sortIcon>
+              </th>
+              <th class="w-80 text-center">Ação</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-partnership let-i="rowIndex">
+            <tr>
+              <td>
+                {{ partnership.merchant_guest?.name }} (
+                {{
+                  (partnership.merchant_guest?.document?.substr(0, 2) || "") +
+                    "." +
+                    (partnership.merchant_guest?.document?.substr(2, 3) || "") +
+                    "." +
+                    (partnership.merchant_guest?.document?.substr(5, 3) || "") +
+                    "/" +
+                    (partnership.merchant_guest?.document?.substr(8, 4) || "") +
+                    "-" +
+                    (partnership.merchant_guest?.document?.substr(12, 2) || "")
+                }}
+                )
+              </td>
+              <td>
+                <div class="centralize-campaign-tag w-60">
+                  <p-tag
+                    *ngIf="partnership.status === 'pending'"
+                    class="proposal-campaign"
+                    value="Pendente"
+                    pTooltip="Parceria Pendente"
+                  ></p-tag>
+                  <p-tag
+                    *ngIf="partnership.status === 'active'"
+                    class="active-campaign"
+                    value="Ativa"
+                    pTooltip="Parceria Ativa"
+                  ></p-tag>
+                </div>
+              </td>
+
+              <td class="text-center">
+                <button
+                  *ngIf="partnership.status === 'active'"
+                  pButton
+                  pRipple
+                  pTooltip="Ver parceria"
+                  tooltipPosition="top"
+                  tooltipStyleClass="my-tooltip"
+                  type="button"
+                  icon="pi pi-eye"
+                  class="p-button-rounded p-button-text p-button-success p-button-sm"
+                  (click)="viewPartnershipGuest(partnership)"
+                ></button>
+                <button
+                  pButton
+                  pRipple
+                  pTooltip="Remover parceria"
+                  tooltipPosition="left"
+                  tooltipStyleClass="my-tooltip"
+                  type="button"
+                  icon="pi pi-trash"
+                  class="p-button-rounded p-button-text p-button-danger p-button-sm"
+                  (click)="deletePartnershipGuests(i, $event)"
+                ></button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+    <div class="col-12" *ngIf="partnerships_guests?.length === 0">
+      <span>Atenção, você ainda não possui nenhuma parceria!</span>
+    </div>
+    <br />
+  </div>
+
+  <div class="topic-container">
+    <div class="topic-title">
+      <h5>Participação em outros Ecosistemas Comerciais</h5>
+    </div>
+  </div>
+  <hr />
+  <div class="view-container col-12 wp-95">
+    <div class="col-12">
+      <div
+        class="table-list"
+        *ngIf="partnerships_host && partnerships_host.length > 0"
+      >
+        <p-table
+          [value]="itemsFiltradosPartnerships_host"
+          [globalFilterFields]="[
+            'merchant_host.name',
+            'merchant_host.document'
+          ]"
+          [sortField]="'merchant_host.name'"
+          [sortOrder]="1"
+          [paginator]="true"
+          [rows]="25"
+        >
+          <ng-template pTemplate="caption">
+            <div class="input-icon">
+              <i class="pi pi-search ml-10"></i>
+              <input
+                pInputText
+                id="globalFilterPartnerships"
+                name="globalFilterPartnerships"
+                type="text"
+                [(ngModel)]="globalFilterPartnerships_host"
+                (input)="applyFilterPartnershipsHost()"
+                placeholder="Pesquisar"
+                pTooltip="Pesquisar parcerias comerciais"
+              />
+            </div>
+            <button
+              pButton
+              type="button"
+              pTooltip="Limpar o filtro"
+              tooltipPosition="top"
+              tooltipStyleClass="my-tooltip"
+              label=""
+              icon="pi pi-filter-slash"
+              (click)="clearGlobalFilterHosts()"
+            ></button>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th pSortableColumn="merchant_host.name">
+                Comerciante Anfitrião
+                <p-sortIcon field="merchant_host.name"></p-sortIcon>
+              </th>
+              <th pSortableColumn="merchant_guest.name">
+                Comerciante Convidado
+                <p-sortIcon field="merchant_guest.name"></p-sortIcon>
+              </th>
+              <th class="w-200" pSortableColumn="status">
+                Status <p-sortIcon field="status"></p-sortIcon>
+              </th>
+              <th class="w-80 text-center">Ação</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-partnership let-i="rowIndex">
+            <tr>
+              <td
+                pTooltip="{{
+                  (partnership.merchant_host?.document?.substr(0, 2) || '') +
+                    '.' +
+                    (partnership.merchant_host?.document?.substr(2, 3) || '') +
+                    '.' +
+                    (partnership.merchant_host?.document?.substr(5, 3) || '') +
+                    '/' +
+                    (partnership.merchant_host?.document?.substr(8, 4) || '') +
+                    '-' +
+                    (partnership.merchant_host?.document?.substr(12, 2) || '')
+                }}"
+                tooltipPosition="top"
+              >
+                {{ partnership.merchant_host?.name }}
+              </td>
+              <td
+                pTooltip="{{
+                  (partnership.merchant_guest?.document?.substr(0, 2) || '') +
+                    '.' +
+                    (partnership.merchant_guest?.document?.substr(2, 3) || '') +
+                    '.' +
+                    (partnership.merchant_guest?.document?.substr(5, 3) || '') +
+                    '/' +
+                    (partnership.merchant_guest?.document?.substr(8, 4) || '') +
+                    '-' +
+                    (partnership.merchant_guest?.document?.substr(12, 2) || '')
+                }}"
+                tooltipPosition="top"
+              >
+                {{ partnership.merchant_guest?.name }}
+              </td>
+              <td>
+                <div class="centralize-campaign-tag w-60">
+                  <p-tag
+                    *ngIf="partnership.status === 'pending'"
+                    class="proposal-campaign"
+                    value="Pendente"
+                    pTooltip="Parceria Pendente"
+                  ></p-tag>
+                  <p-tag
+                    *ngIf="partnership.status === 'active'"
+                    class="active-campaign"
+                    value="Ativa"
+                    pTooltip="Parceria Aprovada"
+                  ></p-tag>
+                </div>
+              </td>
+
+              <td class="text-center">
+                <button
+                  *ngIf="partnership.status === 'pending'"
+                  pButton
+                  pRipple
+                  pTooltip="Aceitar parceria"
+                  tooltipPosition="top"
+                  tooltipStyleClass="my-tooltip"
+                  type="button"
+                  icon="pi pi-check"
+                  class="p-button-rounded p-button-text p-button-success p-button-sm"
+                  (click)="acceptPartnership(partnership)"
+                  style="color: green"
+                ></button>
+                <button
+                  *ngIf="partnership.status === 'active'"
+                  pButton
+                  pRipple
+                  pTooltip="Ver parceria"
+                  tooltipPosition="top"
+                  tooltipStyleClass="my-tooltip"
+                  type="button"
+                  icon="pi pi-eye"
+                  class="p-button-rounded p-button-text p-button-success p-button-sm"
+                  (click)="viewPartnershipHost(partnership)"
+                ></button>
+                <button
+                  pButton
+                  pRipple
+                  pTooltip="Remover parceria"
+                  tooltipPosition="left"
+                  tooltipStyleClass="my-tooltip"
+                  type="button"
+                  icon="pi pi-trash"
+                  class="p-button-rounded p-button-text p-button-danger p-button-sm"
+                  (click)="deletePartnershipHost(i, $event)"
+                ></button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+    <div class="col-12" *ngIf="partnerships_host?.length === 0">
+      <span>Atenção, você ainda não foi convidado para nenhuma parceria!</span>
+    </div>
+  </div>
+</div>

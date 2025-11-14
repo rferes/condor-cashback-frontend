@@ -1,0 +1,105 @@
+<p-toast class="custom-toast"></p-toast>
+<p-confirmDialog class="custom-dialog"></p-confirmDialog>
+<div class="container">
+  <h3>Parceiro Comercial</h3>
+
+  <br />
+
+  <div class="topic-container">
+    <div class="topic-title">
+      <h5>
+        {{ merchantPartnerHost.name }}
+      </h5>
+    </div>
+  </div>
+  <hr />
+  <div class="col-12 d-flex justify-content-between">
+    <div
+      class="col-3"
+      style="display: flex; align-items: center; justify-content: center"
+    >
+      <div class="fields-container">
+        <div
+          style="
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            height: 100% !important;
+          "
+        >
+          <img
+            [src]="merchantPartnerHost.image"
+            alt="Imagem do Comerciante"
+            class="image-field"
+            style="
+              max-width: 220px;
+              border: 1px solid #cacaca;
+              border-radius: 8px;
+              box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            "
+          />
+        </div>
+      </div>
+    </div>
+    <div class="col-9">
+      <div class="input-container">
+        <div class="fields-container">
+          <div class="field-container">
+            <label class="label-field" style="width: 200px">Cidade</label>
+            <label class="label-field" for="city">{{
+              merchantPartnerHost.city
+            }}</label>
+          </div>
+          <div class="field-container">
+            <label class="label-field" style="width: 200px">Tipo</label>
+            <label class="label-field" for="tipe">
+              {{ merchantPartnerHost.type }}</label
+            >
+          </div>
+          <div class="field-container">
+            <label class="label-field" style="width: 200px"
+              >Inicio Parceria</label
+            >
+            <label class="label-field" for="createt_date">
+              {{ merchantPartnerHost.partnership_date | date }}
+            </label>
+          </div>
+          <div class="field-container">
+            <label class="label-field" style="width: 200px"
+              >Valores Transferidos</label
+            >
+            <label
+              class="label-field"
+              for="status"
+              pTooltip="Total de Vendas: R$ {{
+                merchantPartnerHost.total_value | number : '1.2-2'
+              }}&#13;&#10;Quantidade de Vendas: R$ {{
+                merchantPartnerHost.quantity_receipts | number : '1.2-2'
+              }}"
+              tooltipPosition="bottom"
+              [tooltipStyleClass]="'tooltip-custom-width'"
+            >
+              R$ {{ merchantPartnerHost.cashback_value | number : "1.2-2" }}
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-3"></div>
+  </div>
+  <br />
+  <div class="footer">
+    <button
+      pButton
+      label=""
+      icon="pi pi-arrow-left"
+      class="w-110 btn-secondary"
+      type="button"
+      (click)="back()"
+      pTooltip="Voltar"
+    ></button>
+  </div>
+  <br />
+  <br />
+</div>

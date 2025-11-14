@@ -1,0 +1,187 @@
+<div *ngIf="mode == 'influencer'" class="influencer-decorator"></div>
+<div *ngIf="mode == 'merchant'" class="merchant-decorator"></div>
+<div class="container-layout">
+  <div *ngIf="!new_account_type" class="side-component">
+    <div class="profile-name">
+      <a [href]="'/redeem-member/' + user?.merchant?.url" target="_blank">
+        <p-tag
+          *ngIf="mode == 'merchant'"
+          [pTooltip]="user_plan"
+          [value]="
+            (user?.merchant?.name
+              ? (user?.merchant?.name | slice : 0 : 16) +
+                ((user?.merchant?.name?.length || 0) > 16 ? '...' : '')
+              : '') + (user?.is_premium ? ' ★' : '')
+          "
+        ></p-tag>
+      </a>
+      <a [href]="'/redeem/' + user?.influencer?.url" target="_blank">
+        <p-tag
+          *ngIf="mode == 'influencer'"
+          [pTooltip]="user_plan"
+          [value]="
+            user?.influencer?.name
+              ? (user?.influencer?.name | slice : 0 : 18) +
+                ((user?.influencer?.name?.length || 0) > 18 ? '...' : '')
+              : ''
+          "
+        ></p-tag>
+      </a>
+    </div>
+    <div class="menu"><p-panelMenu [model]="itemsSidebar"></p-panelMenu></div>
+  </div>
+  <div class="main-component">
+    <div class="topbar">
+      <div class="centralize col-11">
+        <form
+          *ngIf="(!new_account_type || semi_new) && accountTypesClean"
+          [formGroup]="accountTypeFormGroup"
+        >
+          <p-dropdown
+            formControlName="accountType"
+            [options]="accountTypesClean"
+            optionLabel="label"
+            [placeholder]="
+              mode === 'merchant' ? 'Comerciante' : 'Influenciador'
+            "
+            class="dropdown-ProfileSelect"
+            (onChange)="select_user_type($event)"
+            pTooltip="Selecione o modo de uso do RedAds"
+            tooltipPosition="bottom"
+            tooltipStyleClass="my-tooltip"
+          ></p-dropdown>
+        </form>
+      </div>
+      <div class="centralize col-1">
+        <p-button
+          #settingsButton
+          id="topBarButton"
+          type="button"
+          icon="pi pi-cog"
+          (click)="op.toggle($event)"
+          pTooltip="Configurações"
+          tooltipPosition="right"
+          tooltipStyleClass="my-tooltip"
+        ></p-button>
+        <div class="settings-menu">
+          <p-overlayPanel #op>
+            <ul>
+              <li>
+                <a routerLink="/account" (click)="op.hide()">
+                  <i class="pi pi-user"></i>&nbsp;&nbsp;Conta
+                </a>
+                <!-- </li>
+              <li *ngIf="!new_account_type">
+                <a routerLink="/plan" (click)="op.hide()">
+                  <i class="pi pi-verified"></i>&nbsp;&nbsp;Plano
+                </a>
+              </li> -->
+              </li>
+              <hr
+                *ngIf="!new_account_type"
+                style="border-top: 1px solid gray; width: 166px"
+              />
+
+              <li *ngIf="!new_account_type && mode == 'merchant'">
+                <a routerLink="/payment/credit-card-list" (click)="op.hide()">
+                  <i class="pi pi-credit-card"></i>&nbsp;&nbsp;Cartões de
+                  Crédito
+                </a>
+              </li>
+              <li *ngIf="!new_account_type">
+                <a routerLink="/payment/pix-key-list" (click)="op.hide()">
+                  <i class="pi pi-dollar"></i>&nbsp;&nbsp;Chaves Pix
+                </a>
+              </li>
+              <hr style="border-top: 1px solid gray; width: 166px" />
+              <li *ngIf="user?.is_premium && mode == 'merchant'">
+                <a routerLink="merchant/api-keys-list" (click)="op.hide()">
+                  <i class="pi pi-dollar"></i>&nbsp;&nbsp;Chaves da API
+                </a>
+              </li>
+              <hr
+                *ngIf="user?.is_premium && mode == 'merchant'"
+                style="border-top: 1px solid gray; width: 166px"
+              />
+              <li>
+                <a (click)="logout(); op.hide()">
+                  <i class="pi pi-sign-out"></i>&nbsp;&nbsp;Logout
+                </a>
+              </li>
+              <!-- <li>
+                <a (click)="logoutForgetDevice(); op.hide()">
+                  <i class="pi pi-sign-out"></i>&nbsp;&nbsp;Esquecer Dispositivo
+                </a>
+              </li> -->
+
+              <li>
+                <div>
+                  <div class="mt-15">
+                    <small class="f-15">{{ user?.name || "user name" }}</small>
+                  </div>
+                  <div class="div-document-small">
+                    <small class="document-small">
+                      {{
+                        user?.document
+                          ? user?.document?.length === 14
+                            ? user?.document?.slice(0, 2) +
+                              "." +
+                              user?.document?.slice(2, 5) +
+                              "." +
+                              user?.document?.slice(5, 8) +
+                              "/" +
+                              user?.document?.slice(8, 12) +
+                              "-" +
+                              user?.document?.slice(12)
+                            : user?.document?.length === 11
+                            ? user?.document?.slice(0, 3) +
+                              "." +
+                              user?.document?.slice(3, 6) +
+                              "." +
+                              user?.document?.slice(6, 9) +
+                              "-" +
+                              user?.document?.slice(9)
+                            : user?.document
+                          : "user document"
+                      }}
+                    </small>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </p-overlayPanel>
+        </div>
+      </div>
+    </div>
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+  <div class="topbar"></div>
+</div>
+
+<div
+  style="position: fixed; left: 0; bottom: 0; text-align: right; padding: 10px"
+>
+  <div style="display: flex; flex-direction: column; gap: 10px">
+    <h5 style="text-align: left">
+      <span style="color: black">Red</span
+      ><span style="color: rgb(188, 0, 0)">Ads</span>
+    </h5>
+    <a
+      href="https://s3.us-east-1.amazonaws.com/redads.com.br.static/media/terms/merchant-influencer-terms.pdf"
+      target="_blank"
+      style="
+        color: #000000;
+        text-decoration: underline;
+        font-size: 12px;
+        margin-top: -20px !important;
+      "
+    >
+      Termos de Adesão
+    </a>
+  </div>
+</div>
