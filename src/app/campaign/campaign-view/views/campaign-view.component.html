@@ -268,7 +268,11 @@
           <label class="label-field bold">Banner</label>
           <br />
           <img
-            [src]="entity.banner"
+            [src]="
+              entity.banner?.startsWith('http')
+                ? entity.banner
+                : mediaUrl + entity.banner
+            "
             alt="Banner Campanha"
             class="image-tabview"
           />

@@ -27,6 +27,7 @@ import { TermsAcceptanceService } from 'src/app/shared/services/terms-acceptance
 import { TermsAcceptance } from 'src/app/shared/entities/terms-acceptance.entity';
 import { UserService } from 'src/app/shared/services/user.service';
 import { User } from 'src/app/shared/entities/user.entity';
+import { environment } from 'src/environments/environment';
 
 // Third-party library imports
 import { ImageCroppedEvent } from 'ngx-image-cropper';
@@ -45,6 +46,7 @@ export class ProfileComponent implements OnInit {
   entityForm: FormGroup;
   editMode: boolean = false;
   merchantTypesList = merchantTypes;
+  mediaUrl = environment.mediaUrl;
 
   listComercialCategories: ComercialCategory[] = [];
   comercialCategory: ComercialCategory = {} as ComercialCategory;

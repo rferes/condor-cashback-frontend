@@ -253,7 +253,11 @@
             <label class="label-field" for="image">Imagem</label>
             <img
               *ngIf="!imageLoaded && !isNew && !isSemiNew"
-              [src]="entity.image"
+              [src]="
+                entity.image?.startsWith('http')
+                  ? entity.image
+                  : mediaUrl + entity.image
+              "
               alt="Imagem do Comerciante"
               class="image-field"
             />

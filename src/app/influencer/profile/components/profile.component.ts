@@ -33,6 +33,7 @@ import {
   City,
   State,
 } from 'src/app/shared/entities/address.entity';
+import { environment } from 'src/environments/environment';
 
 // Third-party library imports
 import { ImageCroppedEvent } from 'ngx-image-cropper';
@@ -52,6 +53,7 @@ export class ProfileComponent implements OnInit {
   editMode: boolean = false;
   influencerTypesList = influencerTypes;
   genderList = genderList;
+  mediaUrl = environment.mediaUrl;
   listComercialCategories: ComercialCategory[] = [];
   comercialCategory: ComercialCategory = {} as ComercialCategory;
   scroolerItemsQuantity: number = 21;
