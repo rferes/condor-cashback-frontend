@@ -88,7 +88,6 @@ export class CouponViewComponent implements OnInit {
 
   // Refund Coupon
   refundCoupon(): void {
-    console.log('Estorno do cupom');
     this.confirmationService.confirm({
       message: 'Tem certeza de que deseja estornar este cupom?',
       header: 'Confirmação de Estorno',
@@ -117,7 +116,6 @@ export class CouponViewComponent implements OnInit {
         });
       },
       reject: () => {
-        console.log('Estorno cancelado');
       },
     });
   }

@@ -421,7 +421,6 @@ export class ProfileComponent implements OnInit {
 
     this.termsAcceptanceService.create(payload).subscribe({
       next: (response: HttpResponse<TermsAcceptance>) => {
-        console.log('Termos aceitos com sucesso!');
 
         // Atualizar o campo de termos aceitos do usuário conforme o tipo
         const userUpdatePayload: any = {};

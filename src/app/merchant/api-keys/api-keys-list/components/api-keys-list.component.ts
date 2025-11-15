@@ -96,7 +96,6 @@ export class MerchantApiKeysListComponent implements OnInit {
         this.applyFilterApiKeys();
       },
       error: (error: HttpErrorResponse) => {
-        console.log(error);
       },
     });
   }
@@ -139,7 +138,6 @@ export class MerchantApiKeysListComponent implements OnInit {
         });
       },
       reject: () => {
-        console.log('Rejeitado');
       },
     });
   }

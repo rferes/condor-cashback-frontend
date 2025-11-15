@@ -82,7 +82,6 @@ export class StoreGroupListComponent implements OnInit {
         });
       },
       reject: () => {
-        console.log('Rejeitado');
       },
     });
   }

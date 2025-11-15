@@ -210,7 +210,6 @@ export class CampaignListComponent implements OnInit {
         });
       },
       reject: () => {
-        console.log('Rejeitado');
       },
     });
   }
@@ -250,7 +249,6 @@ export class CampaignListComponent implements OnInit {
         });
       },
       reject: () => {
-        console.log('Rejeitado');
       },
     });
   }
@@ -290,7 +288,6 @@ export class CampaignListComponent implements OnInit {
         });
       },
       reject: () => {
-        console.log('Rejeitado');
       },
     });
   }
@@ -336,7 +333,6 @@ export class CampaignListComponent implements OnInit {
         });
       },
       reject: () => {
-        console.log('Rejeitado');
       },
     });
   }

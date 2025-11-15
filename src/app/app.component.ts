@@ -13,7 +13,6 @@ export class AppComponent implements OnInit {
   constructor(private router: Router) {}
 
   ngOnInit(): void {
-    console.log('Version 1.0.0');
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         const urlObject = new URL(

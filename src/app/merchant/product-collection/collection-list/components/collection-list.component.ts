@@ -81,7 +81,6 @@ export class CollectionListComponent implements OnInit {
         });
       },
       reject: () => {
-        console.log('Rejeitado');
       },
     });
   }

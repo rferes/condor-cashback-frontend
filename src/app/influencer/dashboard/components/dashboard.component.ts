@@ -152,13 +152,11 @@ export class DashboardComponent implements OnInit {
             });
           },
           error: (error: HttpErrorResponse) => {
-            console.log(error);
             toastMessage(this.messageService, dashboard_msg[error.status]);
           },
         });
       },
       error: (error: HttpErrorResponse) => {
-        console.log(error);
       },
     });
   }

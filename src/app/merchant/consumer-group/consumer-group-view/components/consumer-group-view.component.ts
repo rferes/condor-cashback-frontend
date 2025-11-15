@@ -79,7 +79,6 @@ export class ConsumerGroupViewComponent implements OnInit {
     this.componentService.get(pk).subscribe({
       next: (response: HttpResponse<ComponentEntity>) => {
         this.entity = response.body as ComponentEntity;
-        console.log(this.entity);
         this.newObject = false;
         this.editMode = false;
         this.entityForm.patchValue(this.entity);

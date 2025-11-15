@@ -102,7 +102,6 @@ export class CampaignViewComponent implements OnInit {
             this.influencerInvite = response.body as CampaignInfluencer;
           },
           error: (error: HttpErrorResponse) => {
-            console.log(error);
           },
         });
       } else if (this.user_type === 'merchant') {
@@ -278,9 +277,7 @@ export class CampaignViewComponent implements OnInit {
           },
         });
       },
-      reject: () => {
-        console.log('Rejeitado');
-      },
+      reject: () => {},
     });
   }
 
@@ -311,9 +308,7 @@ export class CampaignViewComponent implements OnInit {
           },
         });
       },
-      reject: () => {
-        console.log('Rejeitado');
-      },
+      reject: () => {},
     });
   }
 
@@ -330,7 +325,6 @@ export class CampaignViewComponent implements OnInit {
   }
 
   downloadPDF(): void {
-    console.log('downloadPDF');
   }
 
   back(): void {

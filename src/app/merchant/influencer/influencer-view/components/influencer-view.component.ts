@@ -134,7 +134,6 @@ export class InfluencerViewComponent implements OnInit {
         this.applyFilterFriendship();
       },
       error: (error: HttpErrorResponse) => {
-        //console.log(error);
       },
     });
   }
@@ -218,7 +217,6 @@ export class InfluencerViewComponent implements OnInit {
         });
       },
       reject: () => {
-        console.log('Rejeitado');
       },
     });
   }

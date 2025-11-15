@@ -864,7 +864,6 @@ export class CampaignEditComponent implements OnInit {
         this.influencerSuggestions = this.influencerFavorites;
       },
       error: (error: HttpErrorResponse) => {
-        //console.log(error);
       },
     });
   }
@@ -1083,8 +1082,6 @@ export class CampaignEditComponent implements OnInit {
       }
 
       // Update the last influencer selected for future comparisons
-      // console.log('Last influencer selected:', this.last_influencer_selected);
-      // console.log('Influencer selected:', influencerSelected);
     } else if (this.user_type === 'merchant') {
       this.getMerchantInfluencerFriendship();
     }
@@ -1165,7 +1162,6 @@ export class CampaignEditComponent implements OnInit {
         start_date: null,
       });
     }
-    console.log(this.entityForm.value.end_date);
   }
 
   convertDateToBack(date: Date): string {
@@ -1280,8 +1276,6 @@ export class CampaignEditComponent implements OnInit {
   }
 
   bonificationTypeChangeInfluencer(event: any) {
-    console.log(event);
-    console.log(this.entityForm.value.linked_credit);
   }
 
   // Panel Functions
@@ -1289,16 +1283,6 @@ export class CampaignEditComponent implements OnInit {
 
   nextActiveIndex(): void {
     this.activeIndex++;
-    console.log('Form valid:', this.entityForm.valid);
-    if (!this.entityForm.valid) {
-      console.log('Form errors:', this.entityForm.errors);
-      Object.keys(this.entityForm.controls).forEach((key) => {
-        const control = this.entityForm.get(key);
-        if (control?.errors) {
-          console.log(`${key} errors:`, control.errors);
-        }
-      });
-    }
   }
 
   previousActiveIndex(): void {

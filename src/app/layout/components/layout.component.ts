@@ -200,7 +200,6 @@ export class LayoutComponent implements OnInit {
           },
           error: (error) => {
             if (error.status === 406) {
-              console.log('Error:', error);
             }
           },
         });

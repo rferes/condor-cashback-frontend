@@ -356,7 +356,6 @@ export class CreditCardViewComponent implements OnInit {
         return response.json(); // Converte a resposta para JSON
       })
       .then((data) => {
-        console.log('Sucesso:', data);
         let creditCard = {
           document: user_document,
           status: 'ACTIVE',

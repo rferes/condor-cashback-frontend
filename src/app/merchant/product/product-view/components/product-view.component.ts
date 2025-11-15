@@ -92,7 +92,6 @@ export class ProductViewComponent implements OnInit {
 
   // Cities and States
   fetchDataSuport(): void {
-    console.log('fetchDataSuport');
   }
 
   private initializeEntityForm() {

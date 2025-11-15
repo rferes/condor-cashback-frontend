@@ -108,7 +108,6 @@ export class PartnershipListComponent implements OnInit {
         this.applyFilterPartnershipsHost();
       },
       error: (error: HttpErrorResponse) => {
-        console.log(error);
       },
     });
   }
@@ -151,7 +150,6 @@ export class PartnershipListComponent implements OnInit {
         });
       },
       reject: () => {
-        console.log('Rejeitado');
       },
     });
   }
@@ -169,7 +167,6 @@ export class PartnershipListComponent implements OnInit {
         this.applyFilterPartnershipsGuests();
       },
       error: (error: HttpErrorResponse) => {
-        console.log(error);
       },
     });
   }
@@ -212,7 +209,6 @@ export class PartnershipListComponent implements OnInit {
         });
       },
       reject: () => {
-        console.log('Rejeitado');
       },
     });
   }
@@ -271,7 +267,6 @@ export class PartnershipListComponent implements OnInit {
           });
       },
       reject: () => {
-        console.log('Rejeitado');
       },
     });
   }

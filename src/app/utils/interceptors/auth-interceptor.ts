@@ -60,7 +60,6 @@ export class AuthInterceptor implements HttpInterceptor {
       this.router.navigate(['login']);
       return next.handle(authReq);
     } else if (error.status === 404) {
-      console.log('404 error');
       return throwError(error);
     } else if (error.status === 405) {
       this.messageService.add({

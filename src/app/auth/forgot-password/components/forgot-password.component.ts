@@ -166,14 +166,12 @@ export class ForgotPasswordComponent {
     };
     this.smsService.sendSMSVerify(payload).subscribe({
       next: (response: HttpResponse<SendSMSCodeVerifyResponse>) => {
-        console.log('Response:', response);
         this.startCountdown(ForgotPasswordComponent.SMS_RESEND_TIME_MIN * 60);
         this.isLinkDisabled = true;
         this.step = 2;
         toastMessage(this.messageService, sms_toasts[response.status]);
       },
       error: (error: HttpErrorResponse) => {
-        console.log('Error:', error);
         toastMessage(this.messageService, sms_toasts[error.status]);
       },
     });

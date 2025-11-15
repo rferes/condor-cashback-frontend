@@ -103,7 +103,6 @@ export class ProductListComponent implements OnInit {
         });
       },
       reject: () => {
-        console.log('Rejeitado');
       },
     });
   }
@@ -119,7 +118,6 @@ export class ProductListComponent implements OnInit {
         this.deleteComponentAction(rowPosition);
       },
       reject: () => {
-        console.log('Rejeitado');
       },
     });
   }

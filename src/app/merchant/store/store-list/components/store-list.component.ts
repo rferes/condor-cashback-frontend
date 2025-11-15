@@ -108,9 +108,7 @@ export class StoreListComponent implements OnInit {
           }
         });
       },
-      reject: () => {
-        console.log('Rejeitado');
-      },
+      reject: () => {},
     });
   }
 
@@ -124,9 +122,7 @@ export class StoreListComponent implements OnInit {
       accept: () => {
         this.deleteComponentAction(rowPosition);
       },
-      reject: () => {
-        console.log('Rejeitado');
-      },
+      reject: () => {},
     });
   }
 

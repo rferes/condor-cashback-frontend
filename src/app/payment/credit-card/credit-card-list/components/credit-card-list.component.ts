@@ -87,7 +87,6 @@ export class CreditCardListComponent implements OnInit {
         });
       },
       reject: () => {
-        console.log('Rejeitado');
       },
     });
   }

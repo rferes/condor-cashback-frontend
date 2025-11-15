@@ -157,7 +157,6 @@ export class PageComponent implements OnInit {
           }
         },
         error: (error: HttpErrorResponse) => {
-          console.log(error);
           this.member_approved = false;
           this.url_not_found = true;
           toastMessage(this.messageService, {
@@ -413,7 +412,6 @@ export class PageComponent implements OnInit {
   }
 
   acceptTermsCheckBox() {
-    console.log('acceptTermsCheckBox called');
     if (this.entityForm.get('accept_terms')?.value) {
       // Update states
       this.entityForm.patchValue({ accept_terms: true });

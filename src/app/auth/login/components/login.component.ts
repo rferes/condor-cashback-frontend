@@ -89,7 +89,6 @@ export class LoginComponent implements OnInit {
     ) {
       this.user_type = localStorage.getItem('type') || '';
       const type = localStorage.getItem('type');
-      console.log('Type:', type);
       if (localStorage.getItem('type') === 'Incomplete Email') {
         this.step = 3;
         this.router.navigate(['login']);
@@ -408,7 +407,6 @@ export class LoginComponent implements OnInit {
 
     this.termsAcceptanceService.create(payload).subscribe({
       next: (response: HttpResponse<TermsAcceptance>) => {
-        console.log('Termos aceitos com sucesso!');
 
         // Atualizar o campo de termos aceitos do usuário conforme o tipo
         const userUpdatePayload: any = {};

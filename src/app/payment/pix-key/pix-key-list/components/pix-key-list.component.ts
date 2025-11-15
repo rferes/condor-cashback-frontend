@@ -87,7 +87,6 @@ export class PixKeyListComponent implements OnInit {
         });
       },
       reject: () => {
-        console.log('Rejeitado');
       },
     });
   }

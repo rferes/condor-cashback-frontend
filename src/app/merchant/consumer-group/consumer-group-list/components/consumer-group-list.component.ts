@@ -82,7 +82,6 @@ export class ConsumerGroupListComponent implements OnInit {
         });
       },
       reject: () => {
-        console.log('Rejeitado');
       },
     });
   }

@@ -175,17 +175,6 @@ export class RegisterComponent {
     const isStep1Invalid = step1Form?.invalid;
     const isCheckDocumentFalse = this.checkDocument === false;
 
-    console.log('DEBUG submitStep1:', {
-      step1Invalid: isStep1Invalid,
-      checkDocument: this.checkDocument,
-      step1Errors: step1Form?.errors,
-      documentErrors: step1Form?.get('document')?.errors,
-      nameErrors: step1Form?.get('name')?.errors,
-      cellphoneErrors: step1Form?.get('cellphone')?.errors,
-      passwordErrors: step1Form?.get('password')?.errors,
-      step1Value: step1Form?.value
-    });
-
     if (isStep1Invalid || isCheckDocumentFalse) {
       step1Form?.markAllAsTouched();
       toastMessage(this.messageService, register_toasts[400]);
@@ -272,7 +261,6 @@ export class RegisterComponent {
               }
             },
             error: (error: HttpErrorResponse) => {
-              console.log('error', error.error);
               toastMessage(this.messageService, register_toasts[error.status]);
             },
           });

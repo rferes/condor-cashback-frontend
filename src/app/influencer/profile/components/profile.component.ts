@@ -200,7 +200,6 @@ export class ProfileComponent implements OnInit {
 
   acceptTermsCheckBox() {
     this.termsDialogCheckBoxVisible = true;
-    console.log('acceptTermsCheckBox called');
     if (this.entityForm.get('accept_terms')?.value) {
       // Update states
       this.entityForm.patchValue({ accept_terms: true });
@@ -239,7 +238,6 @@ export class ProfileComponent implements OnInit {
 
     this.termsAcceptanceService.create(payload).subscribe({
       next: (response: HttpResponse<TermsAcceptance>) => {
-        console.log('Termos aceitos com sucesso!');
 
         // Atualizar o campo de termos aceitos do usuário conforme o tipo
         const userUpdatePayload: any = {};
