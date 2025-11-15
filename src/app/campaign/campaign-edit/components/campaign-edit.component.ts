@@ -87,6 +87,7 @@ interface LinkedCredit {
 })
 export class CampaignEditComponent implements OnInit {
   baseUrl = environment.baseUrl;
+  mediaUrl = environment.mediaUrl;
   user_type: string = 'merchant';
   entity: ComponentEntity = {} as ComponentEntity;
   campaign_stores: Store[] = [];

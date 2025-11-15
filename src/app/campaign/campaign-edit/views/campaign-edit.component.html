@@ -129,7 +129,7 @@
                 [src]="
                   entityForm.get('banner')?.value.startsWith('http')
                     ? entityForm.get('banner')?.value
-                    : baseUrl + 'media/' + entityForm.get('banner')?.value
+                    : mediaUrl + entityForm.get('banner')?.value
                 "
                 alt="Imagem do Comerciante"
                 class="image-field"
