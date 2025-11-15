@@ -1,0 +1,105 @@
+<p-toast class="custom-toast"></p-toast>
+<div *ngIf="!isLoading" class="container">
+  <h3 class="">Chaves Pix</h3>
+  <div class="topic-container">
+    <div class="topic-title">
+      <h5>Chave Pix</h5>
+    </div>
+    <div class="btns-container-small">
+      <button
+        pButton
+        label="Criar"
+        class="w-80 btn-primary"
+        type="button"
+        (click)="save()"
+        pTooltip="Criar Nova Chave Pix"
+        [disabled]="
+          entityForm.get('document')?.invalid ||
+          entityForm.get('pix_key')?.invalid
+        "
+      ></button>
+    </div>
+  </div>
+  <hr />
+
+  <form [formGroup]="entityForm">
+    <div class="input-container">
+      <!-- Main Inputs -->
+      <div class="fields-container">
+        <!-- <div class="field-container">
+          <label class="label-field" for="document">Documento (CNPJ/CPF)</label>
+          <input
+            pInputText
+            id="document"
+            formControlName="document"
+            placeholder="CNPJ ou CPF"
+            maxlength="18"
+            (input)="onCheckDocument()"
+            pTooltip="CNPJ ou CPF"
+            class="input-field"
+          />
+          <div
+            *ngIf="entityForm.get('document')?.errors?.['cpfCnpj']"
+            class="warning_message"
+          >
+            CPF ou CNPJ inválido.
+          </div>
+        </div> -->
+        <div class="field-container">
+          <label class="label-field" for="type">Tipo de Chave</label>
+          <p-dropdown
+            formControlName="type"
+            [options]="consumer_pix_type"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Selecione"
+            class="dropdown-field"
+            (onChange)="updateKeyPixType()"
+          ></p-dropdown>
+        </div>
+        <div *ngIf="entityForm.value.type === 'email'" class="field-container">
+          <label class="label-field" for="pix_key">Chave Pix (Email)</label>
+          <input
+            pInputText
+            id="pix_key"
+            formControlName="pix_key"
+            placeholder="exemplo@email.com"
+            maxlength="255"
+            class="input-field"
+            type="email"
+          />
+        </div>
+        <div *ngIf="entityForm.value.type === 'phone'" class="field-container">
+          <label class="label-field" for="pix_key">Chave Pix (Celular)</label>
+          <p-inputMask
+            mask="(99) 99999-9999"
+            id="phone"
+            formControlName="pix_key"
+            placeholder="(xx) xxxxx-xxxx"
+            class="input-mask-field"
+            pTooltip="Digite o DDD e o número do celular"
+          ></p-inputMask>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <button
+        pButton
+        label=""
+        icon="pi pi-arrow-left"
+        class="w-110 btn-secondary"
+        type="button"
+        (click)="back()"
+        pTooltip="Voltar"
+      ></button>
+    </div>
+  </form>
+</div>
+<p-progressSpinner
+  *ngIf="isLoading"
+  styleClass="w-4rem h-4rem"
+  strokeWidth="8"
+  fill="var(--surface-ground)"
+  animationDuration="0.8s"
+  class="centralize"
+/>

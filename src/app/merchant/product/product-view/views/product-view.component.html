@@ -1,0 +1,180 @@
+<p-toast class="custom-toast"></p-toast>
+<div class="container">
+  <h3 class="">Produtos</h3>
+  <div class="topic-container">
+    <div class="topic-title">
+      <h5 pTooltip="ID: {{ entity.id }} ">Produto</h5>
+    </div>
+    <div class="btns-container-medium">
+      <!-- Read Mode -->
+      <button
+        *ngIf="!editMode && !viewOnly"
+        pButton
+        label="Editar"
+        icon="pi pi-pencil"
+        iconPos="right"
+        class="btn-secondary"
+        style="width: 80px !important"
+        type="button"
+        (click)="edit()"
+      ></button>
+      <!-- Edit Mode -->
+      <button
+        *ngIf="editMode && !newObject"
+        pButton
+        label="Cancelar"
+        class="btn-secondary"
+        style="width: 80px !important"
+        type="button"
+        (click)="cancel()"
+      ></button>
+      <button
+        *ngIf="editMode && !newObject"
+        pButton
+        label="Salvar"
+        class="btn-primary"
+        style="width: 80px !important"
+        type="button"
+        [disabled]="entityForm.pristine || entityForm.invalid"
+        (click)="save()"
+        pTooltip="Salvar Produto"
+      ></button>
+      <button
+        *ngIf="newObject"
+        pButton
+        label="Criar"
+        class="btn-primary"
+        style="width: 80px !important"
+        type="button"
+        (click)="save()"
+        pTooltip="Criar Nova Produto"
+        [disabled]="entityForm.invalid"
+      ></button>
+    </div>
+  </div>
+  <hr />
+
+  <!-- Inputs -->
+  <form [formGroup]="entityForm">
+    <div class="input-container">
+      <!-- Main Inputs -->
+      <div class="fields-container">
+        <div class="field-container">
+          <label class="label-field" class="label-field" for="is_active"
+            >Status</label
+          >
+          <p-inputSwitch
+            formControlName="is_active"
+            class="inputSwitch-field"
+            id="is_active"
+          ></p-inputSwitch>
+          <label
+            class="inputSwitch-label"
+            *ngIf="
+              (entityForm.get('is_active')?.valueChanges | async) === false
+            "
+            for="is_active"
+            >Inativo</label
+          >
+          <label
+            class="inputSwitch-label"
+            *ngIf="(entityForm.get('is_active')?.valueChanges | async) === true"
+            for="is_active"
+            >Ativo</label
+          >
+        </div>
+        <div class="field-container">
+          <label class="label-field" for="name">Nome</label>
+          <span *ngIf="!newObject" class="span-field">
+            {{
+              entityForm.get("name")?.value.length > 80
+                ? (entityForm.get("name")?.value | slice : 0 : 80) + "..."
+                : entityForm.get("name")?.value
+            }}
+          </span>
+          <input
+            pInputText
+            *ngIf="newObject"
+            formControlName="name"
+            type="text"
+            class="input-field"
+            id="name"
+            placeholder="Nome do Produto"
+            pTooltip="Nome do produto que será exibido para o consumidores, influenciadores e comerciantes"
+          />
+        </div>
+        <div class="field-container">
+          <label class="label-field" for="description">Descrição</label>
+          <span *ngIf="!editMode" class="span-field">
+            {{
+              entityForm.get("description")?.value.length > 80
+                ? (entityForm.get("description")?.value | slice : 0 : 80) +
+                  "..."
+                : entityForm.get("description")?.value
+            }}
+          </span>
+          <textarea
+            pInputTextarea
+            *ngIf="editMode"
+            formControlName="description"
+            type="text"
+            class="input-textarea-field"
+            id="description"
+          ></textarea>
+        </div>
+        <div class="field-container">
+          <label class="label-field" for="product_eans"
+            >Códigos do Produto</label
+          >
+          <div class="chips-field">
+            <p-chips
+              id="product_eans"
+              formControlName="product_eans"
+              separator=","
+              [addOnBlur]="true"
+              placeholder="1390398564932, 1390398564933..."
+              [disabled]="true"
+              class="input-field"
+              pTooltip="Adicione os códigos dos produtos separado por virgulas"
+              [allowDuplicate]="false"
+              (onAdd)="onAddChip($event)"
+            ></p-chips>
+          </div>
+        </div>
+
+        <div class="field-container">
+          <label class="label-field" for="category">Categoria</label>
+          <span *ngIf="!editMode" class="span-field">
+            {{ entityForm.get("category")?.value }}
+          </span>
+          <input
+            pInputText
+            *ngIf="editMode"
+            formControlName="category"
+            type="text"
+            class="input-field"
+            id="category"
+            placeholder="Categoria do Produto"
+            pTooltip="A categoria serve como um rótulo para facilitar a busca e organização dos produtos"
+          />
+        </div>
+      </div>
+
+      <!-- Divisor
+      <div class="vertical-line"></div>
+      Side Inputs
+      <div class="side-container"></div> -->
+    </div>
+    <div class="footer">
+      <button
+        pButton
+        label=""
+        icon="pi pi-arrow-left"
+        class="w-110 btn-secondary"
+        type="button"
+        (click)="back()"
+        pTooltip="Voltar"
+      ></button>
+    </div>
+  </form>
+</div>

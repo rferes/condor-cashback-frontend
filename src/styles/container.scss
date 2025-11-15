@@ -1,0 +1,2524 @@
+@import "variables";
+
+.disabled-style {
+  background-color: #e9ecef; /* Light grey background */
+  color: #6c757d; /* Dimmed text color */
+  cursor: not-allowed; /* Shows a 'not-allowed' cursor on hover */
+}
+
+.merchant-decorator {
+  background: linear-gradient(to bottom, red, transparent 50%, red);
+  background-size: 100% 200%;
+  content: "";
+  height: 100%;
+  left: 10;
+  position: fixed;
+  top: 0;
+  width: 10px;
+}
+
+.influencer-decorator {
+  background: linear-gradient(
+    to bottom,
+    rgb(48, 48, 48),
+    transparent 50%,
+    rgb(48, 48, 48)
+  );
+  background-size: 100% 200%;
+  content: "";
+  height: 100%;
+  left: 10;
+  position: fixed;
+  top: 0;
+  width: 10px;
+}
+
+.custom-dialog {
+  padding: 8px !important;
+  .p-dialog-content {
+    background-color: $white !important;
+    color: $hard-gray !important;
+    padding: 16px 16px 4px 16px !important;
+  }
+  .p-dialog-header {
+    background-color: $white !important;
+    color: $hard-gray !important;
+    padding: 4px 16px 4px 16px !important;
+  }
+  .p-dialog-footer {
+    background-color: $white !important;
+    color: $hard-gray !important;
+    padding: 20px 16px 16px 16px !important;
+    .p-confirm-dialog-accept {
+      background-color: $primary !important;
+      color: $white !important;
+      height: 20px;
+      border-radius: 8px;
+      margin: 0px 6px 0px 6px !important;
+      padding: 0px 8px 0px 8px !important;
+      height: 30px;
+      border: 1px solid $medium-gray !important;
+      span {
+        width: 100% !important;
+      }
+    }
+    .p-confirm-dialog-reject {
+      background-color: $secondary !important;
+      color: $medium-gray !important;
+      height: 20px;
+      border-radius: 8px;
+      margin: 0px 6px 0px 6px !important;
+      padding: 0px 8px 0px 8px !important;
+      height: 30px;
+      border: 1px solid $medium-gray !important;
+      span {
+        width: 100% !important;
+      }
+    }
+  }
+}
+
+.custom-toast .p-toast-message .p-toast-message-content {
+  background-color: rgba(238, 238, 238, 0.2) !important;
+  color: $hard-gray !important;
+  padding: 6px;
+  margin: 0px;
+}
+
+.custom-mobile-toast .p-toast {
+  width: 90% !important;
+  .p-toast-message .p-toast-message-content {
+    background-color: rgba(238, 238, 238, 0.2) !important;
+    color: $hard-gray !important;
+    font-size: 12px !important;
+    width: 100% !important;
+
+    padding: 6px;
+    margin: 0px;
+  }
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 98%;
+  height: 100% !important;
+  background-color: $white;
+  margin-left: 30px;
+
+  h3 {
+    color: $hard-gray;
+    font-weight: bold;
+    margin-bottom: 30px;
+  }
+
+  hr {
+    width: calc(100% - 40px);
+    color: rgb(188, 188, 188);
+    padding-top: 0px;
+    margin-top: 8px;
+    margin-bottom: 6px;
+  }
+  // Topics
+  .topic-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    padding-right: 40px;
+    padding-bottom: 0px;
+    margin-bottom: 0px;
+
+    .topic-title {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: center;
+      span {
+        color: $hard-gray;
+        font-weight: normal;
+        font-size: 14px;
+        padding: 0px 0px 0px 10px;
+      }
+      h5 {
+        color: $hard-gray;
+        font-weight: bold;
+        margin: 0px 0px 0px 0px;
+      }
+    }
+
+    .btns-container-small {
+      display: flex;
+      flex-direction: row;
+
+      button {
+        font-weight: normal !important;
+        border-radius: 6px !important;
+        box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.3) !important;
+        font-size: 14px !important;
+        font-family: "Inter", sans-serif !important;
+        height: 30px !important;
+        padding: 6px 8px !important;
+        margin: 0px 5px 0px 5px !important;
+        width: 90px !important;
+        background-color: $primary !important;
+        color: $white !important;
+      }
+
+      .custom-split-button {
+        &.p-splitbutton {
+          .p-splitbutton-defaultbutton,
+          .p-splitbutton-menubutton {
+            font-weight: normal !important;
+            box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.3) !important;
+            font-size: 14px !important;
+            font-family: "Inter", sans-serif !important;
+            height: 30px !important;
+            padding: 0px 0px !important;
+            margin: 0px !important;
+            background-color: $primary !important;
+            color: $white !important;
+            border: 1px solid $primary !important;
+          }
+
+          .p-splitbutton-defaultbutton {
+            border-radius: 6px 0px 0px 6px !important;
+            width: 100px !important;
+          }
+
+          .p-splitbutton-menubutton {
+            border-radius: 0px 6px 6px 0px !important;
+            width: 30px !important;
+          }
+        }
+        ul {
+          margin: 0px;
+          padding: 0px;
+          a {
+            padding: 7px 10.5px;
+            text-decoration: none;
+
+            color: $primary;
+          }
+        }
+      }
+    }
+
+    .btns-container-medium {
+      display: flex;
+      flex-direction: row;
+
+      button {
+        font-weight: normal !important;
+        border-radius: 6px !important;
+        box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.3) !important;
+        font-size: 14px !important;
+        font-family: "Inter", sans-serif !important;
+        height: 30px !important;
+        padding: 6px 8px !important;
+        margin: 0px 5px 0px 5px !important;
+        width: 200px !important;
+      }
+    }
+  }
+
+  .campaign-edit {
+    .p-tabview {
+      width: 1000px !important;
+      min-width: 920px !important;
+    }
+    .p-tabview-nav {
+      background-color: rgb(255, 255, 255);
+      padding: 0px 0px 0px 0px !important;
+
+      li.p-highlight .p-tabview-nav-link {
+        border-color: $primary !important;
+        color: white;
+        font-weight: bold !important;
+      }
+      .p-tabview-nav-link {
+        background-color: rgb(255, 255, 255);
+        color: $hard-gray !important;
+        text-decoration: none;
+        font-weight: normal !important;
+        padding: 10px 16px 4px 16px;
+
+        &:hover {
+          color: $hard-gray !important;
+          text-decoration: none;
+          border-color: $medium-gray !important;
+        }
+      }
+    }
+    .p-tabview-panels {
+      background-color: rgb(255, 255, 255);
+      padding: 0px 0px 0px 0px;
+      margin: 0px 0px 0px 0px;
+    }
+  }
+
+  .ui-tabview-selected {
+    background-color: #7d964d !important;
+  }
+
+  .input-container {
+    width: 100%;
+    height: 100% !important;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 0px 0px 0px 0px;
+    margin: 0px 0px 0px 0px;
+
+    .button-container {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: flex-start;
+      width: 100%;
+      padding-right: 60px;
+      padding-bottom: 0px;
+      margin-top: 15px;
+      margin-bottom: 20px;
+      button {
+        font-weight: normal !important;
+        border-radius: 6px !important;
+        box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.3) !important;
+        font-size: 14px !important;
+        font-family: "Inter", sans-serif !important;
+        height: 25px !important;
+        padding: 6px 8px 6px 8px !important;
+        margin: 5px 5px 5px 5px !important;
+      }
+
+      button.positive {
+        background-color: $primary !important;
+        span {
+          display: flex !important;
+          justify-content: center !important;
+          align-items: center !important;
+          margin: 0px !important;
+          padding: 0px !important;
+          color: $white !important;
+        }
+      }
+
+      button.negative {
+        background-color: $secondary !important;
+        span {
+          display: flex !important;
+          justify-content: center !important;
+          align-items: center !important;
+          margin: 0px !important;
+          padding: 0px !important;
+          color: $hard-gray !important;
+        }
+      }
+    }
+
+    // Fields
+    .fields-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      width: 100%;
+
+      // Butoons
+      .btn-primary {
+        font-weight: normal !important;
+        border-radius: 6px !important;
+        box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.3) !important;
+        font-size: 14px !important;
+        font-family: "Inter", sans-serif !important;
+        height: 30px !important;
+        padding: 6px 16px 6px 8px !important;
+        margin: 5px 5px 5px 5px !important;
+        span {
+          display: flex !important;
+          justify-content: center !important;
+          align-items: center !important;
+          color: $white !important;
+        }
+      }
+
+      .btn-secondary {
+        font-weight: normal !important;
+        border-radius: 6px !important;
+        box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.3) !important;
+        font-size: 14px !important;
+        font-family: "Inter", sans-serif !important;
+        height: 30px !important;
+        padding: 6px 16px 6px 8px !important;
+        margin: 5px 5px 5px 5px !important;
+        span {
+          display: flex !important;
+          justify-content: center !important;
+          align-items: center !important;
+          color: $medium-gray !important;
+        }
+      }
+
+      .table-list {
+        width: 95%;
+        .p-datatable-header {
+          display: flex;
+          justify-content: flex-start;
+          align-items: center;
+          background-color: rgb(255, 255, 255) !important;
+          border: none;
+          border-bottom: 2px solid $light-gray;
+          padding: 0px 0px 0px 0px;
+          margin: 0px 0px 0px 0px;
+          height: 50px !important;
+
+          input {
+            height: 30px;
+            width: 360px;
+            font-size: 14px;
+            margin: 0px 0px 0px 0px;
+            padding: 0px 0px 0px 13px;
+            &:focus {
+              border-color: blue !important; // Replace with your desired color for focus
+              box-shadow: 0 0 0 0.2rem rgba(blue, 0.25) !important; // Replace with your desired color for focus
+            }
+          }
+
+          .input-icon {
+            position: relative;
+            i {
+              position: absolute;
+              right: 10px;
+              top: 50%;
+              transform: translateY(-50%);
+            }
+          }
+
+          button {
+            width: 40px;
+            background-color: $white;
+            color: $hard-gray;
+            font-weight: bold;
+            font-size: 14px;
+            padding: 0px 0px 0px 0px;
+            margin: 0px 10px 0px 10px;
+            height: 30px !important;
+            border-color: $light-gray;
+            border-radius: 10px;
+          }
+        }
+
+        th {
+          background-color: $white;
+          color: $hard-gray;
+          font-weight: bold;
+          font-size: 14px;
+          padding: 0px 0px 0px 8px;
+          margin: 0px 0px 0px 0px;
+          height: 20px !important;
+
+          .p-icon.p-sortable-column-icon {
+            color: $hard-gray !important;
+          }
+        }
+        td {
+          background-color: $white;
+          color: $hard-gray;
+          font-weight: normal;
+          font-size: 13px;
+          padding: 0px 0px 0px 8px;
+          margin: 0px 0px 0px 0px;
+          height: 20px !important;
+          border: none;
+          border-top: 1px solid $lighter-gray;
+          border-bottom: 1px solid $lighter-gray;
+          button {
+            background-color: $white;
+            color: $hard-gray;
+            font-weight: bold;
+            font-size: 14px;
+            padding: 0px 0px 0px 0px;
+            margin: 2px 4px 2px 4px;
+            height: 16px !important;
+            width: 16px !important;
+            border: none;
+          }
+
+          .active .p-tag {
+            background-color: rgb(223, 255, 175);
+            color: $hard-gray;
+            font-weight: bold;
+            font-size: 14px;
+            padding: 0px 0px 0px 0px;
+            margin: 2px 4px 2px 4px;
+            height: 16px !important;
+            width: 50px !important;
+            border: 1px solid $light-gray;
+          }
+
+          .inactive .p-tag {
+            background-color: rgb(212, 212, 212);
+            color: $hard-gray;
+            font-weight: bold;
+            font-size: 14px;
+            padding: 0px 0px 0px 0px;
+            margin: 2px 4px 2px 4px;
+            height: 16px !important;
+            width: 60px !important;
+            border: none;
+          }
+
+          .pending .p-tag {
+            background-color: rgb(255, 255, 175);
+            color: $hard-gray;
+            font-weight: bold;
+            font-size: 14px;
+            padding: 0px 0px 0px 0px;
+            margin: 2px 4px 2px 4px;
+            height: 16px !important;
+            width: 60px !important;
+            border: none;
+          }
+
+          .new .p-tag {
+            background-color: rgb(255, 239, 175);
+            color: $hard-gray;
+            font-weight: bold;
+            font-size: 14px;
+            padding: 0px 0px 0px 0px;
+            margin: 2px 4px 2px 4px;
+            height: 16px !important;
+            width: 60px !important;
+            border: none;
+          }
+
+          .sucess .p-tag {
+            background-color: rgb(0, 255, 0);
+            color: $hard-gray;
+            font-weight: bold;
+            font-size: 14px;
+            padding: 0px 0px 0px 0px;
+            margin: 2px 4px 2px 4px;
+            height: 16px !important;
+            width: 70px !important;
+            border: none;
+          }
+
+          .sketch-campaign .p-tag {
+            background-color: rgb(225, 226, 225);
+            color: $hard-gray;
+            font-weight: bold;
+            font-size: 14px;
+            padding: 0px 0px 0px 0px;
+            margin: 2px 4px 2px 4px;
+            height: 16px !important;
+            width: 80px !important;
+            border: 1px solid $light-gray;
+          }
+
+          .proposal-campaign .p-tag {
+            background-color: rgb(255, 205, 172);
+            color: $hard-gray;
+            font-weight: bold;
+            font-size: 14px;
+            padding: 0px 0px 0px 0px;
+            margin: 2px 4px 2px 4px;
+            height: 16px !important;
+            width: 76px !important;
+            border: none;
+          }
+
+          .proposal-finished-campaign .p-tag {
+            background-color: rgb(220, 220, 220);
+            color: $hard-gray;
+            font-weight: bold;
+            font-size: 14px;
+            padding: 0px 0px 0px 0px;
+            margin: 2px 4px 2px 4px;
+            height: 16px !important;
+            width: 120px !important;
+            border: none;
+          }
+
+          .reproved-campaign .p-tag {
+            background-color: rgb(255, 153, 153);
+            color: $hard-gray;
+            font-weight: bold;
+            font-size: 14px;
+            padding: 0px 0px 0px 0px;
+            margin: 2px 4px 2px 4px;
+            height: 16px !important;
+            width: 90px !important;
+            border: none;
+          }
+          .reproved-campaign .p-tag {
+            background-color: rgb(255, 153, 153);
+            color: $hard-gray;
+            font-weight: bold;
+            font-size: 14px;
+            padding: 0px 0px 0px 0px;
+            margin: 2px 4px 2px 4px;
+            height: 16px !important;
+            width: 90px !important;
+            border: none;
+          }
+          .approved-no-influencer-campaign .p-tag {
+            background-color: rgb(153, 255, 246);
+            color: $hard-gray;
+            font-weight: bold;
+            font-size: 14px;
+            padding: 0px 0px 0px 0px;
+            margin: 2px 4px 2px 4px;
+            height: 16px !important;
+            width: 100px !important;
+            border: none;
+          }
+          .approved-campaign .p-tag {
+            background-color: rgb(153, 255, 197);
+            color: $hard-gray;
+            font-weight: bold;
+            font-size: 14px;
+            padding: 0px 0px 0px 0px;
+            margin: 2px 4px 2px 4px;
+            height: 16px !important;
+            width: 76px !important;
+            border: none;
+          }
+
+          .active-campaign .p-tag {
+            background-color: rgb(113, 255, 127);
+            color: $hard-gray;
+            font-weight: bold;
+            font-size: 14px;
+            padding: 0px 0px 0px 0px;
+            margin: 2px 4px 2px 4px;
+            height: 16px !important;
+            width: 50px !important;
+            border: none;
+          }
+
+          .paused-manual-campaign .p-tag {
+            background-color: rgb(255, 175, 222);
+            color: $hard-gray;
+            font-weight: bold;
+            font-size: 14px;
+            padding: 0px 0px 0px 0px;
+            margin: 2px 4px 2px 4px;
+            height: 16px !important;
+            width: 72px !important;
+            border: none;
+          }
+
+          .paused-no-influencer-campaign .p-tag {
+            background-color: rgb(255, 175, 222);
+            color: $hard-gray;
+            font-weight: bold;
+            font-size: 14px;
+            padding: 0px 0px 0px 0px;
+            margin: 2px 4px 2px 4px;
+            height: 16px !important;
+            width: 106px !important;
+            border: none;
+          }
+
+          .finished-campaign .p-tag {
+            background-color: rgb(216, 152, 255);
+            color: $hard-gray;
+            font-weight: bold;
+            font-size: 14px;
+            padding: 0px 0px 0px 0px;
+            margin: 2px 4px 2px 4px;
+            height: 16px !important;
+            width: 80px !important;
+            border: none;
+          }
+
+          .finished-manual-campaign .p-tag {
+            background-color: rgb(216, 152, 255);
+            color: $hard-gray;
+            font-weight: bold;
+            font-size: 14px;
+            padding: 0px 0px 0px 0px;
+            margin: 2px 4px 2px 4px;
+            height: 16px !important;
+            width: 110px !important;
+            border: none;
+          }
+
+          .pending-receipt .p-tag {
+            background-color: rgb(255, 255, 175);
+            color: $hard-gray;
+            font-weight: bold;
+            font-size: 14px;
+            padding: 0px 0px 0px 0px;
+            margin: 2px 4px 2px 4px;
+            height: 16px !important;
+            width: 180px !important;
+            border: none;
+          }
+        }
+
+        div.p-paginator.p-component {
+          background-color: $white;
+          border: none;
+          border-top: 1px solid $light-gray;
+          padding: 0px 0px 0px 0px;
+          margin: 0px 0px 0px 0px;
+          height: 16px !important;
+
+          button {
+            background-color: $lighter-gray;
+            color: $hard-gray;
+            font-weight: bold;
+            font-size: 14px;
+            padding: 0px 0px 0px 0px;
+            margin: 0px 0px 0px 0px;
+            height: 16px !important;
+          }
+        }
+      }
+
+      .field-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: flex-start;
+        width: 100%;
+        padding-right: 40px;
+        padding-bottom: 0px;
+        margin-top: 15px;
+        margin-bottom: 20px;
+
+        .input-prefix-wrapper {
+          display: flex;
+          align-items: center;
+        }
+
+        .input-prefix {
+          margin-right: 5px;
+        }
+
+        .error-msg {
+          color: rgb(255, 69, 69) !important;
+          font-weight: bold !important;
+          font-size: 14px !important;
+          padding: 0px 0px 0px 0px !important;
+          margin: 0px 0px 0px 10px !important;
+        }
+
+        .warning-msg {
+          color: rgb(91, 91, 91) !important;
+          font-weight: bold !important;
+          font-size: 14px !important;
+          padding: 0px 0px 0px 0px !important;
+          margin: 0px 0px 0px 10px !important;
+        }
+
+        span {
+          color: $hard-gray;
+          font-weight: normal;
+          width: 360px;
+          height: 28px;
+          font-size: 14px;
+          padding: 0px 0px 0px 0px !important;
+        }
+        label.label-field {
+          color: $hard-gray;
+          font-weight: normal;
+          padding: 3.5px 0px 0px 0px;
+          width: 250px;
+          font-size: 14px;
+        }
+
+        label.inputSwitch-label {
+          margin: 0px 0px 0px 15px;
+          color: $medium-gray;
+        }
+
+        // Calendar Input
+        // Styles for the DatePicker container
+        .p-autocomplete {
+          input {
+            color: $hard-gray !important;
+            height: 30px !important;
+            width: 360px !important;
+            font-size: 14px;
+            margin: 0px 0px 0px 0px;
+            padding: 0px 0px 0px 13px;
+            &:focus {
+              border-color: blue !important; // Replace with your desired color for focus
+              box-shadow: 0 0 0 0.2rem rgba(blue, 0.25) !important; // Replace with your desired color for focus
+            }
+          }
+          ul {
+            background-color: $white !important;
+            color: $hard-gray !important;
+            border: 1px solid $light-gray !important;
+            border-radius: 8px !important;
+            box-shadow: 0px 2px 0px rgba(0, 0, 0, 0.3) !important;
+            width: 360px !important;
+            margin: 0px !important;
+            padding: 0px !important;
+            li {
+              background-color: $white !important;
+              color: $hard-gray !important;
+              font-weight: normal !important;
+              font-size: 14px !important;
+              padding: 0px 0px 0px 13px !important;
+              margin: 0px !important;
+              height: 30px !important;
+              border: none !important;
+              border-top: 1px solid $light-gray !important;
+              border-bottom: 1px solid $light-gray !important;
+              &:hover {
+                background-color: $white-ice !important;
+              }
+            }
+          }
+        }
+
+        .p-calendar {
+          width: 170px !important; // Adjust this to change the width of the DatePicker
+          // Styles for the input field
+          .p-inputtext {
+            border: 1px solid rgb(196, 196, 196); // Adjust this to change the border of the input field
+            border-top-left-radius: 5px; // Adjust this to change the top left border radius of the input field
+            border-bottom-left-radius: 5px;
+            &:focus {
+              border-color: blue !important; // Replace with your desired color for focus
+              box-shadow: 0 0 0 0.2rem rgba(blue, 0.25) !important; // Replace with your desired color for focus
+            }
+          }
+
+          // Styles for the calendar icon
+          .p-button-icon-only {
+            background-color: $primary; // Adjust this to change the background color of the calendar icon
+            color: $lighter-gray;
+            border: 1px solid $primary; // Adjust this to change the border of the calendar icon
+            border-top-right-radius: 5px; // Adjust this to change the top left border radius of the input field
+            border-bottom-right-radius: 5px;
+            &:focus {
+              border-color: blue !important; // Replace with your desired color for focus
+              box-shadow: 0 0 0 0.2rem rgba(blue, 0.25) !important; // Replace with your desired color for focus
+            }
+          }
+          .p-datepicker-touch-ui,
+          .p-calendar .p-datepicker-touch-ui {
+            position: absolute;
+            top: 200px;
+            min-width: 200px;
+          }
+
+          .p-datepicker {
+            background-color: $white; // Adjust this to change the background color of the calendar
+            color: $hard-gray; // Adjust this to change the color of the calendar
+            .p-highlight {
+              background-color: $primary !important; // Adjust this to change the background color of the selected date
+              color: white !important; // Adjust this to change the text color of the selected date
+            }
+
+            // Styles for today's date
+            .p-datepicker-today {
+              background-color: $white;
+              color: $medium-gray;
+            }
+          }
+
+          .p-datepicker-group {
+            padding: 0px !important;
+            margin: 0px !important;
+            .p-datepicker-header {
+              background-color: $white; // Adjust this to change the background color of the calendar header
+              color: $lighter-gray; // Adjust this to change the color of the calendar header
+              padding: 0px !important;
+              margin: 0px !important;
+
+              button {
+                background-color: $white; // Adjust this to change the background color of the calendar header buttons
+                color: $hard-gray; // Adjust this to change the color of the calendar header buttons
+                padding: 0px 8px !important;
+                margin: 0px !important;
+              }
+            }
+
+            span {
+              width: 40px !important;
+              padding: 0px !important;
+              margin: 0px !important;
+            }
+          }
+
+          .p-monthpicker {
+            span {
+              width: 100% !important;
+            }
+          }
+        }
+
+        //Input Switch
+        .inputSwitch-field {
+          width: 46px !important;
+          margin: 0px !important;
+          padding: 0px !important;
+          height: 100% !important;
+
+          .p-inputswitch {
+            width: 50px !important;
+            height: 24px !important;
+            margin: 0px !important;
+            padding: 0px !important;
+            background-color: $white;
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0px 2px 0px rgba(0, 0, 0, 0.3);
+
+            .p-inputswitch-slider {
+              height: 100% !important;
+              width: 100% !important;
+              margin: 0px !important;
+              padding: 0px !important;
+            }
+
+            &.p-inputswitch-checked .p-inputswitch-slider {
+              height: 100% !important;
+              width: 100% !important;
+              margin: 0px !important;
+              padding: 0px !important;
+              background-color: $green !important;
+            }
+          }
+        }
+
+        //This input is make noise in every input -ok doki
+        input {
+          color: $hard-gray !important;
+        }
+        input.input-field {
+          height: 28px !important;
+          width: 360px !important;
+          font-size: 14px;
+          margin: 0px 0px 0px 0px;
+          padding: 0px 0px 0px 13px !important;
+          color: $hard-gray !important;
+          &:focus {
+            border-color: blue !important; // Replace with your desired color for focus
+            box-shadow: 0 0 0 0.2rem rgba(blue, 0.25) !important; // Replace with your desired color for focus
+          }
+        }
+
+        textarea.input-textarea-field {
+          height: 80px !important;
+          width: 360px !important;
+          padding: 6px 14px 6px 14px;
+          border: 1px solid rgb(196, 196, 196);
+          border-radius: 8px;
+          color: $hard-gray !important;
+          font-size: 13px;
+        }
+
+        .input-mask-field {
+          .p-inputmask {
+            width: 360px !important;
+            height: 28px !important;
+            font-size: 14px;
+            margin: 0px 0px 0px 0px;
+            padding: 0px 0px 0px 13px;
+            &:focus {
+              border-color: blue !important; // Replace with your desired color for focus
+              box-shadow: 0 0 0 0.2rem rgba(blue, 0.25) !important; // Replace with your desired color for focus
+            }
+          }
+        }
+
+        .button-field-search {
+          width: 30px;
+          background-color: $black;
+          color: $hard-gray;
+          font-weight: bold;
+          font-size: 12px;
+          padding: 0px;
+          margin: 0px 0px 0px 10px;
+          border-color: $primary;
+          border-radius: 30px;
+          box-shadow: 0px 2px 0px rgba(0, 0, 0, 0.3);
+
+          span {
+            display: flex; // Add this line
+            justify-content: center; // Add this line
+            align-items: center; // Add this line
+            background-color: $primary;
+            color: $lighter-gray;
+            font-weight: bold;
+            padding: 0px;
+            margin: 0px;
+
+            .p-button-icon {
+              display: flex !important; // Add this line
+              justify-content: center !important; // Add this line
+              align-items: center !important;
+              // Add this line
+            }
+          }
+          span:hover {
+            color: $white;
+          }
+        }
+        // DropDown
+        .dropdown-field {
+          width: 360px;
+
+          span {
+            padding: 3.5px 0px 0px 13px !important;
+          }
+          .p-dropdown {
+            width: 100%;
+
+            .p-dropdown-label {
+              color: $hard-gray;
+              font-weight: none;
+              font-size: 14px;
+              padding: 6px 10px;
+              text-justify: center;
+            }
+
+            .p-dropdown-panel {
+              background-color: rgb(255, 255, 255);
+              padding: 8px 12px;
+              text-justify: center;
+            }
+
+            .p-dropdown-items {
+              background-color: rgb(255, 255, 255);
+              padding: 0px !important;
+              margin: 0px !important;
+              height: 100% !important;
+            }
+
+            .p-dropdown-items-wrapper {
+              background-color: rgb(255, 255, 255) !important;
+              height: 100% !important;
+              padding: 0px !important;
+              margin: 0px !important;
+            }
+
+            .p-dropdown-item {
+              background-color: rgb(255, 255, 255);
+              color: $hard-gray;
+              margin: 0px !important;
+              padding: 0px !important;
+            }
+
+            .p-dropdown-item:hover {
+              background-color: $white-ice;
+              color: $hard-gray;
+              margin: 0px !important;
+              padding: 0px !important;
+              border-radius: 8px;
+            }
+
+            .p-dropdown-item.p-highlight {
+              background-color: $light-gray !important;
+              color: $hard-gray !important;
+              border-radius: 8px;
+            }
+          }
+
+          .p-dropdown.p-disabled {
+            background-color: white !important;
+
+            .p-dropdown-label {
+              color: $hard-gray;
+              background-color: white !important;
+            }
+          }
+        }
+
+        // Chips
+        .chips-field {
+          width: 360px !important;
+          .p-chips {
+            display: flex;
+            flex-direction: row;
+            margin: 0px;
+            padding: 0px;
+
+            .p-chips-multiple-container {
+              background-color: $white;
+              border: 1px solid rgb(201, 201, 201);
+              border-radius: 8px;
+              margin: 0px !important;
+              padding: 4px !important;
+              width: 100% !important;
+              height: 100% !important;
+
+              .p-chips-token {
+                color: $hard-gray;
+                background-color: $lighter-gray;
+                margin: 0px !important;
+                padding: 0px !important;
+                height: 30px !important;
+
+                .p-chips-token-label {
+                  background-color: $lighter-gray;
+                  width: 100% !important;
+                  color: $hard-gray;
+                }
+              }
+
+              .p-chips-input-token {
+                background-color: $white;
+                color: $hard-gray;
+                font-weight: normal;
+                font-size: 14px;
+                margin: 0px !important;
+                padding: 0px !important;
+                border: none;
+                width: 50px !important;
+
+                input {
+                  background-color: $white;
+                  border: none !important;
+                  outline: none !important;
+                  margin-left: 15px !important;
+                  height: 100% !important;
+                  width: 100%;
+                  font-size: 14px;
+                  &:focus {
+                    border-color: none !important; // Replace with your desired color for focus
+                    box-shadow: none !important;
+                  }
+                }
+              }
+            }
+
+            &.p-focus {
+              .p-chips-multiple-container {
+                border-color: none !important; // Replace with your desired color for focus
+                box-shadow: none !important;
+              }
+            }
+          }
+        }
+        //Spans
+        .span-field {
+          color: $medium-gray !important;
+        }
+
+        // ListBox
+        .listbox-field {
+          .p-listbox {
+            width: 360px;
+            border-radius: 8px !important;
+            height: 100% !important;
+            border-color: $light-gray !important;
+
+            .p-listbox-header {
+              background-color: $white;
+              color: $hard-gray;
+              font-weight: normal;
+              font-size: 14px;
+              text-justify: center;
+            }
+
+            .p-listbox-list {
+              margin: 0px 0px 0px 10px !important;
+              padding: 0px !important;
+            }
+
+            .p-listbox-item {
+              background-color: $white;
+              padding: 0px !important;
+              margin: 0px !important;
+              .span {
+                color: $hard-gray;
+                font-weight: bold;
+                font-size: 14px;
+                padding: 0px !important;
+                margin: 0px !important;
+              }
+            }
+
+            .p-listbox-item:hover {
+              background-color: $white-ice;
+            }
+
+            .p-listbox-item:focus {
+              background-color: transparent;
+            }
+
+            .p-listbox-item.p-highlight {
+              background-color: $light-gray;
+
+              span {
+                font-weight: bold;
+              }
+            }
+
+            .p-listbox-item.p-highlight .span {
+              font-weight: normal;
+            }
+          }
+        }
+
+        // SelectButtons
+        .p-selectbutton {
+          .p-buttons {
+            background-color: transparent;
+            border: rgb(208, 208, 208) 1px solid;
+            border-radius: 10px !important;
+          }
+          .p-button {
+            font-size: 12px; /* Adjust this value as needed */
+            width: 140px !important;
+            height: 26px !important;
+            background-color: rgb(248, 250, 252);
+            color: rgb(80, 80, 80);
+            border-color: rgb(208, 208, 208);
+            font-family: "Ubuntu", sans-serif;
+            transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+            margin: 0px;
+            padding: 0px;
+            span {
+              display: flex; /* Add this line */
+              align-items: center; /* Add this line */
+              justify-content: center; /* Add this line */
+            }
+          }
+
+          .p-button.p-highlight {
+            background-color: $primary !important;
+            border-color: $primary !important;
+            color: white !important;
+            span {
+              color: white !important;
+            }
+          }
+
+          .p-button:hover:not(.p-highlight) {
+            background-color: #f0f2f5;
+            border-color: rgb(180, 180, 180);
+          }
+
+          .p-button:focus {
+            outline: none;
+          }
+        }
+
+        // Scrollers
+        .scroller-field {
+          .p-scroller {
+            overflow-x: hidden !important;
+            width: 360px;
+            height: 202px;
+            border: 1px solid $light-gray;
+            margin: 0px !important;
+            padding: 0px !important;
+            background-color: $white-ice;
+          }
+
+          .p-scroller-content {
+            background-color: transparent;
+            font-size: 14px;
+            font-weight: normal;
+            color: $medium-gray;
+          }
+
+          .p-scroller .p-scroller-content > div {
+            padding: 3.5px 0px 0px 13px;
+          }
+
+          .p-scroller .p-scroller-content > div:nth-child(odd) {
+            background-color: $lighter-gray;
+          }
+
+          .p-scroller .p-scroller-content > div:nth-child(even) {
+            background-color: $light-gray;
+          }
+        }
+
+        //Tables DataTables
+
+        // ToggleButtons
+        .toggle-field {
+          .p-togglebutton {
+            padding: 2px 8px;
+            margin: 0px 0px 0px 0px;
+            background-color: $white-ice;
+
+            box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.5);
+            transition: box-shadow 0.3s ease-in-out;
+            span {
+              height: 20px;
+              width: 100%;
+              padding: 0px 0px 0px 0px;
+              margin: 0px 0px 0px 0px;
+              color: $medium-gray;
+              border-color: $light-gray;
+            }
+          }
+
+          .p-togglebutton.p-highlight {
+            background-color: $success;
+            border-color: $dark-green;
+            box-shadow: 0 7px 7px -7px rgba(0, 0, 0, 0.5);
+            span {
+              padding: 0px 0px 0px 0px;
+              margin: 0px 0px 0px 0px;
+              color: $white;
+              border-color: $light-gray;
+            }
+          }
+        }
+      }
+      .field {
+        margin-bottom: 10px;
+      }
+    }
+  }
+
+  .footer-campaign-edit {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 1000px;
+    margin: 24px 0px 0px 0px;
+    padding: 0px;
+
+    button {
+      width: 120px !important;
+      height: 30px !important;
+      background-color: $secondary !important;
+      color: $medium-gray !important;
+      border-color: $light-gray !important;
+      border-radius: 8px;
+
+      span {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: transparent;
+        color: $primary;
+        font-weight: bold;
+        font-size: 12px;
+
+        .p-button-icon {
+          display: flex !important;
+          justify-content: center !important;
+          align-items: center !important;
+          font-size: 12px;
+        }
+      }
+    }
+
+    .button-200px {
+      @extend button;
+      width: 200px !important;
+      background-color: $primary !important;
+      span {
+        color: $white !important;
+      }
+    }
+    .button-secondary-200px {
+      @extend button;
+      width: 200px !important;
+      background-color: $secondary !important;
+      span {
+        color: $primary !important;
+      }
+    }
+  }
+
+  .footer-receipt-send {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin: 24px 0px 0px 0px;
+    padding: 0px;
+
+    button {
+      width: 90px !important;
+      height: 30px !important;
+      background-color: $secondary !important;
+      color: $medium-gray !important;
+      border-color: $light-gray !important;
+      border-radius: 8px;
+
+      span {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: transparent;
+        color: $primary;
+        font-weight: bold;
+        font-size: 12px;
+
+        .p-button-icon {
+          display: flex !important;
+          justify-content: center !important;
+          align-items: center !important;
+          font-size: 12px;
+        }
+      }
+    }
+
+    .button-200px {
+      @extend button;
+      width: 200px !important;
+      background-color: $primary !important;
+      span {
+        color: $white !important;
+      }
+    }
+  }
+
+  .footer {
+    button {
+      width: 18px !important;
+      background-color: $black;
+      color: $hard-gray;
+      font-weight: bold;
+      font-size: 12px;
+      padding: 0px;
+      margin: 0px 10px 0px 0px;
+      border: none;
+
+      span {
+        display: flex; // Add this line
+        justify-content: center; // Add this line
+        align-items: center; // Add this line
+        background-color: transparent;
+        color: $primary;
+        font-weight: bold;
+        padding: 0px;
+        margin: 0px;
+
+        .p-button-icon {
+          display: flex !important; // Add this line
+          justify-content: center !important; // Add this line
+          align-items: center !important;
+          // Add this line
+        }
+      }
+    }
+  }
+
+  .footer-withdraw {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    width: 96%;
+
+    button {
+      font-weight: normal !important;
+      border-radius: 6px !important;
+      box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.3) !important;
+      font-size: 14px !important;
+      font-family: "Inter", sans-serif !important;
+      height: 30px !important;
+      padding: 6px 8px !important;
+      margin: 0px 0px 0px 0px !important;
+      width: 130px !important;
+    }
+  }
+
+  // CSS DECORATIONS Lines, Circles, etc
+  .vertical-line {
+    width: 2px !important;
+    background-color: $lighter-gray;
+    height: 380px;
+    margin: 40px 0px 0px 0px;
+  }
+
+  .vertical-line-bold {
+    width: 4px !important;
+    background-color: $medium-gray;
+    height: 380px;
+    margin: 40px 0px 0px 0px;
+  }
+
+  .side-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+    // padding: 0px 0px 0px 40px;
+    padding: 0px 0px 0px 0px;
+    margin: 0px 0px 0px 0px;
+    background-color: rgb(255, 255, 255);
+
+    .image-cropper-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 300px !important;
+      padding: 0px 0px 0px 0px;
+      margin: 0px 0px 0px 0px;
+      label {
+        margin: 0px 0px 10px 0px;
+      }
+      // Images
+      .image-field {
+        border: 1px solid $light-gray;
+        width: 200px;
+        height: 200px;
+        margin: 0px 0px 10px 0px;
+        border-radius: 10%;
+      }
+
+      .image-btns-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        align-items: flex-end;
+
+        button {
+          font-weight: normal !important;
+          border-radius: 6px !important;
+          box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.3) !important;
+          font-size: 14px !important;
+          font-family: "Inter", sans-serif !important;
+          height: 30px !important;
+          padding: 6px 8px !important;
+          margin: 0px 5px 0px 5px !important;
+        }
+      }
+      // Image Cropper
+      .image-cropper-field {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        img {
+          width: 100%;
+          height: 200px;
+          border: 1px solid $light-gray;
+          border-radius: 15px;
+        }
+        input[type="file"] {
+          display: none;
+          margin: 0px;
+          padding: 0px;
+        }
+        label {
+          width: 90px;
+          height: 100%;
+          padding: 4px 16px !important;
+          margin: 0px !important;
+          background-color: $primary; // Change this to the color you want
+          box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.3) !important;
+          color: white; // Change this to the color you want
+          border-radius: 8px;
+          text-align: center;
+          cursor: pointer;
+        }
+        // upload button (service)
+        button {
+          width: 100px;
+          height: 100%;
+          padding: 4px 8px !important;
+          margin: 0px !important;
+          background-color: $primary; // Change this to the color you want
+          box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.3) !important;
+          color: white; // Change this to the color you want
+          border-radius: 8px;
+          border: none;
+          cursor: pointer;
+        }
+
+        p {
+          color: $hard-gray;
+          font-weight: normal;
+          font-size: 13px;
+          padding: 0px 0px 2px 0px;
+          margin: 0px 0px 0px 0px;
+          text-align: center;
+        }
+        a {
+          color: $primary;
+          font-weight: bold;
+          font-size: 13px;
+          padding: 0px 6px 0px 6px !important;
+          margin: 0px 0px 0px 0px;
+          text-align: center;
+          text-decoration: none;
+        }
+      }
+    }
+
+    .table-container {
+      width: 500px !important;
+      padding-bottom: 20px;
+
+      .p-datatable-header {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        background-color: rgb(255, 255, 255) !important;
+        border: none;
+        border-bottom: 2px solid $light-gray;
+        padding: 0px 0px 0px 0px;
+        margin: 0px 0px 0px 0px;
+        height: 50px !important;
+
+        input {
+          height: 30px;
+          width: 360px;
+          font-size: 14px;
+          margin: 0px 0px 0px 0px;
+          padding: 0px 0px 0px 13px;
+          &:focus {
+            border-color: blue !important; // Replace with your desired color for focus
+            box-shadow: 0 0 0 0.2rem rgba(blue, 0.25) !important; // Replace with your desired color for focus
+          }
+        }
+
+        .input-icon {
+          position: relative;
+          i {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+          }
+        }
+
+        button {
+          width: 40px;
+          background-color: $white;
+          color: $hard-gray;
+          font-weight: bold;
+          font-size: 14px;
+          padding: 0px 0px 0px 0px;
+          margin: 0px 10px 0px 10px;
+          height: 30px !important;
+          border-color: $light-gray;
+          border-radius: 10px;
+        }
+      }
+
+      th {
+        background-color: $white;
+        color: $hard-gray;
+        font-weight: bold;
+        font-size: 14px;
+        padding: 0px 0px 0px 8px;
+        margin: 0px 0px 0px 0px;
+        height: 20px !important;
+      }
+      td {
+        background-color: $white;
+        color: $hard-gray;
+        font-weight: normal;
+        font-size: 13px;
+        padding: 0px 0px 0px 16px;
+        margin: 0px 0px 0px 0px;
+        height: 20px !important;
+        border: none;
+        border-top: 1px solid $lighter-gray;
+        border-bottom: 1px solid $lighter-gray;
+
+        button {
+          background-color: $white;
+          color: $hard-gray;
+          font-weight: bold;
+          font-size: 14px;
+          padding: 0px 0px 0px 0px;
+          margin: 2px 4px 2px 4px;
+          height: 16px !important;
+          width: 16px !important;
+          border: none;
+        }
+
+        .active .p-tag {
+          background-color: rgb(223, 255, 175);
+          color: $hard-gray;
+          font-weight: bold;
+          font-size: 14px;
+          padding: 0px 0px 0px 0px;
+          margin: 2px 4px 2px 4px;
+          height: 16px !important;
+          width: 50px !important;
+          border: 1px solid $light-gray;
+        }
+
+        .inactive .p-tag {
+          background-color: rgb(212, 212, 212);
+          color: $hard-gray;
+          font-weight: bold;
+          font-size: 14px;
+          padding: 0px 0px 0px 0px;
+          margin: 2px 4px 2px 4px;
+          height: 16px !important;
+          width: 60px !important;
+          border: none;
+        }
+      }
+
+      div.p-paginator.p-component {
+        background-color: $white;
+        border: none;
+        border-top: 1px solid $light-gray;
+        padding: 0px 0px 0px 0px;
+        margin: 0px 0px 0px 0px;
+        height: 16px !important;
+
+        button {
+          background-color: $lighter-gray;
+          color: $hard-gray;
+          font-weight: bold;
+          font-size: 14px;
+          padding: 0px 0px 0px 0px;
+          margin: 0px 0px 0px 0px;
+          height: 16px !important;
+        }
+      }
+    }
+
+    .error-msg {
+      color: rgb(255, 69, 69);
+      font-weight: bold;
+      font-size: 14px;
+      padding: 0px 0px 0px 0px;
+      margin: 0px 0px 0px 10px;
+    }
+  }
+
+  .view-container {
+    text-align: flex-start;
+    width: 97%;
+
+    .dashboard-view {
+      padding: 0.5rem;
+      border-radius: 8px;
+      border: 2px solid $lighter-gray;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      label {
+        font-weight: bold;
+      }
+      span {
+        display: block;
+        text-align: center;
+        font-size: 1.2rem;
+      }
+    }
+
+    .favorite-button {
+      button {
+        background-color: $white;
+        color: $hard-gray;
+        font-weight: bold;
+        padding: 0px 0px 0px 0px;
+        margin: 0px 0px 0px 0px !important;
+        height: 36px !important;
+        width: 36px !important;
+        border: none;
+        i {
+          font-size: 30px !important;
+          color: $primary;
+        }
+      }
+    }
+
+    .unfavorite-button {
+      button {
+        background-color: $white;
+        color: $hard-gray;
+        font-weight: bold;
+        padding: 0px 0px 0px 0px;
+        margin: 0px 0px 0px 0px !important;
+        height: 36px !important;
+        width: 36px !important;
+        border: none;
+        i {
+          font-size: 30px !important;
+          color: $medium-gray;
+        }
+      }
+    }
+
+    .search-field {
+      display: flex !important;
+      justify-content: flex-start !important;
+      align-items: center !important;
+      background-color: rgb(255, 255, 255) !important;
+      border: none;
+      padding: 0px 0px 0px 0px;
+      margin: 0px 0px 0px 0px;
+      height: 50px !important;
+
+      button {
+        width: 200px !important;
+        background-color: $primary !important;
+        color: $white !important;
+        font-weight: bold;
+        font-size: 14px;
+        padding: 0px 0px 0px 0px;
+        margin: 0px 10px 0px 10px;
+        height: 30px !important;
+        border-color: $light-gray;
+        border-radius: 10px;
+      }
+
+      .p-inputmask {
+        height: 30px;
+        width: 360px;
+        font-size: 14px;
+        margin: 0px 0px 0px 0px;
+        padding: 0px 0px 0px 13px;
+        &:focus {
+          border-color: blue !important; // Replace with your desired color for focus
+          box-shadow: 0 0 0 0.2rem rgba(blue, 0.25) !important; // Replace with your desired color for focus
+        }
+      }
+      input {
+        height: 30px;
+        width: 360px;
+        font-size: 14px;
+        margin: 0px 0px 0px 0px;
+        padding: 0px 0px 0px 13px;
+        &:focus {
+          border-color: blue !important; // Replace with your desired color for focus
+          box-shadow: 0 0 0 0.2rem rgba(blue, 0.25) !important; // Replace with your desired color for focus
+        }
+      }
+
+      .p-autocomplete {
+        input {
+          color: $hard-gray !important;
+          height: 30px !important;
+          width: 360px !important;
+          font-size: 14px;
+          margin: 0px 0px 0px 0px;
+          padding: 0px 0px 0px 13px;
+          &:focus {
+            border-color: blue !important; // Replace with your desired color for focus
+            box-shadow: 0 0 0 0.2rem rgba(blue, 0.25) !important; // Replace with your desired color for focus
+          }
+        }
+        ul {
+          background-color: $white !important;
+          color: $hard-gray !important;
+          border: 1px solid $light-gray !important;
+          border-radius: 8px !important;
+          box-shadow: 0px 2px 0px rgba(0, 0, 0, 0.3) !important;
+          width: 360px !important;
+          margin: 0px !important;
+          padding: 0px !important;
+          li {
+            background-color: $white !important;
+            color: $hard-gray !important;
+            font-weight: normal !important;
+            font-size: 14px !important;
+            padding: 0px 0px 0px 13px !important;
+            margin: 0px !important;
+            height: 30px !important;
+            border: none !important;
+            border-top: 1px solid $light-gray !important;
+            border-bottom: 1px solid $light-gray !important;
+            &:hover {
+              background-color: $white-ice !important;
+            }
+          }
+        }
+      }
+
+      .input-icon {
+        position: relative;
+        i {
+          position: absolute;
+          right: 10px;
+          top: 50%;
+          transform: translateY(-50%);
+        }
+      }
+
+      button {
+        width: 40px;
+        background-color: $white;
+        color: $hard-gray;
+        font-weight: bold;
+        font-size: 14px;
+        padding: 0px 0px 0px 0px;
+        margin: 0px 10px 0px 10px;
+        height: 30px !important;
+        border-color: $light-gray;
+        border-radius: 10px;
+      }
+    }
+
+    .table-list {
+      width: 98% !important;
+      padding-bottom: 20px;
+
+      .p-datatable-header {
+        display: flex;
+        justify-content: flex-start !important;
+        align-items: center;
+        background-color: rgb(255, 255, 255) !important;
+        border: none;
+        border-bottom: 2px solid $light-gray;
+        padding: 0px 0px 0px 0px;
+        margin: 0px 0px 0px 0px;
+        height: 50px !important;
+
+        input {
+          height: 30px;
+          width: 360px;
+          font-size: 14px;
+          margin: 0px 0px 0px 0px;
+          padding: 0px 0px 0px 13px;
+          &:focus {
+            border-color: blue !important; // Replace with your desired color for focus
+            box-shadow: 0 0 0 0.2rem rgba(blue, 0.25) !important; // Replace with your desired color for focus
+          }
+        }
+
+        .input-icon {
+          position: relative;
+          i {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+          }
+        }
+
+        button {
+          width: 40px;
+          background-color: $white;
+          color: $hard-gray;
+          font-weight: bold;
+          font-size: 14px;
+          padding: 0px 0px 0px 0px;
+          margin: 0px 10px 0px 10px;
+          height: 30px !important;
+          border-color: $light-gray;
+          border-radius: 10px;
+        }
+      }
+
+      th {
+        background-color: $white;
+        color: $hard-gray;
+        font-weight: bold;
+        font-size: 14px;
+
+        padding: 0px 0px 0px 8px;
+        margin: 0px 0px 0px 0px;
+        height: 20px !important;
+      }
+      td {
+        background-color: $white;
+        color: $hard-gray;
+        font-weight: normal;
+        font-size: 13px;
+        padding: 0px 0px 0px 16px;
+        margin: 0px 0px 0px 0px;
+        height: 20px !important;
+        border: none;
+        border-top: 1px solid $lighter-gray;
+        border-bottom: 1px solid $lighter-gray;
+
+        a {
+          color: $primary;
+          font-weight: bold;
+          font-size: 13px;
+          padding: 0px 6px 0px 6px !important;
+          margin: 0px 0px 0px 0px;
+          text-align: center;
+          text-decoration: none;
+        }
+
+        button {
+          background-color: $white;
+          color: $hard-gray;
+          font-weight: bold;
+          font-size: 14px;
+          padding: 0px 0px 0px 0px !important;
+          margin: 0px 0px 0px 0px !important;
+          height: 20px !important;
+          width: 24px !important;
+          border: none;
+        }
+
+        .active .p-tag {
+          background-color: rgb(223, 255, 175);
+          color: $hard-gray;
+          font-weight: bold;
+          font-size: 14px;
+          padding: 0px 0px 0px 0px;
+          margin: 2px 4px 2px 4px;
+          height: 16px !important;
+          width: 50px !important;
+          border: 1px solid $light-gray;
+          span {
+            margin: 0px 0px 0px 0px;
+          }
+        }
+
+        .inactive .p-tag {
+          background-color: rgb(212, 212, 212);
+          color: $hard-gray;
+          font-weight: bold;
+          font-size: 14px;
+          padding: 0px 0px 0px 0px;
+          margin: 2px 4px 2px 4px;
+          height: 16px !important;
+          width: 60px !important;
+          border: none;
+          span {
+            margin: 0px 0px 0px 0px;
+          }
+        }
+      }
+
+      div.p-paginator.p-component {
+        background-color: $white;
+        border: none;
+        border-top: 1px solid $light-gray;
+        padding: 0px 0px 0px 0px;
+        margin: 0px 0px 0px 0px;
+        height: 16px !important;
+
+        button {
+          background-color: $lighter-gray;
+          color: $hard-gray;
+          font-weight: bold;
+          font-size: 14px;
+          padding: 0px 0px 0px 0px;
+          margin: 0px 0px 0px 0px;
+          height: 16px !important;
+        }
+      }
+    }
+
+    .table-tabview {
+      width: 500px !important;
+      padding-bottom: 20px;
+
+      .p-datatable-header {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        background-color: rgb(255, 255, 255) !important;
+        border: none;
+        border-bottom: 2px solid $light-gray;
+        padding: 0px 0px 0px 0px;
+        margin: 0px 0px 0px 0px;
+        height: 50px !important;
+
+        input {
+          height: 30px;
+          width: 360px;
+          font-size: 14px;
+          margin: 0px 0px 0px 0px;
+          padding: 0px 0px 0px 13px;
+          &:focus {
+            border-color: blue !important; // Replace with your desired color for focus
+            box-shadow: 0 0 0 0.2rem rgba(blue, 0.25) !important; // Replace with your desired color for focus
+          }
+        }
+
+        .input-icon {
+          position: relative;
+          i {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+          }
+        }
+
+        button {
+          width: 40px;
+          background-color: $white;
+          color: $hard-gray;
+          font-weight: bold;
+          font-size: 14px;
+          padding: 0px 0px 0px 0px;
+          margin: 0px 10px 0px 10px;
+          height: 30px !important;
+          border-color: $light-gray;
+          border-radius: 10px;
+        }
+      }
+
+      th {
+        background-color: $white;
+        color: $hard-gray;
+        font-weight: bold;
+        font-size: 14px;
+        padding: 0px 0px 0px 8px;
+        margin: 0px 0px 0px 0px;
+        height: 20px !important;
+      }
+      td {
+        background-color: $white;
+        color: $hard-gray;
+        font-weight: normal;
+        font-size: 13px;
+        padding: 0px 0px 0px 16px;
+        margin: 0px 0px 0px 0px;
+        height: 20px !important;
+        border: none;
+        border-top: 1px solid $lighter-gray;
+        border-bottom: 1px solid $lighter-gray;
+
+        button {
+          background-color: $white;
+          color: $hard-gray;
+          font-weight: bold;
+          font-size: 14px;
+          padding: 0px 0px 0px 0px;
+          margin: 2px 4px 2px 4px;
+          height: 16px !important;
+          width: 16px !important;
+          border: none;
+        }
+
+        .active .p-tag {
+          background-color: rgb(223, 255, 175);
+          color: $hard-gray;
+          font-weight: bold;
+          font-size: 14px;
+          padding: 0px 0px 0px 0px;
+          margin: 2px 4px 2px 4px;
+          height: 16px !important;
+          width: 50px !important;
+          border: 1px solid $light-gray;
+          span {
+            margin: 0px 0px 0px 0px;
+          }
+        }
+
+        .inactive .p-tag {
+          background-color: rgb(212, 212, 212);
+          color: $hard-gray;
+          font-weight: bold;
+          font-size: 14px;
+          padding: 0px 0px 0px 0px;
+          margin: 2px 4px 2px 4px;
+          height: 16px !important;
+          width: 60px !important;
+          border: none;
+          span {
+            margin: 0px 0px 0px 0px;
+          }
+        }
+      }
+
+      div.p-paginator.p-component {
+        background-color: $white;
+        border: none;
+        border-top: 1px solid $light-gray;
+        padding: 0px 0px 0px 0px;
+        margin: 0px 0px 0px 0px;
+        height: 16px !important;
+
+        button {
+          background-color: $lighter-gray;
+          color: $hard-gray;
+          font-weight: bold;
+          font-size: 14px;
+          padding: 0px 0px 0px 0px;
+          margin: 0px 0px 0px 0px;
+          height: 16px !important;
+        }
+      }
+    }
+
+    .table-tabviewfull {
+      width: 1200px !important;
+      padding-bottom: 20px;
+
+      .p-datatable-header {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        background-color: rgb(255, 255, 255) !important;
+        border: none;
+        border-bottom: 2px solid $light-gray;
+        padding: 0px 0px 0px 0px;
+        margin: 0px 0px 0px 0px;
+        height: 50px !important;
+
+        input {
+          height: 30px;
+          width: 360px;
+          font-size: 14px;
+          margin: 0px 0px 0px 0px;
+          padding: 0px 0px 0px 13px;
+          &:focus {
+            border-color: blue !important; // Replace with your desired color for focus
+            box-shadow: 0 0 0 0.2rem rgba(blue, 0.25) !important; // Replace with your desired color for focus
+          }
+        }
+
+        .input-icon {
+          position: relative;
+          i {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+          }
+        }
+
+        button {
+          width: 40px;
+          background-color: $white;
+          color: $hard-gray;
+          font-weight: bold;
+          font-size: 14px;
+          padding: 0px 0px 0px 0px;
+          margin: 0px 10px 0px 10px;
+          height: 30px !important;
+          border-color: $light-gray;
+          border-radius: 10px;
+        }
+      }
+
+      th {
+        background-color: $white;
+        color: $hard-gray;
+        font-weight: bold;
+        font-size: 14px;
+        padding: 0px 0px 0px 8px;
+        margin: 0px 0px 0px 0px;
+        height: 20px !important;
+      }
+      td {
+        background-color: $white;
+        color: $hard-gray;
+        font-weight: normal;
+        font-size: 13px;
+        padding: 0px 0px 0px 16px;
+        margin: 0px 0px 0px 0px;
+        height: 20px !important;
+        border: none;
+        border-top: 1px solid $lighter-gray;
+        border-bottom: 1px solid $lighter-gray;
+        button {
+          background-color: $white;
+          color: $hard-gray;
+          font-weight: bold;
+          font-size: 14px;
+          padding: 0px 0px 0px 0px;
+          margin: 2px 4px 2px 4px;
+          height: 16px !important;
+          width: 16px !important;
+          border: none;
+        }
+        span {
+          margin: 0px 0px 0px 0px;
+        }
+        .active .p-tag {
+          background-color: rgb(223, 255, 175);
+          color: $hard-gray;
+          font-weight: bold;
+          font-size: 14px;
+          padding: 0px 0px 0px 0px;
+          margin: 2px 4px 2px 4px;
+          height: 16px !important;
+          width: 50px !important;
+          border: 1px solid $light-gray;
+        }
+
+        .inactive .p-tag {
+          background-color: rgb(212, 212, 212);
+          color: $hard-gray;
+          font-weight: bold;
+          font-size: 14px;
+          padding: 0px 0px 0px 0px;
+          margin: 2px 4px 2px 4px;
+          height: 16px !important;
+          width: 60px !important;
+          border: none;
+        }
+      }
+
+      div.p-paginator.p-component {
+        background-color: $white;
+        border: none;
+        border-top: 1px solid $light-gray;
+        padding: 0px 0px 0px 0px;
+        margin: 0px 0px 0px 0px;
+        height: 16px !important;
+
+        button {
+          background-color: $lighter-gray;
+          color: $hard-gray;
+          font-weight: bold;
+          font-size: 14px;
+          padding: 0px 0px 0px 0px;
+          margin: 0px 0px 0px 0px;
+          height: 16px !important;
+        }
+      }
+    }
+
+    .table-tabviewsuperfull {
+      @extend .table-tabview; // Extend the base style
+      width: 1200px !important; // Override the width
+    }
+
+    .image-tabview {
+      width: 120px !important;
+      height: 120px !important;
+      border: 1px solid $light-gray;
+      border-radius: 10%;
+    }
+    .centralize-campaign-tag {
+      margin: 0px impo2rtant;
+      padding: 0px important;
+
+      span {
+        margin: 4px 0px 4px 0px !important;
+      }
+
+      .active .p-tag {
+        background-color: rgb(223, 255, 175);
+        color: $hard-gray;
+        font-weight: bold;
+        font-size: 14px;
+        padding: 0px 0px 0px 0px;
+        margin: 2px 4px 2px 4px;
+        height: 16px !important;
+        width: 50px !important;
+        border: 1px solid $light-gray;
+      }
+
+      .inactive .p-tag {
+        background-color: rgb(212, 212, 212);
+        color: $hard-gray;
+        font-weight: bold;
+        font-size: 14px;
+        padding: 0px 0px 0px 0px;
+        margin: 2px 4px 2px 4px;
+        height: 16px !important;
+        width: 60px !important;
+        border: none;
+      }
+
+      .pending .p-tag {
+        background-color: rgb(255, 255, 175);
+        color: $hard-gray;
+        font-weight: bold;
+        font-size: 14px;
+        padding: 0px 0px 0px 0px;
+        margin: 2px 4px 2px 4px;
+        height: 16px !important;
+        width: 60px !important;
+        border: none;
+      }
+
+      .new .p-tag {
+        background-color: rgb(255, 239, 175);
+        color: $hard-gray;
+        font-weight: bold;
+        font-size: 14px;
+        padding: 0px 0px 0px 0px;
+        margin: 2px 4px 2px 4px;
+        height: 16px !important;
+        width: 60px !important;
+        border: none;
+      }
+
+      .sucess .p-tag {
+        background-color: rgb(0, 255, 0);
+        color: $hard-gray;
+        font-weight: bold;
+        font-size: 14px;
+        padding: 0px 0px 0px 0px;
+        margin: 2px 4px 2px 4px;
+        height: 16px !important;
+        width: 70px !important;
+        border: none;
+      }
+
+      .sketch-campaign .p-tag {
+        background-color: rgb(225, 226, 225);
+        color: $hard-gray;
+        font-weight: bold;
+        font-size: 14px;
+        padding: 0px 0px 0px 0px;
+        margin: 2px 4px 2px 4px;
+        height: 16px !important;
+        width: 80px !important;
+        border: 1px solid $light-gray;
+      }
+
+      .proposal-campaign .p-tag {
+        background-color: rgb(255, 205, 172);
+        color: $hard-gray;
+        font-weight: bold;
+        font-size: 14px;
+        padding: 0px 0px 0px 0px;
+        margin: 2px 4px 2px 4px;
+        height: 16px !important;
+        width: 76px !important;
+        border: none;
+      }
+
+      .pending-receipt .p-tag {
+        background-color: rgb(255, 152, 152);
+        color: $hard-gray;
+        font-weight: bold;
+        font-size: 14px;
+        padding: 0px 0px 0px 0px;
+        margin: 2px 4px 2px 4px;
+        height: 16px !important;
+        width: 260px !important;
+        border: none;
+      }
+
+      .proposal-finished-campaign .p-tag {
+        background-color: rgb(220, 220, 220);
+        color: $hard-gray;
+        font-weight: bold;
+        font-size: 14px;
+        padding: 0px 0px 0px 0px;
+        margin: 2px 4px 2px 4px;
+        height: 16px !important;
+        width: 120px !important;
+        border: none;
+      }
+
+      .reproved-campaign .p-tag {
+        background-color: rgb(255, 153, 153);
+        color: $hard-gray;
+        font-weight: bold;
+        font-size: 14px;
+        padding: 0px 0px 0px 0px;
+        margin: 2px 4px 2px 4px;
+        height: 16px !important;
+        width: 90px !important;
+        border: none;
+      }
+
+      .reproved-campaign .p-tag {
+        background-color: rgb(255, 153, 153);
+        color: $hard-gray;
+        font-weight: bold;
+        font-size: 14px;
+        padding: 0px 0px 0px 0px;
+        margin: 2px 4px 2px 4px;
+        height: 16px !important;
+        width: 90px !important;
+        border: none;
+      }
+
+      .approved-no-influencer-campaign .p-tag {
+        background-color: rgb(153, 255, 246);
+        color: $hard-gray;
+        font-weight: bold;
+        font-size: 14px;
+        padding: 0px 0px 0px 0px;
+        margin: 2px 4px 2px 4px;
+        height: 16px !important;
+        width: 100px !important;
+        border: none;
+      }
+
+      .approved-campaign .p-tag {
+        background-color: rgb(153, 255, 197);
+        color: $hard-gray;
+        font-weight: bold;
+        font-size: 14px;
+        padding: 0px 0px 0px 0px;
+        margin: 2px 4px 2px 4px;
+        height: 16px !important;
+        width: 76px !important;
+        border: none;
+      }
+      .active-campaign .p-tag {
+        background-color: rgb(113, 255, 127);
+        color: $hard-gray;
+        font-weight: bold;
+        font-size: 14px;
+        padding: 0px 0px 0px 0px;
+        margin: 2px 4px 2px 4px;
+        height: 16px !important;
+        width: 50px !important;
+        border: none;
+      }
+
+      .paused-manual-campaign .p-tag {
+        background-color: rgb(255, 175, 222);
+        color: $hard-gray;
+        font-weight: bold;
+        font-size: 14px;
+        padding: 0px 0px 0px 0px;
+        margin: 2px 4px 2px 4px;
+        height: 16px !important;
+        width: 72px !important;
+        border: none;
+      }
+
+      .paused-no-influencer-campaign .p-tag {
+        background-color: rgb(255, 175, 222);
+        color: $hard-gray;
+        font-weight: bold;
+        font-size: 14px;
+        padding: 0px 0px 0px 0px;
+        margin: 2px 4px 2px 4px;
+        height: 16px !important;
+        width: 106px !important;
+        border: none;
+      }
+
+      .finished-campaign .p-tag {
+        background-color: rgb(216, 152, 255);
+        color: $hard-gray;
+        font-weight: bold;
+        font-size: 14px;
+        padding: 0px 0px 0px 0px;
+        margin: 2px 4px 2px 4px;
+        height: 16px !important;
+        width: 80px !important;
+        border: none;
+      }
+
+      .finished-manual-campaign .p-tag {
+        background-color: rgb(216, 152, 255);
+        color: $hard-gray;
+        font-weight: bold;
+        font-size: 14px;
+        padding: 0px 0px 0px 0px;
+        margin: 2px 4px 2px 4px;
+        height: 16px !important;
+        width: 110px !important;
+        border: none;
+      }
+    }
+
+    span {
+      margin: 0px 0px 0px 10px;
+    }
+    .error-msg {
+      color: rgb(255, 69, 69) !important;
+      font-weight: bold !important;
+      font-size: 14px !important;
+      padding: 0px 0px 0px 0px !important;
+      margin: 0px 0px 0px 10px !important;
+    }
+    .warning-msg {
+      color: rgb(91, 91, 91) !important;
+      font-weight: bold !important;
+      font-size: 14px !important;
+      padding: 0px 0px 0px 0px !important;
+      margin: 0px 0px 0px 10px !important;
+    }
+  }
+}

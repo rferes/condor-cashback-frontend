@@ -1,0 +1,241 @@
+// *****Utils********
+// Divs
+.centralize {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+// Butoons
+.btn-primary {
+  background-color: $primary !important;
+  color: $white !important;
+  border-color: $light-gray !important;
+
+  .pi {
+    font-size: 12px; // Adjust as needed
+  }
+}
+
+.btn-primary:disabled {
+  background-color: $ligth-red !important;
+}
+
+.btn-secondary {
+  background-color: $secondary !important;
+  color: $medium-gray !important;
+  border-color: $light-gray !important;
+
+  .pi {
+    font-size: 12px; // Adjust as needed
+  }
+}
+
+.btn-secondary:disabled {
+  background-color: $secondary !important;
+  color: $light-gray !important;
+  border-color: $light-gray !important;
+
+  .pi {
+    font-size: 12px; // Adjust as needed
+  }
+}
+
+.button-download {
+  background-color: $primary !important;
+  border-color: $primary !important;
+  color: white !important;
+  padding: 0px !important;
+  margin: 0px 0px 0px 12px !important;
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 6px;
+  .p-button-icon {
+    font-size: 1.4rem !important;
+    color: white !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+  span {
+    padding: 0px !important;
+    margin: 0px !important;
+  }
+}
+
+.btn-download {
+  background-color: $medium-gray !important;
+  border-color: $medium-gray !important;
+  color: white !important;
+  padding: 0px !important;
+  margin: 0px 0px 0px 20px !important;
+  width: 56px !important;
+  height: 28px !important;
+  border-radius: 6px;
+  .p-button-icon {
+    color: white !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+}
+
+.btn-upload {
+  span {
+    background-color: $medium-gray !important;
+    border-color: $medium-gray !important;
+    color: white !important;
+    width: 300px !important;
+
+    .p-button-icon {
+      color: white !important;
+      margin-left: 10px;
+    }
+    .p-button-label {
+      color: white !important;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      height: 100%;
+      text-align: right;
+      margin-right: 20px;
+    }
+  }
+}
+
+.checkbox-table {
+  // Estilos para centralizar o checkbox na célula
+  .p-datatable .p-datatable-tbody > tr > td,
+  .p-datatable .p-datatable-thead > tr > th {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .p-checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .p-checkbox-box {
+      width: 18px !important;
+      height: 18px !important;
+      border: 1px solid #ced4da;
+      background: #ffffff;
+      transition: background-color 0.2s, color 0.2s, border-color 0.2s,
+        box-shadow 0.2s;
+
+      &:not(.p-disabled):hover {
+        border-color: #ff0000;
+      }
+
+      &.p-highlight {
+        border-color: #ff0000 !important;
+        background: #ff0000 !important;
+
+        &:not(.p-disabled):hover {
+          border-color: #ff0000 !important;
+          background: #ff0000 !important;
+        }
+
+        .p-checkbox-icon {
+          color: #ffffff !important;
+        }
+      }
+
+      &.p-focus {
+        box-shadow: 0 0 0 0.2rem rgba(255, 0, 0, 0.4);
+        border-color: #ff0000;
+      }
+
+      .p-checkbox-icon {
+        width: 16px;
+        height: 16px;
+        transition-duration: 0.2s;
+        color: #ffffff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
+
+  // Estilos específicos para o checkbox do cabeçalho da tabela
+  .p-datatable-thead .p-checkbox .p-checkbox-box {
+    &.p-highlight,
+    &.p-highlight:not(.p-disabled):hover {
+      border-color: #ff0000 !important;
+      background: #ff0000 !important;
+    }
+  }
+}
+
+//Check Boxes
+.checkbox-complete {
+  margin-top: 15px;
+  .p-checkbox .p-component {
+    width: 18px !important;
+    height: 18px !important;
+    padding: 3.5px 0px 0px 13px;
+    .p-checkbox-icon {
+      color: red;
+      margin: 0px;
+      padding: 0px;
+    }
+  }
+  .p-checkbox .p-checkbox-box {
+    width: 18px !important;
+    height: 18px !important;
+    background-color: white !important;
+    border-color: red !important;
+  }
+
+  label {
+    color: $dark-gray;
+    justify-content: center;
+    margin-top: 0px;
+    padding: 0px;
+  }
+
+  .p-checkbox-checked .p-checkbox-box {
+    color: white !important;
+    background-color: red !important;
+    border-color: red !important;
+  }
+
+  .p-checkbox .p-checkbox-label.p-label-active {
+    color: red;
+    margin: 0px;
+    padding: 0px;
+    text-align: center;
+    text-justify: center;
+  }
+
+  .p-checkbox .p-checkbox-label.p-label-disabled {
+    color: lightgray;
+  }
+}
+
+.checkbox-medium {
+  margin-top: 15px;
+  .p-checkbox .p-component {
+    width: 30px !important;
+    height: 30px !important;
+    padding: 3.5px 0px 0px 13px;
+    .p-checkbox-icon {
+      color: red;
+      margin: 0px;
+      padding: 0px;
+    }
+  }
+  .p-checkbox .p-checkbox-box {
+    width: 30px !important;
+    height: 30px !important;
+    background-color: white !important;
+    border-color: red !important;
+  }
+}

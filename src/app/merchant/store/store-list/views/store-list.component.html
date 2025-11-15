@@ -1,0 +1,294 @@
+<p-toast class="custom-toast"></p-toast>
+<p-confirmDialog class="custom-dialog"></p-confirmDialog>
+<div class="container">
+  <h3 class="">Lojas</h3>
+  <div *ngIf="multipleStoresView" class="topic-container">
+    <div class="topic-title">
+      <h5>Adicionar Multiplas Lojas</h5>
+    </div>
+    <div class="btns-container-medium">
+      <button
+        pButton
+        label="Cancelar Multiplas Lojas"
+        class="btn-secondary"
+        style="width: 220px !important"
+        (click)="multipleStoresView = false"
+      ></button>
+    </div>
+  </div>
+  <hr *ngIf="multipleStoresView" />
+  <div *ngIf="multipleStoresView" class="input-container">
+    <div class="fields-container">
+      <div class="field-container" style="margin-top: 0px; margin-bottom: 10px">
+        <div class="upload-btn">
+          <p style="margin-top: 0px; margin-bottom: 8px; font-size: 15px">
+            Upload
+          </p>
+          <span
+            pTooltip="O arquivo .csv do modelo que você pode baixar no botão ao lado."
+            tooltipPosition="top"
+            tooltipStyleClass="my-tooltip"
+            class="btn-upload"
+          >
+            <p-fileUpload
+              #fileUpload
+              mode="basic"
+              chooseLabel=".CSV"
+              name=""
+              accept="text/csv"
+              (onSelect)="onSelectFile($event)"
+              [disabled]="fileUploaded"
+            ></p-fileUpload>
+          </span>
+        </div>
+        <div *ngIf="!fileUploaded">
+          <p
+            style="
+              margin-top: 0px;
+              margin-bottom: 8px;
+              margin-left: 20px;
+              font-size: 15px;
+            "
+          >
+            Modelo
+          </p>
+          <a [href]="fileURL" download>
+            <p-button
+              icon="pi pi-file"
+              styleClass="btn-download"
+              pTooltip="Clique aqui para fazer o download do modelo de arquivo .csv"
+            ></p-button>
+          </a>
+        </div>
+        <div>
+          <div *ngIf="fileUploaded">
+            <p
+              style="
+                margin-top: 0px;
+                margin-bottom: 8px;
+                margin-left: 20px;
+                font-size: 15px;
+              "
+            >
+              Cancelar
+            </p>
+            <p-button
+              type="button"
+              class="p-button-clear p-button-icon-only p-button-danger"
+              (click)="resetFileUpload()"
+              icon="pi pi-times"
+              styleClass="btn-download"
+              pTooltip="Excluir Arquivo"
+            >
+            </p-button>
+          </div>
+        </div>
+        <div>
+          <p style="margin-top: 0px; margin-bottom: 8px; font-size: 15px">
+            &nbsp;
+          </p>
+          <button
+            pButton
+            (click)="submitMultiple()"
+            pTooltip="Você precisa fazer o upload do arquivo .csv para criar o grupo."
+            tooltipPosition="top"
+            class="btn-primary"
+            style="
+              padding: 0px 12px !important;
+              margin: 0px 0px 0px 20px !important;
+              box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+            "
+            [disabled]="!fileUploaded"
+          >
+            Criar Multiplas Lojas
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <br *ngIf="multipleStoresView" />
+  <div class="topic-container">
+    <div class="topic-title">
+      <h5>Lista de Lojas</h5>
+    </div>
+    <div>
+      <!-- Read Mode -->
+      <div class="btns-container-small">
+        <p-splitButton
+          *ngIf="!multipleStoresView"
+          label="Novo"
+          styleClass="custom-split-button"
+          (onClick)="createStore()"
+          [model]="items"
+          pTooltip="Criar uma nova loja"
+        />
+      </div>
+    </div>
+  </div>
+  <hr />
+
+  <!-- Inputs -->
+  <div class="input-container">
+    <!-- Main Inputs -->
+
+    <div class="fields-container">
+      <div class="table-list">
+        <p-progressSpinner
+          *ngIf="isLoading"
+          styleClass="w-4rem h-4rem"
+          strokeWidth="8"
+          fill="var(--surface-ground)"
+          animationDuration="0.8s"
+          class="centralize"
+        />
+        <p-table
+          *ngIf="!isLoading && stores.length > 0; else emptyTable"
+          [value]="itemsFiltrados"
+          [globalFilterFields]="[
+            'name',
+            'document',
+            'address.city.name',
+            'address.zipcode'
+          ]"
+          [sortField]="'name'"
+          [sortOrder]="1"
+          [paginator]="true"
+          [rows]="25"
+          [(selection)]="selectedStores"
+        >
+          <ng-template pTemplate="caption">
+            <div class="input-icon">
+              <i class="pi pi-search ml-10"></i>
+              <input
+                pInputText
+                id="globalFilter"
+                name="globalFilter"
+                type="text"
+                [(ngModel)]="globalFilter"
+                (input)="applyFilter()"
+                placeholder="pesquisar Loja"
+              />
+            </div>
+            <button
+              pButton
+              type="button"
+              pTooltip="Limpar o filtro"
+              tooltipPosition="top"
+              tooltipStyleClass="my-tooltip"
+              label=""
+              icon="pi pi-filter-slash"
+              (click)="clearGlobalFilter()"
+            ></button>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th>
+                <p-tableHeaderCheckbox
+                  class="checkbox-table"
+                ></p-tableHeaderCheckbox>
+              </th>
+              <th pSortableColumn="name">
+                Nome <p-sortIcon field="name"></p-sortIcon>
+              </th>
+              <th pSortableColumn="document">
+                CNPJ <p-sortIcon field="document"></p-sortIcon>
+              </th>
+              <th pSortableColumn="address.city.name">
+                Endereço <p-sortIcon field="address.city.name"></p-sortIcon>
+              </th>
+              <th class="w-90" pSortableColumn="is_active">
+                Status <p-sortIcon field="is_active"></p-sortIcon>
+              </th>
+              <div class="centralize w-60"><th>Ação</th></div>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-stores let-i="rowIndex">
+            <tr>
+              <td>
+                <p-tableCheckbox
+                  [value]="stores"
+                  class="checkbox-table"
+                ></p-tableCheckbox>
+              </td>
+              <td>
+                {{
+                  stores.name.length > 30
+                    ? (stores.name | slice : 0 : 30) + "..."
+                    : stores.name
+                }}
+              </td>
+              <td>
+                {{ stores.document | slice : 0 : 2 }}.{{
+                  stores.document | slice : 2 : 5
+                }}.{{ stores.document | slice : 5 : 8 }}/{{
+                  stores.document | slice : 8 : 12
+                }}-{{ stores.document | slice : 12 : 14 }}
+              </td>
+              <td>
+                {{ getAddress(stores) }}
+              </td>
+              <td>
+                <div class="centralize w-60">
+                  <p-tag
+                    *ngIf="stores.is_active"
+                    class="active"
+                    value="Ativa"
+                  ></p-tag>
+                  <p-tag
+                    *ngIf="!stores.is_active"
+                    class="inactive"
+                    value="Inativa"
+                  ></p-tag>
+                </div>
+              </td>
+              <td>
+                <div class="centralize w-60">
+                  <button
+                    pButton
+                    pRipple
+                    pTooltip="Ver a Loja"
+                    tooltipPosition="top"
+                    tooltipStyleClass="my-tooltip"
+                    type="button"
+                    icon="pi pi-eye"
+                    class="p-button-rounded p-button-text p-button-success p-button-sm"
+                    [routerLink]="['/merchant/store-view', stores.id]"
+                  ></button>
+                  <button
+                    pButton
+                    pRipple
+                    pTooltip="Deletar a loja"
+                    tooltipPosition="top"
+                    tooltipStyleClass="my-tooltip"
+                    type="button"
+                    icon="pi pi-trash"
+                    class="p-button-rounded p-button-text p-button-danger p-button-sm"
+                    (click)="deleteComponent(i)"
+                  ></button>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+      <!-- Se tabela estiver vazia -->
+      <ng-template #emptyTable>
+        <div>
+          <div>
+            <button
+              pButton
+              label="Nova Loja"
+              icon="pi pi-plus"
+              class="btn-primary"
+              type="button"
+              [routerLink]="['/merchant/store-view', 'new']"
+            ></button>
+          </div>
+          <span
+            >Atenção, você ainda não possui nenhuma loja, crie uma agora!</span
+          >
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>

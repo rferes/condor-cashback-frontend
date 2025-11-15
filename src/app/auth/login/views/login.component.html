@@ -1,0 +1,355 @@
+<p-toast class="custom-toast"></p-toast>
+<div class="modal-backgound"></div>
+<div class="container-modal">
+  <div>
+    <h4><a routerLink="/login">Red Ads</a></h4>
+    <p-card class="card-container">
+      <form [formGroup]="loginForm" (ngSubmit)="submit()" class="p-fluid">
+        <div formGroupName="step1" *ngIf="step === 1">
+          <h4>Acesse sua conta</h4>
+          <div>
+            <label for="document">Documento</label>
+            <input
+              pInputText
+              id="document"
+              formControlName="document"
+              placeholder="CNPJ ou CPF"
+              maxlength="18"
+              (input)="onCheckDocument()"
+              pTooltip="CNPJ ou CPF"
+            />
+            <div
+              *ngIf="loginForm.get('step1.document')?.errors?.['cpfCnpj']"
+              class="warning_message"
+            >
+              CPF ou CNPJ inválido.
+            </div>
+          </div>
+          <div>
+            <div class="double-label">
+              <label for="password">Senha</label>
+              <small>
+                <a routerLink="/forgot-password">Esqueceu sua senha?</a>
+              </small>
+            </div>
+            <p-password
+              formControlName="password"
+              id="password"
+              type="password"
+              [feedback]="false"
+            ></p-password>
+            <div
+              *ngIf="loginForm.get('step1.password')?.errors?.['isLength']"
+              class="warning_message"
+            >
+              A senha precisa ter pelo menos 10 caracteres.
+            </div>
+            <div
+              *ngIf="loginForm.get('step1.password')?.errors?.['passwordUpperCase']"
+              class="warning_message"
+            >
+              A senha precisa ter pelo menos 1 letra maiúscula
+            </div>
+            <div
+              *ngIf="loginForm.get('step1.password')?.errors?.['passwordLowerCase']"
+              class="warning_message"
+            >
+              A senha precisa ter pelo menos 1 letra minúscula
+            </div>
+            <div
+              *ngIf="loginForm.get('step1.password')?.errors?.['passwordNumeric']"
+              class="warning_message"
+            >
+              A senha precisa ter pelo menos 1 número
+            </div>
+            <div
+              *ngIf="loginForm.get('step1.password')?.errors?.['passwordSpecial']"
+              class="warning_message"
+            >
+              A senha precisa ter pelo menos 1 caractere especial
+            </div>
+          </div>
+          <div class="checkbox-container">
+            <p-checkbox
+              [binary]="true"
+              inputId="remember_device"
+              class="checkbox-complete"
+              formControlName="remember_device"
+            ></p-checkbox>
+            <label for="is_active" class="checkbox-label">Lembrar-me</label>
+          </div>
+
+          <p-button label="Continuar" type="submit" class="wp-100"></p-button>
+        </div>
+        <div formGroupName="step2" *ngIf="step === 2">
+          <h4>Verificação de Segurança</h4>
+          <div>
+            <label>
+              Para sua segurança, enviamos um código de verificação via SMS para
+              o número
+              {{
+                "(" +
+                  (cellphone | slice : 0 : 2) +
+                  ") " +
+                  (cellphone | slice : 2 : 7) +
+                  "-" +
+                  (cellphone | slice : 7)
+              }}. Por favor, insira o código de 6 dígitos abaixo.
+            </label>
+            <label for="code">Código</label>
+            <br />
+            <p-inputMask
+              mask="*** - ***"
+              placeholder="??? - ???"
+              class="code-verification"
+              id="code-verification"
+              formControlName="code"
+            ></p-inputMask>
+          </div>
+          <div>
+            <p-button
+              label="Enviar Código"
+              type="submit"
+              class="wp-100"
+            ></p-button>
+
+            <small>
+              O código não chegou? &nbsp;
+              <a
+                *ngIf="isLinkDisabled"
+                style="cursor: not-allowed; color: grey !important"
+              >
+                Reenviar SMS (
+                {{ countdown }})
+              </a>
+              <a
+                *ngIf="!isLinkDisabled"
+                (click)="resendSMS()"
+                style="cursor: pointer; color: red !important"
+              >
+                Reenviar SMS
+              </a>
+            </small>
+          </div>
+        </div>
+        <div formGroupName="step3" *ngIf="step === 3">
+          <h4>Configurar Email</h4>
+          <div>
+            <label>
+              Para finalizar a configuração da sua conta, por favor, insira um
+              email válido.
+            </label>
+            <label for="email">Email</label>
+            <input
+              pInputText
+              id="email"
+              formControlName="email"
+              placeholder="Email"
+              type="email"
+            />
+            <div
+              *ngIf="loginForm.get('step3.email')?.errors?.['email']"
+              class="warning_message"
+            >
+              Email inválido.
+            </div>
+          </div>
+          <div class="submit-button">
+            <p-button label="Continuar" type="submit" class="wp-100"></p-button>
+          </div>
+        </div>
+        <div formGroupName="step4" *ngIf="step === 4">
+          <h4>Validação de Email</h4>
+          <div>
+            <label>
+              Para sua segurança, enviamos um código de verificação via Email
+              para o número
+              {{ loginForm.get("step3")?.value.email }}. Por favor, insira o
+              código de 6 dígitos abaixo.
+            </label>
+            <label for="code">Código</label>
+            <br />
+            <p-inputMask
+              mask="*** - ***"
+              class="code-verification"
+              id="code-verification"
+              formControlName="code"
+              placeholder="??? - ???"
+            ></p-inputMask>
+          </div>
+          <div>
+            <p-button
+              label="Enviar Código"
+              type="submit"
+              class="wp-100"
+            ></p-button>
+
+            <small>
+              O código não chegou? &nbsp;
+              <a
+                *ngIf="isLinkDisabled"
+                style="cursor: not-allowed; color: grey !important"
+              >
+                Reenviar Email (
+                {{ countdown }})
+              </a>
+              <a
+                *ngIf="!isLinkDisabled"
+                (click)="resendEmail()"
+                style="cursor: pointer; color: red !important"
+              >
+                Reenviar Email
+              </a>
+            </small>
+          </div>
+        </div>
+        <div formGroupName="step5" *ngIf="step === 5">
+          <h4>Termos e Condições</h4>
+          <div class="terms-container">
+            <br />
+            <p-scrollPanel
+              [style]="{
+                width: '420px',
+                height: '350px',
+                border: '1px solid #ddd',
+                overflowY: 'scroll',
+              }"
+              styleClass="custom"
+            >
+              <div class="terms-content" style="padding: 5px !important">
+                <h5>Termos de Uso e Política de Privacidade</h5>
+                <p>
+                  Ao utilizar nossos serviços, você concorda com os seguintes
+                  termos:
+                </p>
+                <!-- Adicione aqui o conteúdo dos seus termos -->
+                <p>1. Uso responsável da plataforma</p>
+                <p>2. Proteção de dados pessoais</p>
+                <p>3. Regras de publicidade</p>
+                <p>4. Responsabilidade do anunciante</p>
+                <p>5. Propriedade intelectual</p>
+                <p>6. Alterações nos termos</p>
+                <p>7. Contato</p>
+                <!-- ... mais termos ... -->
+              </div>
+            </p-scrollPanel>
+          </div>
+          <a
+            href="https://www.gov.br/governodigital/pt-br/privacidade-e-seguranca/ppsi/guia_termo_uso_politica_privacidade.pdf"
+            target="_blank"
+            class="download-terms-link"
+            style="
+              color: red;
+              text-decoration: none;
+              font-size: 13px;
+              padding-top: 5px !important;
+            "
+          >
+            <i class="pi pi-file-pdf"></i>
+            Abrir versão PDF dos termos e condições
+          </a>
+          <div class="checkbox-container">
+            <p-checkbox
+              [binary]="true"
+              inputId="acceptTerms"
+              class="checkbox-complete"
+              formControlName="acceptTerms"
+            ></p-checkbox>
+            <label for="acceptTerms" class="checkbox-label"
+              >Li e aceito os termos de uso e política de privacidade</label
+            >
+          </div>
+
+          <div class="buttons-container mt-15">
+            <p-button
+              label="Continuar"
+              (onClick)="submit()"
+              [disabled]="!loginForm.get('step5.acceptTerms')?.value"
+              class="wp-45"
+            ></p-button>
+          </div>
+        </div>
+        <div formGroupName="step5" *ngIf="step === 6">
+          <div class="terms-container">
+            <p-scrollPanel
+              [style]="{
+                width: '100%',
+                height: '350px',
+                border: '1px solid #ddd',
+                overflowY: 'scroll'
+              }"
+              styleClass="custom"
+            >
+              <div class="terms-content" style="padding: 5px !important">
+                <div [innerHTML]="termsContent"></div>
+              </div>
+            </p-scrollPanel>
+          </div>
+          <a
+            href="https://www.gov.br/governodigital/pt-br/privacidade-e-seguranca/ppsi/guia_termo_uso_politica_privacidade.pdf"
+            target="_blank"
+            class="download-terms-link"
+            style="
+              color: red;
+              text-decoration: none;
+              font-size: 13px;
+              padding-top: 5px !important;
+            "
+          >
+            <i class="pi pi-file-pdf"></i>
+            Abrir versão PDF dos termos e condições
+          </a>
+          <div class="checkbox-container">
+            <p-checkbox
+              [binary]="true"
+              inputId="acceptTerms"
+              class="checkbox-complete"
+              formControlName="acceptTerms"
+            ></p-checkbox>
+            <label for="acceptTerms" class="checkbox-label"
+              >Li e aceito os termos de uso e política de privacidade</label
+            >
+          </div>
+
+          <div class="buttons-container mt-15">
+            <p-button
+              label="Continuar"
+              (onClick)="submit()"
+              [disabled]="!loginForm.get('step5.acceptTerms')?.value"
+              class="wp-45"
+            ></p-button>
+          </div>
+        </div>
+      </form>
+    </p-card>
+    <div class="mt-15" *ngIf="step == 1">
+      <small>
+        Não tem uma conta?
+        <a routerLink="/register">Criar conta</a>
+      </small>
+    </div>
+    <div class="mt-15" *ngIf="step != 1 && step != 3">
+      <small id="button_back">
+        <a (click)="back()">Voltar</a>
+      </small>
+    </div>
+    <div class="mt-15" *ngIf="step == 3">
+      <small id="button_back">
+        <a (click)="logout()">Logout</a>
+      </small>
+    </div>
+    <div class="mt-30">
+      <small>
+        <a class="footer" routerLink="/forgot-password">© RedAds</a>
+      </small>
+      <small> &nbsp;&nbsp;&nbsp; </small>
+      <small>
+        <a class="footer" routerLink="/forgot-password">Contato</a>
+      </small>
+      <small> &nbsp;&nbsp;&nbsp; </small>
+      <small>
+        <a class="footer" routerLink="/forgot-password">Termos e Privacidade</a>
+      </small>
+    </div>
+  </div>
+</div>

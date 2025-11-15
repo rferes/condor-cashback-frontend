@@ -1,0 +1,470 @@
+<p-toast class="custom-toast"></p-toast>
+<div class="container">
+  <h4 *ngIf="isNew && !isSemiNew" style="color: rgb(80, 80, 80)">
+    Bem vindo ao RedAds!
+  </h4>
+  <h6 *ngIf="isNew" class="mb-30" style="color: rgb(80, 80, 80)">
+    Crie o seu perfil de Comerciante para usar a plataforma
+  </h6>
+  <h3 class="">Perfil</h3>
+  <div class="topic-container">
+    <div class="topic-title">
+      <h5 pTooltip="ID: {{ entityForm.get('id')?.value }} ">Comerciante</h5>
+    </div>
+    <div class="btns-container-medium">
+      <!-- Read Mode -->
+      <button
+        *ngIf="!editMode"
+        pButton
+        label="Editar"
+        icon="pi pi-pencil"
+        iconPos="right"
+        class="w-80 btn-secondary"
+        type="button"
+        style="width: 100px !important"
+        (click)="edit()"
+      ></button>
+      <!-- Edit Mode -->
+      <button
+        *ngIf="editMode && !isNew"Link da sua página
+        pButton
+        label="Cancelar"
+        class="w-80 btn-secondary"
+        type="button"
+        style="width: 100px !important"
+        (click)="cancel()"
+      ></button>
+      <button
+        *ngIf="editMode && !isNew"
+        pButton
+        label="Salvar"
+        class="w-80 btn-primary"
+        type="button"
+        style="width: 100px !important"
+        [disabled]="
+          entityForm.pristine ||
+          entityForm.invalid ||
+          entityForm.value.commercial_category.length === 0
+        "
+        (click)="save()"
+      ></button>
+      <button
+        *ngIf="editMode && isNew"
+        pButton
+        label="Criar"
+        class="w-80 btn-primary"
+        type="button"
+        style="width: 100px !important"
+        [disabled]="entityForm.pristine || entityForm.invalid"
+        (click)="termsDialogCheckBoxVisible = true"
+      ></button>
+    </div>
+  </div>
+  <hr />
+
+  <!-- Inputs -->
+  <form enctype="multipart/form-data" [formGroup]="entityForm">
+    <div class="input-container">
+      <!-- Main Inputs -->
+      <div class="fields-container">
+        <div class="field-container">
+          <label class="label-field" for="is_active">Status</label>
+          <p-inputSwitch
+            formControlName="is_active"
+            class="inputSwitch-field"
+            id="is_active"
+            pTooltip="Status do comerciante, comerciantes inativos não podem interagir com os influenciadores e comerciantes parceiros"
+          ></p-inputSwitch>
+          <label
+            class="inputSwitch-label"
+            *ngIf="
+              (entityForm.get('is_active')?.valueChanges | async) === false
+            "
+            for="is_active"
+            >Inativo</label
+          >
+          <label
+            class="inputSwitch-label"
+            *ngIf="(entityForm.get('is_active')?.valueChanges | async) === true"
+            for="is_active"
+            >Ativo</label
+          >
+        </div>
+        <div *ngIf="!isNew" class="field-container">
+          <label class="label-field" for="document">CNPJ</label>
+          <span class="span-field">
+            {{
+              (entityForm.get("document")?.value?.substr(0, 2) || "") +
+                "." +
+                (entityForm.get("document")?.value?.substr(2, 3) || "") +
+                "." +
+                (entityForm.get("document")?.value?.substr(5, 3) || "") +
+                "/" +
+                (entityForm.get("document")?.value?.substr(8, 4) || "") +
+                "-" +
+                (entityForm.get("document")?.value?.substr(12, 2) || "")
+            }}
+          </span>
+        </div>
+        <div class="field-container">
+          <label class="label-field" for="name">Nome Fantasia</label>
+          <span *ngIf="!editMode" class="span-field">
+            {{
+              entityForm.get("name")?.value.length > 80
+                ? (entityForm.get("name")?.value | slice : 0 : 80) + "..."
+                : entityForm.get("name")?.value
+            }}
+          </span>
+          <input
+            pInputText
+            *ngIf="editMode"
+            formControlName="name"
+            type="text"
+            class="input-field"
+            pTooltip="Este é o nome que será exibido para os consumidores, influenciadores e comerciantes"
+          />
+        </div>
+        <div class="field-container">
+          <label
+            class="label-field"
+            for="url"
+            pTooltip="Url da página do Comerciante usada para recebimento de notas fiscais promocionais pelos consumidores via Members"
+            >Link da sua página</label
+          >
+          <span *ngIf="!editMode" class="span-field">
+            {{
+              entityForm.get("url")?.value.length > 80
+                ? (entityForm.get("url")?.value | slice : 0 : 80) + "..."
+                : entityForm.get("url")?.value
+            }}
+          </span>
+          <div *ngIf="editMode" class="input-wrapper">
+            <input
+              pInputText
+              formControlName="url"
+              type="text"
+              class="input-field"
+              minlength="3"
+              pTooltip="Defina um nickname único para sua URL (ex: 'minha-loja'). Seu link será: https://redads.com.br/redeem-member/minha-loja"
+              placeholder="Digite um nickname sem espaços (min. 3 caracteres)"
+              (blur)="checkUrl()"
+            />
+            <p
+              class="helper-text"
+              style="font-size: x-small; color: #808080; margin-bottom: -10px"
+              *ngIf="free_url && url_valid"
+            >
+              &nbsp;Mínimo de 3 caracteres, sem espaços ou caracteres especiais
+            </p>
+            <p
+              class="helper-text"
+              style="font-size: x-small; color: #ff0000; margin-bottom: -10px"
+              *ngIf="!free_url"
+            >
+              <i class="pi pi-ban" style="color: #ff0000; font-size: 0.6rem"></i
+              >&nbsp;A URL já esta sendo usado por outro comerciante
+            </p>
+            <p
+              class="helper-text"
+              style="font-size: x-small; color: #ff0000; margin-bottom: -10px"
+              *ngIf="free_url && !url_valid"
+            >
+              <i class="pi pi-ban" style="color: #ff0000; font-size: 0.6rem"></i
+              >&nbsp;URL inválida: mín. 3 caracteres, sem espaços/caracteres
+              especiais
+            </p>
+          </div>
+        </div>
+        <div class="field-container">
+          <label class="label-field" for="cep">CEP</label>
+          <span class="span-field" *ngIf="!editMode">{{
+            entityForm.get("cep")?.value?.toString().slice(0, 5) +
+              "-" +
+              entityForm.get("cep")?.value?.toString().slice(5)
+          }}</span>
+          <p-inputMask
+            *ngIf="editMode"
+            formControlName="cep"
+            mask="99999-999"
+            placeholder="CEP"
+            class="input-mask-field"
+            (onComplete)="searchZipcode()"
+            pTooltip="Digite um CEP da matriz do Comerciante"
+          >
+          </p-inputMask>
+        </div>
+        <div *ngIf="!isNew" class="field-container">
+          <label class="label-field" for="city">Cidade</label>
+          <span class="span-field">
+            {{
+              entityForm.get("city")?.value.length > 80
+                ? (entityForm.get("city")?.value | slice : 0 : 80) + "..."
+                : entityForm.get("city")?.value === ""
+                ? "CEP Inválido"
+                : entityForm.get("city")?.value
+            }}
+          </span>
+        </div>
+        <div class="field-container">
+          <label class="label-field" for="type">Tipo</label>
+          <p-dropdown
+            formControlName="type"
+            [options]="merchantTypesList"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Selecione"
+            class="dropdown-field"
+            [readonly]="!editMode"
+            pTooltip="Qual é o Tipo de Comercio que você possui?"
+          ></p-dropdown>
+        </div>
+        <div class="field-container">
+          <label class="label-field" for="commercial_category"
+            >Categorias Comerciais</label
+          >
+          <p-scroller
+            *ngIf="!editMode"
+            [items]="entityForm.get('commercial_category')?.value"
+            [itemSize]="scroolerItemsQuantity"
+            class="scroller-field"
+          >
+            <ng-template pTemplate="item" let-item let-options="options">
+              <div>
+                {{ item.name }}
+              </div>
+            </ng-template>
+          </p-scroller>
+          <p-listbox
+            *ngIf="editMode"
+            [options]="listComercialCategories"
+            formControlName="commercial_category"
+            optionLabel="name"
+            [multiple]="true"
+            [metaKeySelection]="false"
+            class="listbox-field"
+            pTooltip="Quais são as categorias comerciais do Comerciante?"
+          ></p-listbox>
+        </div>
+      </div>
+      <!-- Side Inputs -->
+      <div class="side-container">
+        <div class="fields-container">
+          <div class="image-cropper-container">
+            <label class="label-field" for="image">Imagem</label>
+            <img
+              *ngIf="!imageLoaded && !isNew && !isSemiNew"
+              [src]="entity.image"
+              alt="Imagem do Comerciante"
+              class="image-field"
+            />
+            <div class="side-container image-cropper-field">
+              <image-cropper
+                *ngIf="imageLoaded"
+                [imageChangedEvent]="imageChangedEvent"
+                [maintainAspectRatio]="true"
+                [aspectRatio]="1"
+                [resizeToWidth]="600"
+                format="png"
+                (imageCropped)="onImageCropped($event)"
+                class="image-cropper-cropper"
+              ></image-cropper>
+
+              <p *ngIf="fileName && editMode">
+                <a href="javascript:void(0)" (click)="cancelImage()">X</a
+                >{{ fileName }}
+              </p>
+              <input
+                type="file"
+                id="file"
+                accept=".jpg, .jpeg, .png"
+                (change)="onFileSelected($event)"
+              />
+              <label
+                *ngIf="(!isNew && editMode) || imageLoaded"
+                class="label-field"
+                for="file"
+                >Trocar</label
+              >
+              <label
+                *ngIf="isNew && !imageLoaded"
+                class="label-field w-120"
+                for="file"
+                >Adicionar</label
+              >
+            </div>
+          </div>
+          <div
+            class="field-container"
+            *ngIf="
+              (editMode || entityForm.get('google_play_store_url')?.value) &&
+              is_premium
+            "
+            style="padding: 0px 0px 0px 20px !important"
+          >
+            <label for="google_play_store_url">
+              <img
+                src="assets/icons/google-play.svg"
+                alt="Google Play"
+                class="icon"
+                pTooltip="Google Play"
+              />&nbsp;
+            </label>
+            <span>
+              <a
+                *ngIf="!editMode"
+                [href]="entityForm.get('google_play_store_url')?.value"
+                target="_blank"
+                class="span-field"
+              >
+                {{ entityForm.get("google_play_store_url")?.value }}
+              </a>
+              <input
+                *ngIf="editMode"
+                pInputText
+                formControlName="google_play_store_url"
+                type="text"
+                class="input-field"
+                pTooltip="URL do aplicativo na Google Play Store"
+                tooltipPosition="left"
+                tooltipStyleClass="my-tooltip"
+                placeholder="URL da Google Play Store"
+                pattern="^https?:\/\/play\.google\.com\/store\/apps\/details\?id=.*"
+              />
+              <small
+                *ngIf="entityForm.get('google_play_store_url')?.errors?.['pattern'] && entityForm.get('google_play_store_url')?.touched"
+                class="p-error"
+              >
+                URL inválida. Use o formato:
+                https://play.google.com/store/apps/details?id=...
+              </small>
+            </span>
+          </div>
+          <div
+            class="field-container"
+            *ngIf="
+              (editMode || entityForm.get('app_store_url')?.value) && is_premium
+            "
+            style="padding: 0px 0px 0px 20px !important"
+          >
+            <label for="app_store_url">
+              <img
+                src="assets/icons/app-store.svg"
+                alt="App Store"
+                class="icon"
+                pTooltip="App Store"
+              />&nbsp;
+            </label>
+            <span>
+              <a
+                *ngIf="!editMode"
+                [href]="entityForm.get('app_store_url')?.value"
+                target="_blank"
+                class="span-field"
+              >
+                {{ entityForm.get("app_store_url")?.value }}
+              </a>
+              <input
+                *ngIf="editMode"
+                pInputText
+                formControlName="app_store_url"
+                type="text"
+                class="input-field"
+                pTooltip="URL do aplicativo na App Store"
+                tooltipPosition="left"
+                tooltipStyleClass="my-tooltip"
+                placeholder="URL da App Store"
+                pattern="^https?:\/\/apps\.apple\.com\/\w+\/app\/.*"
+              />
+              <small
+                *ngIf="entityForm.get('app_store_url')?.errors?.['pattern'] && entityForm.get('app_store_url')?.touched"
+                class="p-error"
+              >
+                URL inválida. Use o formato:
+                https://apps.apple.com/[país]/app/...
+              </small>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<p-dialog
+  header="Termos e Condições"
+  [(visible)]="termsDialogCheckBoxVisible"
+  [modal]="true"
+  [style]="{ width: '450px', maxWidth: '95%' }"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <form [formGroup]="entityForm">
+    <div class="terms-container">
+      <p-scrollPanel
+        [style]="{
+          width: '100%',
+          height: '350px',
+          border: '1px solid #ddd',
+          overflowY: 'scroll'
+        }"
+        styleClass="custom"
+      >
+        <div class="terms-content" style="padding: 5px !important">
+          <div [innerHTML]="termsContent"></div>
+        </div>
+      </p-scrollPanel>
+
+      <div style="margin-top: 15px">
+        <a
+          href="https://s3.us-east-1.amazonaws.com/redads-sandbox.static/media/terms/merchant-terms.pdf"
+          target="_blank"
+          class="download-terms-link"
+          style="color: red; text-decoration: none; font-size: 13px"
+        >
+          <i class="pi pi-file-pdf"></i>
+          Abrir versão PDF dos termos e condições
+        </a>
+      </div>
+      <div
+        class="checkbox-container"
+        style="margin-top: 15px; display: flex; align-items: center"
+      >
+        <p-checkbox
+          formControlName="accept_terms"
+          [binary]="true"
+          inputId="acceptTermsDialog"
+        ></p-checkbox>
+        <label
+          for="acceptTermsDialog"
+          class="checkbox-label"
+          style="margin-left: 8px"
+        >
+          Li e aceito os
+          <a
+            href="https://s3.us-east-1.amazonaws.com/redads-sandbox.static/media/terms/merchant-terms.pdf"
+            target="_blank"
+            style="text-decoration: underline; font-size: 14px"
+          >
+            termos de adesão
+          </a>
+        </label>
+      </div>
+    </div>
+  </form>
+
+  <ng-template pTemplate="footer">
+    <p-button
+      label="Criar Perfil"
+      (click)="acceptTermsCheckBox()"
+      [disabled]="!entityForm.get('accept_terms')?.value"
+      styleClass="p-button-danger"
+      [style]="{
+        'border-radius': '8px',
+        width: '80%',
+        display: 'block',
+        margin: '0 auto'
+      }"
+    >
+    </p-button>
+  </ng-template>
+</p-dialog>

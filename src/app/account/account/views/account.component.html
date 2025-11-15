@@ -1,0 +1,556 @@
+<p-toast class="custom-toast"></p-toast>
+
+<p-confirmDialog
+  header="Confirmação"
+  icon="pi pi-exclamation-triangle"
+  class="custom-dialog"
+></p-confirmDialog>
+
+<div class="container">
+  <!-- Header -->
+  <h3>Conta</h3>
+
+  <!-- User Info Header -->
+  <div class="topic-container">
+    <div class="topic-title">
+      <h5 pTooltip="ID: {{ entity.id }}">Usuário</h5>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="btns-container-medium">
+      <!-- View Mode Button -->
+      <button
+        *ngIf="!editMode"
+        pButton
+        label="Editar"
+        icon="pi pi-pencil"
+        iconPos="right"
+        class="btn-secondary"
+        style="width: 80px !important"
+        type="button"
+        (click)="edit()"
+      ></button>
+
+      <!-- Edit Mode Buttons -->
+      <button
+        *ngIf="editMode"
+        pButton
+        label="Cancelar"
+        class="btn-secondary"
+        style="width: 80px !important"
+        type="button"
+        (click)="cancel()"
+      ></button>
+
+      <button
+        *ngIf="editMode"
+        pButton
+        label="Salvar"
+        class="btn-primary"
+        style="width: 80px !important"
+        type="button"
+        [disabled]="entityForm.pristine || entityForm.invalid"
+        (click)="save()"
+      ></button>
+    </div>
+  </div>
+
+  <hr />
+
+  <!-- Main Form -->
+  <form [formGroup]="entityForm" enctype="multipart/form-data">
+    <div class="input-container">
+      <div class="fields-container">
+        <!-- CNPJ Field -->
+        <div class="field-container">
+          <label class="label-field" for="document">CNPJ</label>
+          <span class="span-field">
+            {{
+              entityForm.get("document")?.value | mask : "00.000.000/0000-00"
+            }}
+          </span>
+        </div>
+
+        <!-- Name Field -->
+        <div class="field-container">
+          <label class="label-field" for="name">Nome</label>
+
+          <!-- View Mode -->
+          <span *ngIf="!editMode" class="span-field">
+            {{ entityForm.get("name")?.value | slice : 0 : 80 }}
+            {{ entityForm.get("name")?.value?.length > 80 ? "..." : "" }}
+          </span>
+
+          <!-- Edit Mode -->
+          <input
+            *ngIf="editMode"
+            pInputText
+            formControlName="name"
+            type="text"
+            class="input-field"
+            pTooltip="Digite seu nome completo"
+            tooltipPosition="top"
+          />
+
+          <small
+            class="error-msg"
+            *ngIf="entityForm.get('name')?.errors?.['required'] && entityForm.get('name')?.touched"
+          >
+            Nome é obrigatório
+          </small>
+        </div>
+
+        <!-- Phone Field -->
+        <div class="field-container">
+          <label class="label-field" for="cellphone">Celular</label>
+          <span class="span-field">
+            {{ entityForm.get("cellphone")?.value | mask : "(00) 00000-0000" }}
+          </span>
+
+          <button
+            *ngIf="editMode"
+            pButton
+            label="Trocar Celular"
+            class="btn-primary w-120"
+            type="button"
+            (click)="confirmChangeCellphone()"
+            pTooltip="Obs: Para alterar seu celular sem ter acesso ao numero de celular atual, entre em contato com o suporte!"
+            tooltipPosition="top"
+          ></button>
+        </div>
+
+        <!-- Email Field -->
+        <div class="field-container">
+          <label class="label-field" for="email">Email</label>
+          <span class="span-field">
+            {{ entityForm.get("email")?.value | slice : 0 : 80 }}
+            {{ entityForm.get("email")?.value?.length > 80 ? "..." : "" }}
+          </span>
+
+          <button
+            *ngIf="editMode"
+            pButton
+            label="Trocar Email"
+            class="btn-primary w-120"
+            type="button"
+            (click)="confirmChangeEmail()"
+            pTooltip="Alterar endereço de email cadastrado"
+            tooltipPosition="top"
+          ></button>
+        </div>
+
+        <!-- Password Field -->
+        <div class="field-container">
+          <label class="label-field" for="name">Senha</label>
+          <span class="span-field mr-2">******************</span>
+
+          <button
+            *ngIf="editMode"
+            pButton
+            label="Trocar Senha"
+            class="btn-primary w-120"
+            type="button"
+            (click)="confirmChangePassword()"
+          ></button>
+        </div>
+
+        <!-- Account Type Field -->
+        <div class="field-container">
+          <label class="label-field" for="accountType">Plano</label>
+          <span class="span-field">
+            {{ entity.is_premium ? "Premium" : "Básico" }}
+          </span>
+        </div>
+
+        <!-- Change Phone Dialog -->
+        <p-dialog
+          header="Alterar Celular"
+          [(visible)]="dialogState.cellphone"
+          [modal]="true"
+          [style]="{ width: '450px' }"
+          [draggable]="false"
+          [resizable]="false"
+        >
+          <form [formGroup]="changeCellphoneForm" class="p-fluid">
+            <!-- New Phone Input -->
+            <div class="field">
+              <label for="cellphone">Novo Celular</label>
+              <p-inputMask
+                id="cellphone"
+                formControlName="cellphone"
+                mask="(99) 99999-9999"
+                placeholder="Digite seu novo celular"
+                [style]="{ height: '30px' }"
+                required
+              >
+              </p-inputMask>
+
+              <small
+                class="error-msg"
+                *ngIf="changeCellphoneForm.get('cellphone')?.errors?.['required'] && 
+                            changeCellphoneForm.get('cellphone')?.touched"
+              >
+                Digite um celular válido
+              </small>
+            </div>
+
+            <!-- Confirm Phone Input -->
+            <div class="field">
+              <label for="confirmCellphone">Confirmar Novo Celular</label>
+              <p-inputMask
+                id="confirmCellphone"
+                formControlName="confirmCellphone"
+                mask="(99) 99999-9999"
+                placeholder="Confirme seu novo celular"
+                [style]="{ height: '30px' }"
+                required
+                [ngClass]="{
+                  'ng-invalid':
+                    changeCellphoneForm.get('confirmCellphone')?.value !==
+                      changeCellphoneForm.get('cellphone')?.value &&
+                    changeCellphoneForm.get('confirmCellphone')?.touched
+                }"
+              >
+              </p-inputMask>
+
+              <small
+                class="error-msg"
+                *ngIf="
+                  changeCellphoneForm.get('confirmCellphone')?.value !==
+                    changeCellphoneForm.get('cellphone')?.value &&
+                  changeCellphoneForm.get('confirmCellphone')?.touched
+                "
+              >
+                Os celulares não conferem
+              </small>
+            </div>
+
+            <!-- Verification Code -->
+            <div class="field">
+              <label for="code"
+                >Código de Verificação (SMS:
+                {{ entity.cellphone | mask : "(00) 00000-0000" }})</label
+              >
+              <p-inputMask
+                id="code"
+                formControlName="code"
+                mask="*** - ***"
+                placeholder="Digite o código de 6 caracteres"
+                [style]="{ height: '30px' }"
+              >
+              </p-inputMask>
+
+              <div class="mt-2 text-center">
+                <button
+                  pButton
+                  type="button"
+                  label="Reenviar código SMS"
+                  class="btn-secondary w-180"
+                  [disabled]="!canResendSMSCode"
+                  (click)="resendSMSCode()"
+                  pTooltip="Reenviar código de verificação de 6 dígitos para o celular cadastrado"
+                  tooltipPosition="top"
+                ></button>
+                <br />
+
+                <small class="text-muted" *ngIf="!canResendSMSCode">
+                  Enviamos um código de verificação para seu celular. Para
+                  solicitar um novo código, aguarde
+                  {{ remainingTimeSMS }} segundos.
+                </small>
+              </div>
+            </div>
+
+            <!-- Error Message -->
+            <small
+              class="error-msg text-center"
+              *ngIf="requestErrorMsg"
+              style="color: red; display: block"
+            >
+              {{ requestErrorMsg }}
+            </small>
+          </form>
+
+          <!-- Dialog Footer -->
+          <ng-template pTemplate="footer">
+            <button
+              pButton
+              label="Cancelar"
+              icon="pi pi-times"
+              (click)="closeDialog('cellphone', changeCellphoneForm)"
+              class="btn-secondary"
+            ></button>
+
+            <button
+              pButton
+              label="Salvar"
+              icon="pi pi-check"
+              (click)="saveNewCellphone()"
+              [disabled]="
+                !changeCellphoneForm.valid ||
+                changeCellphoneForm.get('confirmCellphone')?.value !==
+                  changeCellphoneForm.get('cellphone')?.value
+              "
+              class="btn-primary"
+            ></button>
+          </ng-template>
+        </p-dialog>
+
+        <!-- Change Email Dialog -->
+        <p-dialog
+          header="Alterar Email"
+          [(visible)]="dialogState.email"
+          [modal]="true"
+          [style]="{ width: '450px' }"
+          [draggable]="false"
+          [resizable]="false"
+        >
+          <form [formGroup]="changeEmailForm" class="p-fluid">
+            <!-- New Email Input -->
+            <div class="field">
+              <label for="email">Novo Email</label>
+              <input
+                pInputText
+                id="email"
+                type="email"
+                formControlName="email"
+                placeholder="Digite seu novo email"
+                [style]="{ height: '30px' }"
+                required
+              />
+
+              <small
+                class="error-msg"
+                *ngIf="changeEmailForm.get('email')?.errors?.['email'] && 
+                            changeEmailForm.get('email')?.touched"
+              >
+                Digite um email válido
+              </small>
+            </div>
+
+            <!-- Confirm Email Input -->
+            <div class="field">
+              <label for="confirmEmail">Confirmar Novo Email</label>
+              <input
+                pInputText
+                id="confirmEmail"
+                type="email"
+                formControlName="confirmEmail"
+                placeholder="Confirme seu novo email"
+                [style]="{ height: '30px' }"
+                required
+                [ngClass]="{
+                  'ng-invalid':
+                    changeEmailForm.get('confirmEmail')?.value !==
+                      changeEmailForm.get('email')?.value &&
+                    changeEmailForm.get('confirmEmail')?.touched
+                }"
+              />
+
+              <small
+                class="error-msg"
+                *ngIf="
+                  changeEmailForm.get('confirmEmail')?.value !==
+                    changeEmailForm.get('email')?.value &&
+                  changeEmailForm.get('confirmEmail')?.touched
+                "
+              >
+                Os emails não conferem
+              </small>
+            </div>
+
+            <!-- Verification Code -->
+            <div class="field">
+              <label for="code"
+                >Código de Verificação (SMS:
+                {{ entity.cellphone | mask : "(00) 00000-0000" }})</label
+              >
+              <p-inputMask
+                id="code"
+                formControlName="code"
+                mask="*** - ***"
+                placeholder="Digite o código de 6 caracteres"
+                [style]="{ height: '30px' }"
+              >
+              </p-inputMask>
+
+              <div class="mt-2 text-center">
+                <button
+                  pButton
+                  type="button"
+                  label="Reenviar código SMS"
+                  class="btn-secondary w-180"
+                  [disabled]="!canResendSMSCode"
+                  (click)="resendSMSCode()"
+                  pTooltip="Reenviar código de verificação de 6 dígitos para o celular cadastrado"
+                  tooltipPosition="top"
+                ></button>
+                <br />
+                <small class="text-muted" *ngIf="!canResendEmailCode">
+                  Enviamos um código de verificação para seu celular. Para
+                  solicitar um novo código, aguarde
+                  {{ remainingTimeEmail }} segundos.
+                </small>
+              </div>
+            </div>
+
+            <!-- Error Message -->
+            <small
+              class="error-msg text-center"
+              *ngIf="requestErrorMsg"
+              style="color: red; display: block"
+            >
+              {{ requestErrorMsg }}
+            </small>
+          </form>
+
+          <!-- Dialog Footer -->
+          <ng-template pTemplate="footer">
+            <button
+              pButton
+              label="Cancelar"
+              icon="pi pi-times"
+              (click)="closeDialog('email', changeEmailForm)"
+              class="btn-secondary"
+            ></button>
+
+            <button
+              pButton
+              label="Salvar"
+              icon="pi pi-check"
+              (click)="saveNewEmail()"
+              [disabled]="
+                !changeEmailForm.valid ||
+                changeEmailForm.get('confirmEmail')?.value !==
+                  changeEmailForm.get('email')?.value
+              "
+              class="btn-primary"
+            ></button>
+          </ng-template>
+        </p-dialog>
+
+        <!-- Change Password Dialog -->
+        <p-dialog
+          header="Alterar Senha"
+          [(visible)]="dialogState.password"
+          [modal]="true"
+          [style]="{ width: '450px' }"
+          [draggable]="false"
+          [resizable]="false"
+        >
+          <form [formGroup]="changePasswordForm" class="p-fluid">
+            <!-- New Password Input -->
+            <div class="field">
+              <label for="password">Nova Senha</label>
+              <input
+                pInputText
+                id="password"
+                type="password"
+                formControlName="password"
+                placeholder="Digite sua nova senha"
+                [style]="{ height: '30px' }"
+                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+                required
+                (input)="validatePassword($event)"
+              />
+
+              <small class="error-msg" *ngIf="passwordErrorMsg">
+                {{ passwordErrorMsg }}
+              </small>
+            </div>
+
+            <!-- Confirm Password Input -->
+            <div class="field">
+              <label for="confirm">Confirmar Nova Senha</label>
+              <input
+                pInputText
+                id="confirm"
+                type="password"
+                formControlName="confirm"
+                placeholder="Confirme sua nova senha"
+                [style]="{ height: '30px' }"
+                required
+              />
+
+              <small
+                class="error-msg"
+                *ngIf="
+                  changePasswordForm.get('password')?.value !==
+                  changePasswordForm.get('confirm')?.value
+                "
+              >
+                As senhas não coincidem
+              </small>
+            </div>
+
+            <!-- Verification Code -->
+            <div class="field">
+              <label for="code"
+                >Código de Verificação (SMS:
+                {{ entity.cellphone | mask : "(00) 00000-0000" }})</label
+              >
+              <p-inputMask
+                id="code"
+                formControlName="code"
+                mask="*** - ***"
+                placeholder="Digite o código de 6 caracteres"
+                [style]="{ height: '30px' }"
+              >
+              </p-inputMask>
+
+              <div class="mt-2 text-center">
+                <button
+                  pButton
+                  type="button"
+                  label="Reenviar código SMS"
+                  class="btn-secondary w-180"
+                  [disabled]="!canResendSMSCode"
+                  (click)="resendSMSCode()"
+                ></button>
+                <br />
+                <small class="text-muted" *ngIf="!canResendSMSCode">
+                  Enviamos um código de verificação para seu celular. Para
+                  solicitar um novo código, aguarde
+                  {{ remainingTimeSMS }} segundos.
+                </small>
+              </div>
+            </div>
+
+            <!-- Error Message -->
+            <small
+              class="error-msg text-center"
+              *ngIf="requestErrorMsg"
+              style="color: red; display: block; margin-top: 10px"
+            >
+              {{ requestErrorMsg }}
+            </small>
+          </form>
+
+          <!-- Dialog Footer -->
+          <ng-template pTemplate="footer">
+            <button
+              pButton
+              label="Cancelar"
+              icon="pi pi-times"
+              (click)="closeDialog('password', changePasswordForm)"
+              class="btn-secondary"
+            ></button>
+
+            <button
+              pButton
+              label="Salvar"
+              icon="pi pi-check"
+              (click)="savePassword()"
+              [disabled]="
+                !changePasswordForm.valid ||
+                changePasswordForm.get('password')?.value !==
+                  changePasswordForm.get('confirm')?.value
+              "
+              class="btn-primary"
+            ></button>
+          </ng-template>
+        </p-dialog>
+      </div>
+    </div>
+  </form>
+</div>

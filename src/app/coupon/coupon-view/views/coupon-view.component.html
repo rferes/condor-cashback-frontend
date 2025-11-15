@@ -1,0 +1,177 @@
+<p-toast class="custom-toast"></p-toast>
+<p-confirmDialog class="custom-dialog"></p-confirmDialog>
+<div class="container">
+  <h3>Cupom</h3>
+  <div class="topic-container">
+    <div class="topic-title">
+      <h5 pTooltip="ID: {{ entity.id }} ">Cupom de Desconto</h5>
+    </div>
+    <div class="btns-container-small">
+      <button
+        *ngIf="refound_allow"
+        pButton
+        type="button"
+        label="Estorno"
+        class="p-button-danger"
+        style="float: right"
+        (click)="refundCoupon()"
+      ></button>
+    </div>
+  </div>
+  <hr />
+
+  <!-- Inputs -->
+  <div class="view-container col-12">
+    <!-- Status and Basic Info -->
+    <div #STEPRESULTS>
+      <h5 class="mt-12">Dados do Cupom</h5>
+      <div class="ml-10 col-12 row">
+        <div class="col-3">
+          <label class="label-field bold">Status</label>
+          <br />
+          <div class="centralize-campaign-tag w-60">
+            <div [ngSwitch]="entity.status">
+              <p-tag
+                *ngSwitchCase="'PROVISIONED'"
+                class="provisioned-campaign"
+                value="Provisionado"
+                pTooltip="Cupom Provisionado"
+              ></p-tag>
+              <p-tag
+                *ngSwitchCase="'GRANTED'"
+                class="granted-campaign"
+                value="Concedido"
+                pTooltip="Cupom Concedido"
+              ></p-tag>
+              <p-tag
+                *ngSwitchCase="'PROCESSING_TRANSACTION'"
+                class="processing-campaign"
+                value="Processando"
+                pTooltip="Transação em Processamento"
+              ></p-tag>
+              <p-tag
+                *ngSwitchCase="'USED'"
+                class="active-campaign"
+                value="Usado"
+                pTooltip="Cupom Utilizado"
+              ></p-tag>
+              <p-tag
+                *ngSwitchCase="'REFUNDED'"
+                class="sketch-campaign"
+                value="Estornado"
+                pTooltip="Cupom Estornado"
+              ></p-tag>
+              <p-tag
+                *ngSwitchCase="'EXPIRED'"
+                class="reproved-campaign"
+                value="Expirado"
+                pTooltip="Cupom Expirado"
+              ></p-tag>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-3">
+          <label class="label-field bold">Data de Uso</label>
+          <br />
+          <span>
+            {{
+              entity.used_date
+                ? (entity.used_date | date : "dd/MM/yyyy HH:mm:ss")
+                : "Não utilizado"
+            }}
+          </span>
+        </div>
+
+        <div class="col-3">
+          <label class="label-field bold">Data de Expiração</label>
+          <br />
+          <span>
+            {{
+              entity.expiration_date
+                ? (entity.expiration_date | date : "dd/MM/yyyy HH:mm:ss")
+                : "-------"
+            }}
+          </span>
+        </div>
+
+        <div class="col-3">
+          <label class="label-field bold">Valor do Cupom</label>
+          <br />
+          <span>
+            {{
+              entity.coupon_amount
+                ? (entity.coupon_amount | currency : "BRL")
+                : "-------"
+            }}
+          </span>
+        </div>
+        <hr />
+      </div>
+    </div>
+
+    <!-- Consumer Info -->
+    <div #STEPCONSUMER *ngIf="entity.consumer">
+      <h5 class="mt-12">Consumidor</h5>
+      <div class="ml-10 col-12 row">
+        <!-- <div class="col-4">
+          <label class="label-field bold">Nome</label>
+          <br />
+          <span>{{ entity.consumer.document }}</span>
+        </div> -->
+        <div class="col-4">
+          <label class="label-field bold">Documento</label>
+          <br />
+          <span>{{ entity.consumer.document }}</span>
+        </div>
+        <div class="col-4">
+          <label class="label-field bold">Red Credits</label>
+          <br />
+          <span>
+            {{
+              entity.red_credit_amount ? entity.red_credit_amount : "-------"
+            }}
+          </span>
+        </div>
+        <hr />
+      </div>
+    </div>
+
+    <!-- Merchant Info -->
+    <!-- <div #STEPMERCHANT *ngIf="entity.merchant">
+      <h5 class="mt-12">Comerciante</h5>
+      <div class="ml-10 col-12 row">
+        <div class="col-4">
+          <label class="label-field bold">Nome</label>
+          <br />
+          <span>{{ entity.merchant.name }}</span>
+        </div>
+        <div class="col-4">
+          <label class="label-field bold">Documento</label>
+          <br />
+          <span>{{ entity.merchant.document }}</span>
+        </div>
+        <div class="col-4">
+          <label class="label-field bold">URL</label>
+          <br />
+          <span>{{ entity.merchant.url }}</span>
+        </div>
+        <hr />
+      </div>
+    </div> -->
+
+    <div class="footer">
+      <button
+        pButton
+        label=""
+        icon="pi pi-arrow-left"
+        class="w-110 btn-secondary"
+        type="button"
+        (click)="back()"
+        pTooltip="Voltar"
+      ></button>
+    </div>
+    <br />
+    <br />
+  </div>
+</div>

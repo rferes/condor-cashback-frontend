@@ -1,0 +1,486 @@
+<p-toast class="custom-toast"></p-toast>
+<p-confirmDialog class="custom-dialog"></p-confirmDialog>
+<div class="container">
+  <h3 class="">Campanhas</h3>
+  <div class="topic-container">
+    <div class="topic-title">
+      <h5>Lista de Campanhas</h5>
+    </div>
+    <div class="btns-container-small">
+      <!-- Read Mode -->
+      <button
+        *ngIf="user_mode === 'merchant' || merchantPartnerships.length > 0"
+        pButton
+        label="Nova"
+        icon="pi pi-plus"
+        class="w-110 btn-primary"
+        type="button"
+        [routerLink]="['/campaign-edit', 'new']"
+        pTooltip="Criar uma campanha nova"
+        [disabled]="!balance"
+      ></button>
+    </div>
+  </div>
+  <hr />
+  <!-- Inputs -->
+  <div class="input-container">
+    <!-- Main Inputs -->
+    <div class="fields-container">
+      <div class="table-list">
+        <p-progressSpinner
+          *ngIf="isLoading"
+          styleClass="w-4rem h-4rem"
+          strokeWidth="8"
+          fill="var(--surface-ground)"
+          animationDuration="0.8s"
+          class="centralize"
+        />
+        <p-table
+          *ngIf="entitys.length > 0"
+          [value]="itemsFiltrados"
+          [globalFilterFields]="[
+            'name',
+            'start_date',
+            'end_date',
+            'counter_times'
+          ]"
+          [sortField]="'name'"
+          [sortOrder]="1"
+          [paginator]="true"
+          [rows]="25"
+        >
+          <ng-template pTemplate="caption">
+            <div class="input-icon">
+              <i class="pi pi-search ml-10"></i>
+              <input
+                pInputText
+                id="globalFilter"
+                name="globalFilter"
+                type="text"
+                [(ngModel)]="globalFilter"
+                (input)="applyFilter()"
+                placeholder="pesquisar campanha"
+              />
+            </div>
+            <button
+              pButton
+              type="button"
+              pTooltip="Limpar o filtro"
+              tooltipPosition="top"
+              tooltipStyleClass="my-tooltip"
+              label=""
+              icon="pi pi-filter-slash"
+              (click)="clearGlobalFilter()"
+            ></button>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th pSortableColumn="name">
+                Nome <p-sortIcon field="name"></p-sortIcon>
+              </th>
+              <th pSortableColumn="campaign_mode">
+                Modo <p-sortIcon field="campaign_mode"></p-sortIcon>
+              </th>
+              <th pSortableColumn="start_date">
+                Início <p-sortIcon field="start_date"></p-sortIcon>
+              </th>
+              <th pSortableColumn="end_date">
+                Fim <p-sortIcon field="end_date"></p-sortIcon>
+              </th>
+              <th pSortableColumn="counter_times">
+                Notas <p-sortIcon field="counter_times"></p-sortIcon>
+              </th>
+              <th
+                *ngIf="user_mode == 'merchant'"
+                pSortableColumn="total_amount"
+              >
+                Vendas <p-sortIcon field="total_amount"></p-sortIcon>
+              </th>
+              <th *ngIf="user_mode == 'influencer'">Participação</th>
+              <th pSortableColumn="status">
+                Status <p-sortIcon field="status"></p-sortIcon>
+              </th>
+              <div class="centralize w-80"><th>Ação</th></div>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-entitys let-i="rowIndex">
+            <tr>
+              <td>
+                <i
+                  *ngIf="entitys.dissemination_mode === 'MEMBER'"
+                  class="pi pi-users"
+                  pTooltip="Divulgação por Membros"
+                  style="margin-right: 1px"
+                ></i>
+                <i
+                  *ngIf="entitys.dissemination_mode === 'INFLUENCER'"
+                  class="pi pi-user"
+                  pTooltip="Divulgação por Influenciadores"
+                  style="margin-right: 1px"
+                ></i>
+                {{
+                  entitys.name.length > 30
+                    ? (entitys.name | slice : 0 : 30) + "..."
+                    : entitys.name
+                }}
+                <span
+                  *ngIf="hasCampaignConflict(entitys.id.toString())"
+                  class="conflict-indicator"
+                  pTooltip="Campanha com conflitos"
+                >
+                  &nbsp;⚠️</span
+                >
+              </td>
+
+              <td>
+                {{
+                  entitys.campaign_mode === "TICKET"
+                    ? "Ticket"
+                    : entitys.campaign_mode === "PRODUCT"
+                    ? "Produto"
+                    : ""
+                }}
+              </td>
+
+              <td>
+                {{ entitys.start_date | date : "dd/MM/yyyy" }}
+              </td>
+
+              <td>
+                {{ entitys.end_date | date : "dd/MM/yyyy" }}
+              </td>
+
+              <td>{{ entitys.counter_times }}</td>
+
+              <td *ngIf="user_mode == 'merchant'">
+                {{ entitys.total_amount | currency : "BRL" }}
+              </td>
+
+              <td *ngIf="user_mode == 'influencer'">
+                <div class="centralize-campaign-tag w-60">
+                  <p-tag
+                    *ngIf="getStatus(entitys.id) == 'SKETCH'"
+                    class="sketch-campaign"
+                    value="Rascunho"
+                    pTooltip="Participação em Rascunho"
+                  ></p-tag>
+                  <p-tag
+                    *ngIf="getStatus(entitys.id) == 'PROPOSAL'"
+                    class="proposal-campaign"
+                    value="Proposta"
+                    pTooltip="Participação Pendente"
+                  ></p-tag>
+                  <p-tag
+                    *ngIf="getStatus(entitys.id) == 'PROPOSAL_FINISHED'"
+                    class="proposal-finished-campaign"
+                    value="Prop. Encerrada"
+                    pTooltip="Proposta Encerrada"
+                  ></p-tag>
+                  <p-tag
+                    *ngIf="getStatus(entitys.id) == 'REPROVED'"
+                    class="sketch-campaign"
+                    value="Reprovada"
+                    pTooltip="Participação Reprovada"
+                  ></p-tag>
+                  <p-tag
+                    *ngIf="getStatus(entitys.id) == 'APPROVED'"
+                    class="approved-campaign"
+                    value="Aprovada"
+                    pTooltip="Participação Aprovada"
+                  ></p-tag>
+                  <p-tag
+                    *ngIf="getStatus(entitys.id) == 'ACTIVE'"
+                    class="active-campaign"
+                    value="Ativa"
+                    pTooltip="Participação Ativa"
+                  ></p-tag>
+                  <p-tag
+                    *ngIf="getStatus(entitys.id) == 'PAUSE'"
+                    class="paused-manual-campaign"
+                    value="Pausada"
+                    pTooltip="Participação Pausada"
+                  ></p-tag>
+                  <p-tag
+                    *ngIf="
+                      getStatus(entitys.id) == 'FINISHED_MANUAL_INFLUENCER'
+                    "
+                    class="paused-manual-campaign"
+                    value="Encerrada (I)"
+                    pTooltip="Participação Encerrada Manualmente"
+                  ></p-tag>
+                  <p-tag
+                    *ngIf="getStatus(entitys.id) == 'FINISHED'"
+                    class="finished-campaign"
+                    value="Encerrada"
+                    pTooltip="Participação Encerrada"
+                  ></p-tag>
+                  <p-tag
+                    *ngIf="getStatus(entitys.id) == 'FINISHED_MANUAL_MERCHANT'"
+                    class="finished-manual-campaign"
+                    value="Encerrada (M)"
+                    pTooltip="Participação Encerrada Manualmente"
+                  ></p-tag>
+                </div>
+              </td>
+
+              <td>
+                <!-- (('SKETCH', 'Rascunho'), ('PROPOSAL', 'Proposta'), ('REPROVED', 'Reprovado'), ('APPROVED_NO_INFLUENCER', 'Aprovada SI'), ('APPROVED', 'Aprovado'), ('ACTIVE', 'Ativa'), ('PAUSE_MANUAL', 'Pausada'), ('PAUSE_NO_INFLUENCER', 'Pausada(sem influencer)'), ('FINISHED', 'Encerrada'), ('FINISHED_MANUAL', 'Encerrada Manualmente')) -->
+                <div class="centralize-campaign-tag w-60">
+                  <div class="d-flex align-items-center">
+                    <i
+                      *ngIf="!entitys.linked_credit"
+                      class="pi pi-dollar"
+                      pTooltip="Crédito Livre"
+                      style="margin-right: 1px"
+                    ></i>
+                    <i
+                      *ngIf="entitys.linked_credit"
+                      class="pi pi-wallet"
+                      pTooltip="Crédito Vinculado"
+                      style="margin-right: 1px"
+                    ></i>
+
+                    <div [ngSwitch]="entitys.status">
+                      <p-tag
+                        *ngSwitchCase="'SKETCH'"
+                        class="sketch-campaign"
+                        value="Rascunho"
+                        pTooltip="Campanha em Rascunho"
+                      ></p-tag>
+                      <p-tag
+                        *ngSwitchCase="'PROPOSAL'"
+                        class="proposal-campaign"
+                        value="Proposta"
+                        pTooltip="Campanha Pendente"
+                      ></p-tag>
+                      <p-tag
+                        *ngSwitchCase="'REPROVED'"
+                        class="reproved-campaign"
+                        value="Reprovada"
+                        pTooltip="Campanha Reprovada"
+                      ></p-tag>
+                      <p-tag
+                        *ngSwitchCase="'APPROVED_NO_INFLUENCER'"
+                        class="approved-no-influencer-campaign"
+                        value="Aprovada SI"
+                        pTooltip="Campanha Aprovada sem Influenciador"
+                      ></p-tag>
+                      <p-tag
+                        *ngSwitchCase="'APPROVED'"
+                        class="approved-campaign"
+                        value="Aprovada"
+                        pTooltip="Campanha Aprovada"
+                      ></p-tag>
+                      <p-tag
+                        *ngSwitchCase="'ACTIVE'"
+                        class="active-campaign"
+                        value="Ativa"
+                        pTooltip="Campanha Ativa"
+                      ></p-tag>
+                      <p-tag
+                        *ngSwitchCase="'PAUSE_MANUAL'"
+                        class="paused-manual-campaign"
+                        value="Pausada"
+                        pTooltip="Campanha Pausada"
+                      ></p-tag>
+                      <p-tag
+                        *ngSwitchCase="'PAUSE_SYSTEM'"
+                        class="paused-manual-campaign"
+                        value="Pausada"
+                        pTooltip="Campanha Pausada"
+                      ></p-tag>
+                      <p-tag
+                        *ngSwitchCase="'PAUSE_NO_INFLUENCER'"
+                        class="paused-no-influencer-campaign"
+                        value="Pausada (SI)"
+                        pTooltip="Campanha Pausada sem Influenciador"
+                      ></p-tag>
+                      <p-tag
+                        *ngSwitchCase="'FINISHED'"
+                        class="finished-campaign"
+                        value="Encerrada"
+                        pTooltip="Campanha Encerrada"
+                      ></p-tag>
+                      <p-tag
+                        *ngSwitchCase="'FINISHED_MANUAL'"
+                        class="finished-manual-campaign"
+                        value="Encerrada (M)"
+                        pTooltip="Campanha Encerrada Manualmente"
+                      ></p-tag>
+                    </div>
+                  </div>
+                </div>
+              </td>
+
+              <td>
+                <div class="centralize w-80">
+                  <button
+                    *ngIf="
+                      entitys.status != 'SKETCH' &&
+                      entitys.status != 'PROPOSAL' &&
+                      getStatus(entitys.id) == 'PROPOSAL' &&
+                      user_mode == 'influencer'
+                    "
+                    pButton
+                    pRipple
+                    pTooltip="Responder Proposta"
+                    tooltipPosition="top"
+                    tooltipStyleClass="my-tooltip"
+                    type="button"
+                    icon="pi pi-pencil"
+                    class="p-button-rounded p-button-text p-button-success p-button-sm"
+                    [routerLink]="['/campaign-view', entitys.id]"
+                    [ngStyle]="{ color: 'red' }"
+                  ></button>
+                  <button
+                    *ngIf="
+                      entitys.status != 'SKETCH' &&
+                      (user_mode == 'merchant' || user_mode == 'influencer')
+                    "
+                    pButton
+                    pRipple
+                    pTooltip="Ver campanha"
+                    tooltipPosition="top"
+                    tooltipStyleClass="my-tooltip"
+                    type="button"
+                    icon="pi pi-eye"
+                    class="p-button-rounded p-button-text p-button-success p-button-sm"
+                    [routerLink]="['/campaign-view', entitys.id]"
+                  ></button>
+                  <button
+                    *ngIf="
+                      entitys.status === 'SKETCH' ||
+                      (entitys.status === 'PROPOSAL' && user_mode == 'merchant')
+                    "
+                    pButton
+                    pRipple
+                    pTooltip="Editar campanha"
+                    tooltipPosition="top"
+                    tooltipStyleClass="my-tooltip"
+                    type="button"
+                    icon="pi pi-pencil"
+                    class="p-button-rounded p-button-text p-button-success p-button-sm"
+                    [routerLink]="['/campaign-edit', entitys.id]"
+                    [ngStyle]="{
+                      color:
+                        entitys.status === 'PROPOSAL' &&
+                        user_mode === 'merchant'
+                          ? 'red'
+                          : ''
+                    }"
+                  ></button>
+                  <button
+                    *ngIf="
+                      entitys.status === 'SKETCH' ||
+                      (user_mode == 'merchant' && entitys.status === 'PROPOSAL')
+                    "
+                    pButton
+                    pRipple
+                    pTooltip="Deletar campanha"
+                    tooltipPosition="top"
+                    tooltipStyleClass="my-tooltip"
+                    type="button"
+                    icon="pi pi-trash"
+                    class="p-button-rounded p-button-text p-button-danger p-button-sm"
+                    (click)="deleteComponent(i, $event)"
+                  ></button>
+                  <button
+                    *ngIf="
+                      (entitys.status === 'PAUSE_MANUAL' ||
+                        entitys.status === 'PAUSE_SYSTEM') &&
+                      user_mode == 'merchant'
+                    "
+                    pButton
+                    pRipple
+                    pTooltip="Reativar Campanha"
+                    tooltipPosition="top"
+                    tooltipStyleClass="my-tooltip"
+                    type="button"
+                    icon="pi pi-play"
+                    class="p-button-rounded p-button-text p-button-danger p-button-sm"
+                    (click)="reactivateCampaign(i, $event)"
+                  ></button>
+                  <button
+                    *ngIf="
+                      (entitys.status === 'ACTIVE' ||
+                        entitys.status === 'PAUSE_NO_INFLUENCER') &&
+                      user_mode == 'merchant'
+                    "
+                    pButton
+                    pRipple
+                    pTooltip="Pausar Campanha"
+                    tooltipPosition="top"
+                    tooltipStyleClass="my-tooltip"
+                    type="button"
+                    icon="pi pi-pause"
+                    class="p-button-rounded p-button-text p-button-danger p-button-sm"
+                    (click)="pauseCampaign(i, $event)"
+                  ></button>
+                  <button
+                    *ngIf="
+                      entitys.status != 'SKETCH' &&
+                      entitys.status != 'PROPOSAL' &&
+                      entitys.status != 'FINISHED' &&
+                      entitys.status != 'FINISHED_MANUAL' &&
+                      user_mode == 'merchant'
+                    "
+                    pButton
+                    pRipple
+                    pTooltip="Encerrar Campanha"
+                    tooltipPosition="top"
+                    tooltipStyleClass="my-tooltip"
+                    type="button"
+                    icon="pi pi-stop"
+                    class="p-button-rounded p-button-text p-button-danger p-button-sm"
+                    (click)="stopCampaign(i, $event)"
+                  ></button>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+      <!-- Se tabela estiver vazia -->
+      <div *ngIf="entitys.length === 0 && balance">
+        <div>
+          <div>
+            <button
+              pButton
+              label="Nova Campanha"
+              icon="pi pi-plus"
+              class="btn-primary"
+              type="button"
+              [routerLink]="['/campaign-edit', 'new']"
+              [disabled]="
+                user_mode !== 'merchant' && merchantPartnerships.length === 0
+              "
+              pTooltip="Criar uma campanha nova"
+            ></button>
+          </div>
+          <span
+            >Atenção, você ainda não possui nenhuma campanha, crie uma
+            agora!</span
+          >
+        </div>
+      </div>
+      <div *ngIf="!balance">
+        <div>
+          <div>
+            <button
+              pButton
+              label="Configurar Recarga Créditos"
+              icon="pi pi-plus"
+              class="btn-primary"
+              type="button"
+              [routerLink]="['/merchant/auto-reload-campaign-credit']"
+            ></button>
+          </div>
+          <span
+            >Atenção, você ainda não possui saldo na sua carteira, ative a
+            recarga automatica para poder criar suas campanhas</span
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

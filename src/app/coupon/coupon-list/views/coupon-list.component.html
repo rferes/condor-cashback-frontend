@@ -1,0 +1,175 @@
+<p-toast class="custom-toast"></p-toast>
+<p-confirmDialog class="custom-dialog"></p-confirmDialog>
+<div class="container">
+  <h3 class="">Cupons</h3>
+  <div class="topic-container">
+    <div class="topic-title">
+      <h5>Lista de Cupons</h5>
+    </div>
+  </div>
+  <hr />
+
+  <!-- Inputs -->
+  <div class="input-container">
+    <!-- Main Inputs -->
+    <div class="fields-container">
+      <div class="table-list">
+        <p-progressSpinner
+          *ngIf="isLoading"
+          styleClass="w-4rem h-4rem"
+          strokeWidth="8"
+          fill="var(--surface-ground)"
+          animationDuration="0.8s"
+          class="centralize"
+        />
+        <p-table
+          *ngIf="entitys.length > 0"
+          [value]="itemsFiltrados"
+          [globalFilterFields]="[
+            'used_date',
+            'expiration_date',
+            'consumer.name',
+            'coupon_amount',
+            'red_credit_amount',
+            'status'
+          ]"
+          [sortField]="'created_date'"
+          [sortOrder]="-1"
+          [paginator]="true"
+          [rows]="25"
+        >
+          <ng-template pTemplate="caption">
+            <div class="input-icon">
+              <i class="pi pi-search ml-10"></i>
+              <input
+                pInputText
+                id="globalFilter"
+                name="globalFilter"
+                type="text"
+                [(ngModel)]="globalFilter"
+                (input)="applyFilter()"
+                placeholder="pesquisar cupom"
+                pTooltip="Pesquisar cupons"
+              />
+            </div>
+            <button
+              pButton
+              type="button"
+              pTooltip="Limpar o filtro"
+              tooltipPosition="top"
+              tooltipStyleClass="my-tooltip"
+              label=""
+              icon="pi pi-filter-slash"
+              (click)="clearGlobalFilter()"
+            ></button>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th pSortableColumn="used_date">
+                Utilizado <p-sortIcon field="used_date"></p-sortIcon>
+              </th>
+              <th pSortableColumn="expiration_date">
+                Expira <p-sortIcon field="expiration_date"></p-sortIcon>
+              </th>
+              <th pSortableColumn="consumer.name">
+                Consumidor <p-sortIcon field="consumer.name"></p-sortIcon>
+              </th>
+              <th pSortableColumn="coupon_amount">
+                Valor <p-sortIcon field="coupon_amount"></p-sortIcon>
+              </th>
+              <th pSortableColumn="red_credit_amount">
+                Crédito <p-sortIcon field="red_credit_amount"></p-sortIcon>
+              </th>
+              <th pSortableColumn="status">
+                Status <p-sortIcon field="status"></p-sortIcon>
+              </th>
+              <th>Ação</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-entitys let-i="rowIndex">
+            <tr>
+              <td>
+                {{ entitys.used_date | date : "dd/MM/yyyy HH:mm:ss" }}
+              </td>
+              <td>
+                {{ entitys.expiration_date | date : "dd/MM/yyyy" }}
+              </td>
+              <td>
+                {{ entitys.consumer.document.slice(0, 3) }}.{{
+                  entitys.consumer.document.slice(3, 6)
+                }}.{{ entitys.consumer.document.slice(6, 9) }}-{{
+                  entitys.consumer.document.slice(9, 11)
+                }}
+              </td>
+              <td>R$ {{ entitys.coupon_amount | number : "1.2-2" }}</td>
+              <td>R$ {{ entitys.red_credit_amount | number : "1.2-2" }}</td>
+              <td>
+                <div class="centralize-campaign-tag w-60">
+                  <div [ngSwitch]="entitys.status">
+                    <p-tag
+                      *ngSwitchCase="'PROVISIONED'"
+                      class="provisioned-campaign"
+                      value="Provisionado"
+                      pTooltip="Cupom Provisionado"
+                    ></p-tag>
+                    <p-tag
+                      *ngSwitchCase="'GRANTED'"
+                      class="granted-campaign"
+                      value="Concedido"
+                      pTooltip="Cupom Concedido"
+                    ></p-tag>
+                    <p-tag
+                      *ngSwitchCase="'PROCESSING_TRANSACTION'"
+                      class="processing-campaign"
+                      value="Processando"
+                      pTooltip="Transação em Processamento"
+                    ></p-tag>
+                    <p-tag
+                      *ngSwitchCase="'USED'"
+                      class="active-campaign"
+                      value="Usado"
+                      pTooltip="Cupom Utilizado"
+                    ></p-tag>
+                    <p-tag
+                      *ngSwitchCase="'REFUNDED'"
+                      class="sketch-campaign"
+                      value="Estornado"
+                      pTooltip="Cupom Estornado"
+                    ></p-tag>
+                    <p-tag
+                      *ngSwitchCase="'EXPIRED'"
+                      class="reproved-campaign"
+                      value="Expirado"
+                      pTooltip="Cupom Expirado"
+                    ></p-tag>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="centralize w-80">
+                  <button
+                    pButton
+                    pRipple
+                    pTooltip="Ver Transação"
+                    tooltipPosition="top"
+                    tooltipStyleClass="my-tooltip"
+                    type="button"
+                    icon="pi pi-eye"
+                    class="p-button-rounded p-button-text p-button-success p-button-sm"
+                    [routerLink]="['/reports/coupon-view', entitys.id]"
+                  ></button>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+      <!-- Se tabela estiver vazia -->
+      <div *ngIf="entitys.length === 0">
+        <div>
+          <span>Atenção, você ainda não possui nenhum cupom!</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

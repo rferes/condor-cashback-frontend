@@ -1,0 +1,115 @@
+//width px
+@for $i from 1 through 1000 {
+  .w-#{$i} {
+    width: #{$i}px !important;
+  }
+}
+//width %
+@for $i from 1 through 100 {
+  .wp-#{$i} {
+    width: #{$i * 1%} !important;
+  }
+}
+
+//height px
+@for $i from 1 through 1000 {
+  .he-#{$i} {
+    height: #{$i}px !important;
+  }
+}
+//height %
+@for $i from 1 through 100 {
+  .hp-#{$i} {
+    height: #{$i * 1%} !important;
+  }
+}
+
+//height rem
+@for $i from 1 through 100 {
+  .rem-#{$i} {
+    height: #{$i * 1rem} !important;
+  }
+}
+
+//font
+@for $i from 1 through 50 {
+  .f-#{$i} {
+    font-size: #{$i}px !important;
+  }
+}
+
+//font
+@for $i from 1 through 1000 {
+  .fw-#{$i} {
+    font-weight: #{$i} !important;
+  }
+}
+
+//column-numbers
+@for $i from 1 through 50 {
+  .cc-#{$i} {
+    display: grid;
+    grid-template-columns: repeat($i, 1fr);
+  }
+}
+
+//column-numbers
+@for $i from 1 through 50 {
+  .lh-#{$i} {
+    line-height: #{$i}px !important;
+  }
+}
+
+//letter spacing
+@for $i from 1 through 50 {
+  .lp-#{$i} {
+    letter-spacing: #{$i}px !important;
+  }
+}
+
+//letter spacing
+@for $i from 1 through 50 {
+  .br-#{$i} {
+    border-radius: #{$i}px !important;
+  }
+}
+
+//gaps
+@for $i from 1 through 50 {
+  .gap-#{$i} {
+    gap: #{$i}px !important;
+  }
+}
+
+//margin
+@for $i from 0 through 50 {
+  .mt-#{$i} {
+    margin-top: #{$i}px !important;
+  }
+  .mr-#{$i} {
+    margin-right: #{$i}px !important;
+  }
+  .mb-#{$i} {
+    margin-bottom: #{$i}px !important;
+  }
+  .ml-#{$i} {
+    margin-left: #{$i}px !important;
+  }
+}
+
+//padding
+//padding
+@for $i from 0 through 50 {
+  .pt-#{$i} {
+    padding-top: #{$i}px !important;
+  }
+  .pr-#{$i} {
+    padding-right: #{$i}px !important;
+  }
+  .pb-#{$i} {
+    padding-bottom: #{$i}px !important;
+  }
+  .pl-#{$i} {
+    padding-left: #{$i}px !important;
+  }
+}

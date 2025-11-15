@@ -1,0 +1,99 @@
+$color: #37b366;
+
+$primary: #dc0000;
+$secondary: #ffffff;
+$success: #16b041;
+$light: #e8e8e8;
+$info: #d9e631;
+$dark: #000000;
+$danger: #de0101;
+$help: purple;
+
+$ligth-red: #d85858;
+$green: #5eb948;
+$dark-green: #2d6a4f;
+$blue: #0500ff;
+$red: #ff0000;
+$yellow: #ffe500;
+$orange: #ed9c29;
+$black: #000;
+$hard-gray: #30313c;
+$dark-gray: #404040;
+$medium-gray: #7b7b7b;
+$light-gray: #d9d9d99c;
+$lighter-gray: #f3f3f3;
+$white-ice: #f8f8f8;
+$white: #fff;
+
+$text-secondary: #564e71;
+$text-third: #007761;
+
+$tab-even: #dee9e8;
+
+$theme-colors: (
+  "primary": $primary,
+  "secondary": $secondary,
+  "success": $success,
+  "info": $info,
+  "warning": $yellow,
+  "danger": $danger,
+  "light": $light,
+  "dark": $dark,
+);
+
+$h4-font-size: 1.563rem;
+
+$font-family-base: "Inter", system-ui, -apple-system, "Segoe UI", "Roboto",
+  "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif;
+
+$font-color-03: $dark;
+
+$popover-bg: $primary !default;
+$popover-arrow-color: $primary !default;
+
+// Cortar aqui
+custom.scss :root {
+  --color-primary: $primary !important;
+}
+
+body {
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+.bs-datepicker-head,
+.bs-datepicker-head,
+.bs-datepicker button:active,
+.bs-datepicker-body table td span.selected,
+.bs-datepicker-body table td.selected span,
+.bs-datepicker-body table td span[class*="select-"]:after,
+.bs-datepicker-body table td[class*="select-"] span:after,
+.bs-datepicker-body table td.active-week span:hover {
+  background-color: $primary !important;
+}
+
+.bs-datepicker-body table td.week span {
+  color: $primary !important;
+}
+
+form-control:focus,
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="datetime"]:focus,
+input[type="datetime-local"]:focus,
+input[type="date"]:focus,
+input[type="month"]:focus,
+input[type="time"]:focus,
+input[type="week"]:focus,
+input[type="email"]:focus,
+input[type="url"]:focus,
+input[type="search"]:focus,
+input[type="color"]:focus,
+input[type="select"]:focus,
+select:focus,
+.uneditable-input:focus {
+  border-color: $primary !important;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px $primary !important;
+  outline: 0 none !important;
+}

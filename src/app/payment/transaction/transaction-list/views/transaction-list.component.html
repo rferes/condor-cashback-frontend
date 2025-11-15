@@ -1,0 +1,218 @@
+<p-toast class="custom-toast"></p-toast>
+<p-confirmDialog class="custom-dialog"></p-confirmDialog>
+
+<div class="container">
+  <h3 class="">Transações</h3>
+  <div class="topic-container">
+    <div class="topic-title">
+      <h5>Lista de Transações</h5>
+    </div>
+  </div>
+  <hr />
+  <!-- Inputs -->
+  <div class="input-container">
+    <!-- Main Inputs -->
+    <div class="fields-container">
+      <div class="table-list">
+        <p-progressSpinner
+          *ngIf="isLoading"
+          styleClass="w-4rem h-4rem"
+          strokeWidth="8"
+          fill="var(--surface-ground)"
+          animationDuration="0.8s"
+          class="centralize"
+        />
+        <p-table
+          *ngIf="entitys.length > 0"
+          [value]="itemsFiltrados"
+          [globalFilterFields]="[
+            'created_date',
+            'amount',
+            'red_credits',
+            'mode',
+            'transaction_time',
+            'status'
+          ]"
+          [sortField]="'created_date'"
+          [sortOrder]="-1"
+          [paginator]="true"
+          [rows]="25"
+        >
+          <ng-template pTemplate="caption">
+            <div class="input-icon">
+              <i class="pi pi-search ml-10"></i>
+              <input
+                pInputText
+                id="globalFilter"
+                name="globalFilter"
+                type="text"
+                [(ngModel)]="globalFilter"
+                (input)="applyFilter()"
+                placeholder="pesquisar transação"
+                pTooltip="Pesquisar transações"
+              />
+            </div>
+            <button
+              pButton
+              type="button"
+              pTooltip="Limpar o filtro"
+              tooltipPosition="top"
+              tooltipStyleClass="my-tooltip"
+              label=""
+              icon="pi pi-filter-slash"
+              (click)="clearGlobalFilter()"
+            ></button>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th pSortableColumn="created_date">
+                Validação <p-sortIcon field="created_date"></p-sortIcon>
+              </th>
+              <th pSortableColumn="valor">
+                Valor <p-sortIcon field="valor"></p-sortIcon>
+              </th>
+              <th pSortableColumn="red_credits">
+                Créditos <p-sortIcon field="red_credits"></p-sortIcon>
+              </th>
+              <th pSortableColumn="mode">
+                Modo <p-sortIcon field="mode"></p-sortIcon>
+              </th>
+              <th pSortableColumn="transaction_time">
+                Data Programada
+                <p-sortIcon field="transaction_time"></p-sortIcon>
+              </th>
+              <th pSortableColumn="status">
+                Status <p-sortIcon field="status"></p-sortIcon>
+              </th>
+              <div class="centralize w-80"><th>Ação</th></div>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-entitys let-i="rowIndex">
+            <tr>
+              <td>
+                {{ entitys.created_date | date : "dd/MM/yyyy HH:mm:ss" }}
+              </td>
+              <td>
+                {{ entitys.amount | currency : "BRL" }}
+              </td>
+              <td>{{ entitys.red_credits }}</td>
+              <td>{{ modeMap[entitys.mode] }}</td>
+              <td>
+                {{ entitys.transaction_time | date : "dd/MM/yyyy HH:mm:ss" }}
+              </td>
+              <td>
+                <div class="centralize-campaign-tag w-60">
+                  <div
+                    class="centralize-campaign-tag w-60"
+                    [ngSwitch]="entitys.status"
+                  >
+                    <p-tag
+                      *ngSwitchCase="'new'"
+                      class="new"
+                      value="Novo"
+                      pTooltip="Transação em aberto"
+                      tooltipPosition="left"
+                    ></p-tag>
+                    <p-tag
+                      *ngSwitchCase="'created'"
+                      class="sketch-campaign"
+                      value="Criado"
+                      pTooltip="Transação criada"
+                      tooltipPosition="left"
+                    ></p-tag>
+                    <p-tag
+                      *ngSwitchCase="'approved'"
+                      class="approved-campaign"
+                      value="Aprovado"
+                      pTooltip="Transação aprovada"
+                      tooltipPosition="left"
+                    ></p-tag>
+                    <p-tag
+                      *ngSwitchCase="'confirmed'"
+                      class="approved-campaign"
+                      value="Confirmado"
+                      pTooltip="Transação confirmada"
+                      tooltipPosition="left"
+                    ></p-tag>
+                    <p-tag
+                      *ngSwitchCase="'processing'"
+                      class="proposal-finished-campaign"
+                      value="Processando"
+                      pTooltip="Transação em processamento"
+                      tooltipPosition="left"
+                    ></p-tag>
+                    <p-tag
+                      *ngSwitchCase="'success'"
+                      class="sucess"
+                      value="Sucesso"
+                      pTooltip="Transação realizada com sucesso"
+                      tooltipPosition="left"
+                    ></p-tag>
+                    <p-tag
+                      *ngSwitchCase="'paid'"
+                      class="sucess"
+                      value="Sucesso"
+                      pTooltip="Transação realizada com sucesso"
+                      tooltipPosition="left"
+                    ></p-tag>
+                    <p-tag
+                      *ngSwitchCase="'failed'"
+                      class="reproved-campaign"
+                      value="Falhou"
+                      pTooltip="Transação falhou"
+                      tooltipPosition="left"
+                    ></p-tag>
+                    <p-tag
+                      *ngSwitchCase="'refused'"
+                      class="proposal-finished-campaign"
+                      value="Recusado"
+                      pTooltip="Transação recusada"
+                      tooltipPosition="left"
+                    ></p-tag>
+                    <p-tag
+                      *ngSwitchCase="'canceled'"
+                      class="reproved-campaign"
+                      value="Cancelado"
+                      pTooltip="Transação cancelada"
+                      tooltipPosition="left"
+                    ></p-tag>
+                    <p-tag
+                      *ngSwitchCase="'refunded'"
+                      class="proposal-campaign"
+                      value="Estornado"
+                      pTooltip="Transação estornada"
+                      tooltipPosition="left"
+                    ></p-tag>
+                  </div>
+                </div>
+              </td>
+
+              <td>
+                <div class="centralize w-80">
+                  <button
+                    *ngIf="entitys.status != 'SKETCH'"
+                    pButton
+                    pRipple
+                    pTooltip="Ver Transação"
+                    tooltipPosition="top"
+                    tooltipStyleClass="my-tooltip"
+                    type="button"
+                    icon="pi pi-eye"
+                    class="p-button-rounded p-button-text p-button-success p-button-sm"
+                    [routerLink]="['/reports/transaction-view', entitys.id]"
+                  ></button>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+      <!-- Se tabela estiver vazia -->
+      <div *ngIf="entitys.length === 0">
+        <div>
+          <span>Atenção, você ainda não possui nenhuma transação!</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
