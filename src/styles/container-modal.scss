@@ -156,9 +156,9 @@
     }
   }
 
-  // Red Line Rigth => Style
+  // Blue Line Rigth => Style
   .modal-backgound {
-    background: linear-gradient(to bottom, red, transparent 50%, red);
+    background: linear-gradient(to bottom, $blue, transparent 50%, $blue);
     background-size: 100% 200%;
     content: "";
     height: 100%;
