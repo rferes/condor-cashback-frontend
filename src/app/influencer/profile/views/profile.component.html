@@ -286,7 +286,7 @@
             <img
               *ngIf="!imageLoaded && !isNew && !isSemiNew"
               [src]="
-                entity.image?.startsWith('http')
+                entity.image.startsWith('http')
                   ? entity.image
                   : mediaUrl + entity.image
               "
