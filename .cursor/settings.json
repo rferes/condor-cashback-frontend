@@ -1,0 +1,68 @@
+{
+  "cursor": {
+    "theme": "dark",
+    "fontSize": 14,
+    "tabSize": 2,
+    "insertSpaces": true,
+    "trimTrailingWhitespace": true,
+    "insertFinalNewline": true,
+    "autoSave": "afterDelay"
+  },
+
+  "workspace": {
+    "excludePatterns": [
+      "**/node_modules",
+      "**/.angular",
+      "**/dist",
+      "**/build",
+      "**/.DS_Store"
+    ],
+    "searchExcludePatterns": [
+      "node_modules/",
+      "dist/",
+      ".angular/"
+    ]
+  },
+
+  "codeCompletion": {
+    "enableIntelliSense": true,
+    "enableTypeChecking": true,
+    "showCompletionOnEveryCharacter": false
+  },
+
+  "languageServers": {
+    "typescript": {
+      "enabled": true,
+      "tsdk": "node_modules/typescript/lib"
+    }
+  },
+
+  "formatter": {
+    "typescript": "prettier",
+    "javascript": "prettier",
+    "html": "prettier",
+    "scss": "prettier",
+    "formatOnSave": true
+  },
+
+  "linters": {
+    "typescript": ["eslint"],
+    "javascript": ["eslint"]
+  },
+
+  "git": {
+    "autofetch": false,
+    "autorefresh": true,
+    "showUntracked": true
+  },
+
+  "ai": {
+    "contextFiles": [
+      "src/app/app-routing.module.ts",
+      "src/app/app.module.ts",
+      "angular.json",
+      "package.json",
+      "README.md"
+    ]
+  }
+}
