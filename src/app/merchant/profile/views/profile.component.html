@@ -252,7 +252,7 @@
           <div class="image-cropper-container">
             <label class="label-field" for="image">Imagem</label>
             <img
-              *ngIf="!imageLoaded && !isNew && !isSemiNew"
+              *ngIf="!imageLoaded && !isNew && !isSemiNew && entity.image"
               [src]="
                 entity.image.startsWith('http')
                   ? entity.image

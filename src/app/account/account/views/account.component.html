@@ -10,14 +10,22 @@
   <!-- Header -->
   <h3>Conta</h3>
 
-  <!-- User Info Header -->
-  <div class="topic-container">
-    <div class="topic-title">
-      <h5 pTooltip="ID: {{ entity.id }}">Usuário</h5>
-    </div>
+  <!-- Loading State -->
+  <div *ngIf="loading" class="text-center" style="padding: 2rem;">
+    <i class="pi pi-spin pi-spinner" style="font-size: 2rem;"></i>
+    <p style="margin-top: 1rem;">Carregando dados...</p>
+  </div>
 
-    <!-- Action Buttons -->
-    <div class="btns-container-medium">
+  <!-- Content Section (hidden during loading) -->
+  <div *ngIf="!loading">
+    <!-- User Info Header -->
+    <div class="topic-container">
+      <div class="topic-title">
+        <h5 pTooltip="ID: {{ entity.id }}">Usuário</h5>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="btns-container-medium">
       <!-- View Mode Button -->
       <button
         *ngIf="!editMode"
@@ -172,8 +180,21 @@
           [resizable]="false"
         >
           <form [formGroup]="changeCellphoneForm" class="p-fluid">
-            <!-- New Phone Input -->
-            <div class="field">
+            <!-- Step Indicator -->
+            <div class="mb-3 text-center">
+              <strong>Etapa {{ cellphoneChangeStep }} de 2</strong>
+              <p class="text-muted" style="font-size: 0.9em; margin-top: 5px;">
+                <span *ngIf="cellphoneChangeStep === 1">
+                  🔐 Validando celular atual
+                </span>
+                <span *ngIf="cellphoneChangeStep === 2">
+                  ✓ Validando novo celular
+                </span>
+              </p>
+            </div>
+
+            <!-- New Phone Input - STEP 1 ONLY -->
+            <div class="field" *ngIf="cellphoneChangeStep === 1">
               <label for="cellphone">Novo Celular</label>
               <p-inputMask
                 id="cellphone"
@@ -187,15 +208,15 @@
 
               <small
                 class="error-msg"
-                *ngIf="changeCellphoneForm.get('cellphone')?.errors?.['required'] && 
+                *ngIf="changeCellphoneForm.get('cellphone')?.errors?.['required'] &&
                             changeCellphoneForm.get('cellphone')?.touched"
               >
                 Digite um celular válido
               </small>
             </div>
 
-            <!-- Confirm Phone Input -->
-            <div class="field">
+            <!-- Confirm Phone Input - STEP 1 ONLY -->
+            <div class="field" *ngIf="cellphoneChangeStep === 1">
               <label for="confirmCellphone">Confirmar Novo Celular</label>
               <p-inputMask
                 id="confirmCellphone"
@@ -225,12 +246,31 @@
               </small>
             </div>
 
+            <!-- Show New Number (Read-only) - STEP 2 ONLY -->
+            <div class="field" *ngIf="cellphoneChangeStep === 2">
+              <label for="newCellphoneDisplay">Novo Celular</label>
+              <input
+                type="text"
+                id="newCellphoneDisplay"
+                class="form-control"
+                [value]="newCellphoneNumber | mask : '(00) 00000-0000'"
+                readonly
+                style="background-color: #f5f5f5; height: 30px; padding: 5px; border: 1px solid #ddd; border-radius: 4px;"
+              />
+            </div>
+
             <!-- Verification Code -->
             <div class="field">
-              <label for="code"
-                >Código de Verificação (SMS:
-                {{ entity.cellphone | mask : "(00) 00000-0000" }})</label
-              >
+              <label for="code">
+                <span *ngIf="cellphoneChangeStep === 1">
+                  Código de Verificação do Celular Atual<br />
+                  <small style="color: #666;">SMS enviado para: {{ entity.cellphone | mask : "(00) 00000-0000" }}</small>
+                </span>
+                <span *ngIf="cellphoneChangeStep === 2">
+                  Código de Verificação do Novo Celular<br />
+                  <small style="color: #666;">SMS enviado para: {{ newCellphoneNumber | mask : "(00) 00000-0000" }}</small>
+                </span>
+              </label>
               <p-inputMask
                 id="code"
                 formControlName="code"
@@ -240,7 +280,7 @@
               >
               </p-inputMask>
 
-              <div class="mt-2 text-center">
+              <div class="mt-2 text-center" *ngIf="cellphoneChangeStep === 1">
                 <button
                   pButton
                   type="button"
@@ -248,15 +288,19 @@
                   class="btn-secondary w-180"
                   [disabled]="!canResendSMSCode"
                   (click)="resendSMSCode()"
-                  pTooltip="Reenviar código de verificação de 6 dígitos para o celular cadastrado"
+                  pTooltip="Reenviar código para o celular ATUAL (medida de segurança)"
                   tooltipPosition="top"
                 ></button>
                 <br />
 
                 <small class="text-muted" *ngIf="!canResendSMSCode">
-                  Enviamos um código de verificação para seu celular. Para
-                  solicitar um novo código, aguarde
-                  {{ remainingTimeSMS }} segundos.
+                  Código enviado para o celular atual. Aguarde {{ remainingTimeSMS }}s para reenviar.
+                </small>
+              </div>
+
+              <div class="mt-2 text-center" *ngIf="cellphoneChangeStep === 2">
+                <small class="text-muted">
+                  ✓ Código enviado para o novo celular
                 </small>
               </div>
             </div>
@@ -283,13 +327,14 @@
 
             <button
               pButton
-              label="Salvar"
-              icon="pi pi-check"
+              [label]="cellphoneChangeStep === 1 ? 'Continuar' : 'Confirmar Troca'"
+              [icon]="cellphoneChangeStep === 1 ? 'pi pi-arrow-right' : 'pi pi-check'"
               (click)="saveNewCellphone()"
-              [disabled]="
-                !changeCellphoneForm.valid ||
+              [disabled]="cellphoneChangeStep === 1 ?
+                (!changeCellphoneForm.valid ||
                 changeCellphoneForm.get('confirmCellphone')?.value !==
-                  changeCellphoneForm.get('cellphone')?.value
+                  changeCellphoneForm.get('cellphone')?.value) :
+                !changeCellphoneForm.get('code')?.value
               "
               class="btn-primary"
             ></button>
@@ -553,4 +598,5 @@
       </div>
     </div>
   </form>
+  </div>
 </div>

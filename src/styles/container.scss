@@ -452,6 +452,13 @@
             border: none;
           }
 
+          // Centralização vertical para todas as tags
+          .p-tag {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+          }
+
           .active .p-tag {
             background-color: rgb(223, 255, 175);
             color: $hard-gray;
@@ -1640,6 +1647,13 @@
           border: none;
         }
 
+        // Centralização vertical para todas as tags
+        .p-tag {
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+        }
+
         .active .p-tag {
           background-color: rgb(223, 255, 175);
           color: $hard-gray;
@@ -1952,6 +1966,13 @@
           border: none;
         }
 
+        // Centralização vertical para todas as tags
+        .p-tag {
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+        }
+
         .active .p-tag {
           background-color: rgb(223, 255, 175);
           color: $hard-gray;
@@ -2085,6 +2106,13 @@
           height: 16px !important;
           width: 16px !important;
           border: none;
+        }
+
+        // Centralização vertical para todas as tags
+        .p-tag {
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
         }
 
         .active .p-tag {
@@ -2223,6 +2251,14 @@
         span {
           margin: 0px 0px 0px 0px;
         }
+
+        // Centralização vertical para todas as tags
+        .p-tag {
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+        }
+
         .active .p-tag {
           background-color: rgb(223, 255, 175);
           color: $hard-gray;
@@ -2280,11 +2316,18 @@
       border-radius: 10%;
     }
     .centralize-campaign-tag {
-      margin: 0px impo2rtant;
-      padding: 0px important;
+      margin: 0px !important;
+      padding: 0px !important;
 
       span {
         margin: 4px 0px 4px 0px !important;
+      }
+
+      // Centralização vertical para todas as tags
+      .p-tag {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
       }
 
       .active .p-tag {

@@ -20,12 +20,12 @@ import { InputMaskModule } from 'primeng/inputmask';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 
 // Component imports
-import { PartnershipViewComponent } from './components/partnership-view.component';
+import { PartnershipHostViewComponent } from './components/partnership-view.component';
 
 // Module imports
 
 @NgModule({
-  declarations: [PartnershipViewComponent],
+  declarations: [PartnershipHostViewComponent],
   imports: [
     // Angular modules
     CommonModule,

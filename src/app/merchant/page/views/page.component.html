@@ -33,7 +33,7 @@
         style="margin: auto; display: block"
       />
       <h2 class="influencer-name">{{ sponsor.name }}</h2>
-      <p class="influencer-location">
+      <p class="influencer-location" *ngIf="sponsor.city">
         {{ sponsor.city.name }} - {{ sponsor.city.state?.initials }}
       </p>
       <div class="member-banner">
@@ -157,7 +157,7 @@
         style="margin: auto; display: block"
       />
       <h2 class="influencer-name">{{ sponsor.name }}</h2>
-      <p class="influencer-location">
+      <p class="influencer-location" *ngIf="sponsor.city">
         {{ sponsor.city.name }} - {{ sponsor.city.state?.initials }}
       </p>
       <div class="member-banner">

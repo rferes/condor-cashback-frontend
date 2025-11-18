@@ -20,10 +20,10 @@ interface MerchantPartnerHost {
 }
 
 @Component({
-  selector: 'app-partnership-view',
+  selector: 'app-partnership-host-view',
   templateUrl: '../views/partnership-view.component.html',
 })
-export class PartnershipViewComponent implements OnInit {
+export class PartnershipHostViewComponent implements OnInit {
   isFavorited = false;
   merchantPartnerHost = {} as MerchantPartnerHost;
   constructor(

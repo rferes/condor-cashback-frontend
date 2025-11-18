@@ -24,6 +24,8 @@ const USER_CHECK_DOCUMENT_URL = 'users/validate_document/';
 const USER_FORGOT_PASSWORD_URL = 'users/change_password/';
 const USER_CHANGE_EMAIL_URL = 'users/change_email/';
 const USER_CHANGE_CELLPHONE_URL = 'users/change_cellphone/';
+const USER_CHANGE_CELLPHONE_STEP1_URL = 'users/change_cellphone_step1/';
+const USER_CHANGE_CELLPHONE_STEP2_URL = 'users/change_cellphone_step2/';
 
 @Injectable({
   providedIn: 'root',
@@ -82,6 +84,24 @@ export class UserService {
   ): Observable<HttpResponse<UserChangeCellphoneResponse>> {
     return this.http.post<UserChangeCellphoneResponse>(
       this.baseURL + USER_CHANGE_CELLPHONE_URL,
+      payload,
+      { observe: 'response' }
+    );
+  }
+
+  changeCellphoneStep1(payload: any): Observable<HttpResponse<any>> {
+    return this.http.post<any>(
+      this.baseURL + USER_CHANGE_CELLPHONE_STEP1_URL,
+      payload,
+      { observe: 'response' }
+    );
+  }
+
+  changeCellphoneStep2(
+    payload: any
+  ): Observable<HttpResponse<UserChangeCellphoneResponse>> {
+    return this.http.post<UserChangeCellphoneResponse>(
+      this.baseURL + USER_CHANGE_CELLPHONE_STEP2_URL,
       payload,
       { observe: 'response' }
     );

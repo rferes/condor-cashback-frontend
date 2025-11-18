@@ -120,7 +120,7 @@
         <div class="col-3">
           <label class="label-field bold">Responsável</label>
           <br />
-          <span>
+          <span *ngIf="entity.document">
             {{
               entity.document.length === 11
                 ? entity.document.slice(0, 3) +
@@ -143,6 +143,7 @@
                 : entity.document
             }}</span
           >
+          <span *ngIf="!entity.document">-</span>
         </div>
         <div class="col-3">
           <label class="label-field bold">Tipo</label>

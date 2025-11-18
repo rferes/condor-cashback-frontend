@@ -38,5 +38,17 @@ export function account_response(): {
       detail: 'O código de verificação é inválido',
       life: 4000,
     },
+    404: {
+      severity: 'error',
+      summary: 'Rota não encontrada',
+      detail: 'O endpoint requisitado não foi encontrado',
+      life: 4000,
+    },
+    500: {
+      severity: 'error',
+      summary: 'Erro no servidor',
+      detail: 'Ocorreu um erro no servidor. Tente novamente mais tarde',
+      life: 4000,
+    },
   };
 }

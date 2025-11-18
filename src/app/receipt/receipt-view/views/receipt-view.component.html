@@ -397,7 +397,29 @@
           <label class="label-field bold">Documento</label>
           <br />
           <span>
-            {{ entity.member_document ? entity.member_document : "----" }}
+            {{
+              entity.member_document
+                ? entity.member_document.length === 11
+                  ? entity.member_document.slice(0, 3) +
+                    "." +
+                    entity.member_document.slice(3, 6) +
+                    "." +
+                    entity.member_document.slice(6, 9) +
+                    "-" +
+                    entity.member_document.slice(9)
+                  : entity.member_document.length === 14
+                  ? entity.member_document.slice(0, 2) +
+                    "." +
+                    entity.member_document.slice(2, 5) +
+                    "." +
+                    entity.member_document.slice(5, 8) +
+                    "/" +
+                    entity.member_document.slice(8, 12) +
+                    "-" +
+                    entity.member_document.slice(12)
+                  : entity.member_document
+                : "----"
+            }}
           </span>
         </div>
         <div class="col-3">
@@ -409,7 +431,29 @@
           <label class="label-field bold">Chave Pix</label>
           <br />
           <span>
-            {{ entity.member_pix_code ? entity.member_pix_code : "------" }}
+            {{
+              entity.member_pix_code
+                ? entity.member_pix_code.length === 11
+                  ? entity.member_pix_code.slice(0, 3) +
+                    "." +
+                    entity.member_pix_code.slice(3, 6) +
+                    "." +
+                    entity.member_pix_code.slice(6, 9) +
+                    "-" +
+                    entity.member_pix_code.slice(9)
+                  : entity.member_pix_code.length === 14
+                  ? entity.member_pix_code.slice(0, 2) +
+                    "." +
+                    entity.member_pix_code.slice(2, 5) +
+                    "." +
+                    entity.member_pix_code.slice(5, 8) +
+                    "/" +
+                    entity.member_pix_code.slice(8, 12) +
+                    "-" +
+                    entity.member_pix_code.slice(12)
+                  : entity.member_pix_code
+                : "------"
+            }}
           </span>
         </div>
         <div class="col-3">

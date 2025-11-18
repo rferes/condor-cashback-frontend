@@ -17,6 +17,7 @@
               maxlength="18"
               (input)="onCheckDocument()"
               pTooltip="CNPJ ou CPF"
+              autocomplete="username"
             />
             <div
               *ngIf="loginForm.get('step1.document')?.errors?.['cpfCnpj']"
@@ -37,6 +38,7 @@
               id="password"
               type="password"
               [feedback]="false"
+              autocomplete="current-password"
             ></p-password>
             <div
               *ngIf="loginForm.get('step1.password')?.errors?.['isLength']"
@@ -146,6 +148,7 @@
               formControlName="email"
               placeholder="Email"
               type="email"
+              autocomplete="email"
             />
             <div
               *ngIf="loginForm.get('step3.email')?.errors?.['email']"

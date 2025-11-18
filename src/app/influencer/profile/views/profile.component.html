@@ -207,10 +207,8 @@
             name="birth_date"
             formControlName="birth_date"
             placeholder="Início"
-            [disabled]="!editMode"
             [showIcon]="true"
             [touchUI]="true"
-            [disabled]="!editMode"
             [style]="
               !editMode ? { opacity: '0.6', 'pointer-events': 'none' } : {}
             "
@@ -227,7 +225,6 @@
             optionValue="value"
             placeholder="Selecione"
             class="dropdown-field"
-            [disabled]="!editMode"
             [readonly]="!editMode"
             [style]="
               !editMode ? { opacity: '0.6', 'pointer-events': 'none' } : {}
@@ -284,7 +281,7 @@
           <div class="image-cropper-container">
             <label class="label-field" for="image">Imagem</label>
             <img
-              *ngIf="!imageLoaded && !isNew && !isSemiNew"
+              *ngIf="!imageLoaded && !isNew && !isSemiNew && entity.image"
               [src]="
                 entity.image.startsWith('http')
                   ? entity.image

@@ -34,7 +34,7 @@
         style="margin: auto; display: block"
       />
       <h2 class="influencer-name">{{ influencer.name }}</h2>
-      <p class="influencer-location">
+      <p class="influencer-location" *ngIf="influencer.city">
         {{ influencer.city.name }} - {{ influencer.city.state?.initials }}
       </p>
     </section>

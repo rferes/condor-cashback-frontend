@@ -28,6 +28,7 @@
                 placeholder="xx.xxx.xxx/xxxx-xx"
                 [unmask]="true"
                 (onComplete)="onCheckDocument()"
+                autocomplete="username"
               ></p-inputMask>
               <div *ngIf="checkDocument === false" class="warning_message">
                 <i class="pi pi-ban ban"></i>
@@ -55,6 +56,7 @@
                 maxlength="18"
                 (input)="onCheckDocument()"
                 pTooltip="CNPJ ou CPF"
+                autocomplete="username"
               />
               <div *ngIf="checkDocument === false" class="warning_message">
                 <i class="pi pi-ban ban"></i>
@@ -78,6 +80,7 @@
                 placeholder="xxx.xxx.xxx-xx"
                 [unmask]="true"
                 (onComplete)="onCheckDocument()"
+                autocomplete="username"
               ></p-inputMask>
               <div *ngIf="checkDocument === false" class="warning_message">
                 <i class="pi pi-ban ban"></i>
@@ -96,6 +99,7 @@
               id="name"
               formControlName="name"
               placeholder="Nome Sobrenome"
+              autocomplete="name"
             />
             <div
               *ngIf="
@@ -114,6 +118,7 @@
               id="cellphone"
               formControlName="cellphone"
               placeholder="(xx) xxxxx-xxxx"
+              autocomplete="tel"
             ></p-inputMask>
           </div>
           <div>
@@ -125,6 +130,7 @@
               id="password"
               type="password"
               [feedback]="false"
+              autocomplete="new-password"
             ></p-password>
             <div
               *ngIf="registerForm.get('step1.password')?.errors?.['isLength']"

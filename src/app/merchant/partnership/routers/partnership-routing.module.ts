@@ -1,10 +1,10 @@
 // partnership-routing.module.ts
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { PartnershipViewComponent as PartnershipGuestViewComponent } from '../partnership-guest-view/components/partnership-view.component';
+import { PartnershipGuestViewComponent } from '../partnership-guest-view/components/partnership-view.component';
 import { PartnershipListComponent } from '../partnership-list/components/partnership-list.component';
 import { AuthGuard } from 'src/app/utils/guards/auth.guard';
-import { PartnershipViewComponent as PartnershipHostViewComponent } from '../partnership-host-view/components/partnership-view.component';
+import { PartnershipHostViewComponent } from '../partnership-host-view/components/partnership-view.component';
 const routes: Routes = [
   {
     path: 'merchant/partnership-view/:id',

@@ -18,7 +18,11 @@ body {
     text-align: center;
     background-color: rgb(251, 251, 251) !important;
     width: 250px;
+    min-width: 250px !important;
+    max-width: 250px !important;
+    flex-shrink: 0;
     height: 100vh;
+    overflow-x: hidden;
     .profile-name {
       display: flex;
       justify-content: center;
@@ -37,6 +41,10 @@ body {
     }
 
     .menu {
+      width: 100%;
+      max-width: 250px;
+      overflow-x: hidden;
+
       .selected {
         .p-panelmenu-header-content {
           .p-menuitem-text {
@@ -48,6 +56,8 @@ body {
       .p-panelmenu {
         margin-top: 40px !important;
         margin-left: 40px !important;
+        width: calc(100% - 40px) !important;
+        max-width: 210px !important;
 
         .p-panelmenu-header-content {
           background-color: transparent;
@@ -59,11 +69,10 @@ body {
         .p-panelmenu-content {
           margin: 2px 0px 0px 0px;
           padding: 0px;
-        }
-
-        .p-panelmenu-content {
           background-color: transparent;
           border-color: rgb(255, 255, 255);
+          overflow-x: hidden;
+          max-width: 100%;
         }
 
         .p-panelmenu-root-list {
@@ -79,14 +88,25 @@ body {
           background-color: transparent;
           text-decoration: none;
           padding: 5px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
 
         .p-submenu-icon {
-          display: none;
+          display: none !important;
+          width: 0 !important;
+          height: 0 !important;
+          margin: 0 !important;
+          padding: 0 !important;
         }
 
         .p-menuitem-icon {
-          display: none;
+          display: none !important;
+          width: 0 !important;
+          height: 0 !important;
+          margin: 0 !important;
+          padding: 0 !important;
         }
 
         .p-menuitem-text {

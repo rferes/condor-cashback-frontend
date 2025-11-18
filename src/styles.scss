@@ -8,6 +8,31 @@
 @import "./styles/utils.scss";
 @import "src/app/app.component.scss";
 
+/* Override PrimeNG font to use Google Fonts Inter instead of local files */
+/* Apply to body and text elements, but NOT to icon fonts */
+body,
+p,
+h1, h2, h3, h4, h5, h6,
+span:not([class*="pi-"]):not([class*="icon"]),
+div:not([class*="pi-"]):not([class*="icon"]),
+button:not([class*="pi-"]):not([class*="icon"]),
+input,
+textarea,
+select,
+label,
+a {
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", "Roboto",
+    "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif !important;
+}
+
+/* Ensure icon fonts are preserved */
+.pi,
+[class*="pi-"],
+.material-icons,
+.icon {
+  font-family: 'primeicons' !important;
+}
+
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;

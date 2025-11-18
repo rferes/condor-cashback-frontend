@@ -119,7 +119,6 @@ export class ConsumerGroupViewComponent implements OnInit {
 
   cancel() {
     this.editMode = false;
-    this.entityForm.controls['document_list'].disable();
     this.entityForm.markAsPristine();
     this.entityForm.patchValue(this.entity);
   }

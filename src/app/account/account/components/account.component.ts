@@ -56,6 +56,7 @@ export class AccountComponent implements OnInit, OnDestroy {
 
   // UI State
   editMode = false;
+  loading = true; // Add loading state
   merchantTypesList = merchantTypes;
   dialogState: DialogState = {
     password: false,
@@ -70,6 +71,10 @@ export class AccountComponent implements OnInit, OnDestroy {
   remainingTimeEmail = 0;
   passwordErrorMsg = '';
   requestErrorMsg = '';
+
+  // Cellphone change state (two-factor)
+  cellphoneChangeStep = 1; // 1 = validate old, 2 = validate new
+  newCellphoneNumber = ''; // Store new number after step 1
 
   // Timers and Subscriptions
   private resendSMSTimer?: any;
@@ -156,12 +161,17 @@ export class AccountComponent implements OnInit, OnDestroy {
 
   // Data Loading
   private loadUserData(): void {
+    this.loading = true;
     const subscription = this.componentService.get().subscribe({
       next: (user: ComponentEntity) => {
         this.entity = user;
         this.patchAllForms(user);
+        this.loading = false;
       },
-      error: (error) => this.handleError(error),
+      error: (error) => {
+        this.handleError(error);
+        this.loading = false;
+      },
     });
     this.subscriptions.push(subscription);
   }
@@ -180,8 +190,8 @@ export class AccountComponent implements OnInit, OnDestroy {
 
   save(): void {
     if (this.entityForm.valid) {
+      this.loading = true;
       this.updateEntity(this.entityForm.value);
-      this.editMode = false;
     }
   }
 
@@ -205,6 +215,8 @@ export class AccountComponent implements OnInit, OnDestroy {
         this.sendEmailCode();
       }
     } else {
+      // For password and cellphone changes, send code to CURRENT cellphone
+      // This is a security measure to verify the account owner
       if (this.remainingTimeSMS === 0) {
         this.startResendSMSTimer();
         this.sendSMSCode();
@@ -215,6 +227,12 @@ export class AccountComponent implements OnInit, OnDestroy {
   closeDialog(type: keyof DialogState, form: FormGroup): void {
     this.dialogState[type] = false;
     form.reset();
+    // Reset cellphone change state
+    if (type === 'cellphone') {
+      this.cellphoneChangeStep = 1;
+      this.newCellphoneNumber = '';
+      this.requestErrorMsg = '';
+    }
     // type === 'email' ? this.resetEmailState() : this.resetSMSState();
   }
 
@@ -276,21 +294,42 @@ export class AccountComponent implements OnInit, OnDestroy {
   }
 
   saveNewCellphone(): void {
-    if (
-      this.isFormValidWithMatchingFields(
-        this.changeCellphoneForm,
-        'cellphone',
-        'confirmCellphone'
-      )
-    ) {
-      const formValue = this.prepareFormValue(this.changeCellphoneForm);
-      formValue.cellphone = formValue.cellphone.replace(/[\s()-]/g, '');
-      formValue.confirmCellphone = formValue.confirmCellphone.replace(
-        /[\s()-]/g,
-        ''
-      );
-      this.changeCellphoneRequest(formValue);
+    if (this.cellphoneChangeStep === 1) {
+      // Step 1: Validate old cellphone code and send to new
+      if (
+        this.isFormValidWithMatchingFields(
+          this.changeCellphoneForm,
+          'cellphone',
+          'confirmCellphone'
+        )
+      ) {
+        const formValue = this.prepareCellphoneFormValue(this.changeCellphoneForm);
+        this.changeCellphoneStep1Request(formValue);
+      }
+    } else {
+      // Step 2: Validate new cellphone code
+      const code = this.changeCellphoneForm.get('code')?.value;
+      if (!code) {
+        toastMessage(this.messageService, component_toasts[400]);
+        return;
+      }
+
+      const payload = {
+        code: code.replace(/[\s-]/g, ''),
+        cellphone: this.newCellphoneNumber
+      };
+      this.changeCellphoneStep2Request(payload);
     }
+  }
+
+  private prepareCellphoneFormValue(form: FormGroup): any {
+    const formValue = form.value;
+    // Remove formatting from code
+    formValue.code = formValue.code.replace(/[\s-]/g, '');
+    // Remove formatting from cellphone numbers
+    formValue.cellphone = formValue.cellphone.replace(/[\s()-]/g, '');
+    formValue.confirmCellphone = formValue.confirmCellphone.replace(/[\s()-]/g, '');
+    return formValue;
   }
 
   private prepareFormValue(form: FormGroup): any {
@@ -437,14 +476,21 @@ export class AccountComponent implements OnInit, OnDestroy {
         next: (response: HttpResponse<ComponentEntity>) => {
           if (response.body) {
             this.entity = response.body;
-            this.resetForm();
+            // Update form without clearing it first
+            this.entityForm.patchValue(this.entity);
+            this.entityForm.markAsPristine();
+            this.editMode = false;
+            this.loading = false;
             toastMessage(
               this.messageService,
               component_toasts[response.status]
             );
           }
         },
-        error: (error) => this.handleError(error),
+        error: (error) => {
+          this.handleError(error);
+          this.loading = false;
+        },
       });
     this.subscriptions.push(subscription);
   }
@@ -475,7 +521,58 @@ export class AccountComponent implements OnInit, OnDestroy {
     this.subscriptions.push(subscription);
   }
 
+  private changeCellphoneStep1Request(payload: any): void {
+    const subscription = this.componentService
+      .changeCellphoneStep1(payload)
+      .subscribe({
+        next: (response: HttpResponse<any>) => {
+          // Step 1 successful! Code sent to new cellphone
+          this.newCellphoneNumber = payload.cellphone;
+          this.cellphoneChangeStep = 2;
+
+          // Reset form but keep the new cellphone number
+          this.changeCellphoneForm.patchValue({
+            code: '',
+            cellphone: payload.cellphone,
+            confirmCellphone: payload.cellphone
+          });
+
+          // Start timer for new cellphone code
+          this.resetSMSState();
+
+          toastMessage(this.messageService, {
+            severity: 'success',
+            summary: 'Código Enviado',
+            detail: `Código de verificação enviado para ${payload.cellphone}`,
+            life: 5000,
+          });
+        },
+        error: (error) => this.handleRequestError(error, 'sms'),
+      });
+    this.subscriptions.push(subscription);
+  }
+
+  private changeCellphoneStep2Request(payload: any): void {
+    const subscription = this.componentService
+      .changeCellphoneStep2(payload)
+      .subscribe({
+        next: (response: HttpResponse<UserChangeCellphoneResponse>) => {
+          toastMessage(this.messageService, {
+            severity: 'success',
+            summary: 'Celular Alterado',
+            detail: 'Seu celular foi alterado com sucesso!',
+            life: 4000,
+          });
+          this.closeDialog('cellphone', this.changeCellphoneForm);
+          window.location.reload();
+        },
+        error: (error) => this.handleRequestError(error, 'sms'),
+      });
+    this.subscriptions.push(subscription);
+  }
+
   private changeCellphoneRequest(payload: any): void {
+    // LEGACY: Keep for backward compatibility
     const subscription = this.componentService
       .changeCellphone(payload)
       .subscribe({
