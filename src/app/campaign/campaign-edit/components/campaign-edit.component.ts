@@ -970,7 +970,7 @@ export class CampaignEditComponent implements OnInit {
       (collection: Collection) => collection.id
     );
     payload.products = payload.products.map((product: Product) => product.id);
-    if (payload.dissemination_mode.value === 'INFLUENCER') {
+    if (payload.dissemination_mode?.value === 'INFLUENCER') {
       payload.influencers = payload.influencers.map(
         (influencer: Influencer) => influencer.id
       );
@@ -978,7 +978,7 @@ export class CampaignEditComponent implements OnInit {
       payload.influencers = [];
     }
 
-    if (payload.dissemination_mode.value === 'MEMBER') {
+    if (payload.dissemination_mode?.value === 'MEMBER') {
       payload.member_groups_allow = payload.member_groups_allow.map(
         (consumerGroup: ConsumerGroup) => consumerGroup.id
       );
@@ -993,15 +993,15 @@ export class CampaignEditComponent implements OnInit {
       (consumerGroup: ConsumerGroup) => consumerGroup.id
     );
 
-    payload.dissemination_mode = payload.dissemination_mode.value;
-    payload.campaign_mode = payload.campaign_mode.value;
-    payload.rule_mode = payload.rule_mode.value;
+    payload.dissemination_mode = payload.dissemination_mode?.value;
+    payload.campaign_mode = payload.campaign_mode?.value;
+    payload.rule_mode = payload.rule_mode?.value;
     payload.consumer_groups_allow_mode =
-      payload.consumer_groups_allow_mode.value;
+      payload.consumer_groups_allow_mode?.value;
     payload.consumer_groups_block_mode =
-      payload.consumer_groups_block_mode.value;
-    payload.influencer_comission_type = payload.influencer_comission_type.value;
-    payload.consumer_comission_type = payload.consumer_comission_type.value;
+      payload.consumer_groups_block_mode?.value;
+    payload.influencer_comission_type = payload.influencer_comission_type?.value;
+    payload.consumer_comission_type = payload.consumer_comission_type?.value;
     if (!proposal) {
       payload.status = 'SKETCH';
     } else {
@@ -1013,7 +1013,7 @@ export class CampaignEditComponent implements OnInit {
     }
 
     // Extrair o ID do linked_credit se for um objeto, ou manter null
-    if (payload.bonification_type.value === 'LINKED_CREDIT') {
+    if (payload.bonification_type?.value === 'LINKED_CREDIT') {
       if (payload.linked_credit && typeof payload.linked_credit === 'object') {
         payload.linked_credit = payload.linked_credit.id;
       }
